@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Getting started &mdash; Microbe 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/solar.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Microbe 1.0 documentation" href="index.html" />
+    <link rel="next" title="Deploy Microbe" href="deploy.html" />
+    <link rel="prev" title="Welcome to Microbe’s documentation!" href="index.html" /><link href='http://fonts.googleapis.com/css?family=Source+Code+Pro|Open+Sans:300italic,400italic,700italic,400,300,700' rel='stylesheet' type='text/css'>
+<link href="_static/solarized-dark.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="deploy.html" title="Deploy Microbe"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to Microbe’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Microbe 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Getting started</a><ul>
+<li><a class="reference internal" href="#installing-microbe">Installing Microbe</a><ul>
+<li><a class="reference internal" href="#if-you-already-use-pip">If you already use Pip</a></li>
+<li><a class="reference internal" href="#if-pip-is-not-installed">If Pip is not installed</a></li>
+<li><a class="reference internal" href="#virtualenv-note">Virtualenv note</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#upgrading">Upgrading</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to Microbe&#8217;s documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="deploy.html"
+                        title="next chapter">Deploy Microbe</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/getting_started.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="getting-started">
+<h1>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="installing-microbe">
+<h2>Installing Microbe<a class="headerlink" href="#installing-microbe" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="if-you-already-use-pip">
+<h3>If you already use Pip<a class="headerlink" href="#if-you-already-use-pip" title="Permalink to this headline">¶</a></h3>
+<p>Just type:</p>
+<div class="highlight-python"><div class="highlight"><pre>pip install microbe
+</pre></div>
+</div>
+</div>
+<div class="section" id="if-pip-is-not-installed">
+<h3>If Pip is not installed<a class="headerlink" href="#if-pip-is-not-installed" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Get the last archive <a class="reference external" href="https://hg.joacodepel.tk/get_microbe/microbe/archive/tip.zip">here</a></li>
+<li>Extract all of it where you whish the site to be stored</li>
+<li>Go to the extracted files</li>
+<li><tt class="docutils literal"><span class="pre">python</span> <span class="pre">setup.py</span> <span class="pre">install</span></tt></li>
+</ul>
+</div>
+<div class="section" id="virtualenv-note">
+<h3>Virtualenv note<a class="headerlink" href="#virtualenv-note" title="Permalink to this headline">¶</a></h3>
+<p>Keep in mind that OS will otfen require you to prefix the above commands with <tt class="docutils literal"><span class="pre">sudo</span></tt> in order to install the app system-wide.</p>
+<p>It is recommended to create a virtual environment for Microbe via <a class="reference external" href="http://www.virtualenv.org/">virtualenv</a></p>
+<div class="highlight-python"><div class="highlight"><pre>$ virtualenv $HOME/site
+$ cd $HOME/site
+$ source bin/activate
+</pre></div>
+</div>
+<p>Then install the app using one of the methods described above.</p>
+</div>
+</div>
+<div class="section" id="upgrading">
+<h2>Upgrading<a class="headerlink" href="#upgrading" title="Permalink to this headline">¶</a></h2>
+<p>If you installed a Microbe <tt class="docutils literal"><span class="pre">pip</span></tt> release and whish to upgrade to the latest version you can do it by adding <tt class="docutils literal"><span class="pre">--upgrade</span></tt> to your command:</p>
+<div class="highlight-python"><div class="highlight"><pre>pip install --upgrade microbe
+</pre></div>
+</div>
+<p>If you installed Microbe using the <tt class="docutils literal"><span class="pre">setup.py</span></tt> method, simply perform the same steps to install the most recent version.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="deploy.html" title="Deploy Microbe"
+             >next</a></li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to Microbe’s documentation!"
+             >previous</a> |</li>
+        <li><a href="index.html">Microbe 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, TROUVERIE Joachim.
+    Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.Theme by <a href="http://github.com/vkvn">vkvn</a>
+    </div>
+  </body>
+</html>

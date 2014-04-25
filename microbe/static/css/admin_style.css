@@ -1,0 +1,193 @@
+body { 
+    word-wrap:break-word; 
+}
+
+ol li ul, ol li ol { 
+    margin-bottom: 1.25em;
+}
+
+select {
+    -moz-box-sizing: border-box;
+    background-color: #FFFFFF;
+    border: 1px solid #CCCCCC;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset;
+    color: rgba(0, 0, 0, 0.75);
+    display: block;
+    font-family: inherit;
+    font-size: 0.875em;
+    height: 2.3125em;
+    margin: 0 0 1em;
+    padding: 0.5em;
+    transition: box-shadow 0.45s ease 0s, border-color 0.45s ease-in-out 0s;
+    width: 100%;
+}   
+
+label {
+    color : #2284A1;
+    font-weight : bold;
+}
+
+/* top bar */
+.top-bar {
+    background: #2f2f2f; 
+    height: 100%; 
+    margin-bottom: 1em; 
+}
+
+.top-bar a,
+.top-bar i{ 
+    color: #FFFFFA 
+}
+
+.top-bar h1,
+.top-bar ul { 
+	margin-bottom : 0px 
+}
+
+/* admin nav bar */
+#nav {
+  width: 100%;
+  float: left;
+  padding: 0;
+  list-style: none;
+  background-color: transparent;
+}
+
+#nav li {
+  float: left; 
+}
+
+#nav li a {
+  display: block;
+  padding: 8px 15px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+#nav li a:hover {
+  color: #2284a1;
+}
+
+/* errors */
+.help-inline {
+  width : 100%;
+  border : 1px solid #d6353b;
+  color : #d6353b;
+  background-color : #FFD6D5;
+  display: inline-block;
+  padding : 5px;
+  margin-bottom : 5px;
+}
+
+/* admin model table */
+.model {
+  width : 100%;
+}
+
+.model th {
+  background-color : #CED6DE;
+}
+
+.model form {
+  margin : 0px;
+}
+
+td.action {
+  text-align : center;
+  vertical-align : middle;
+  width : 10px;
+}
+
+td.action .button {
+  line-height : 1.2;
+  margin : 0px;
+}
+
+pre {
+  white-space: pre-wrap;   
+}
+
+/* Markdown editor toolbar */
+.toolbar {
+  margin-top : 8px;
+  margin-bottom : 8px;
+}
+
+.toolbar a {
+  width : 15px;
+  height : 15px;
+  display : inline-block;
+  margin : 5px;
+  cursor : pointer;
+  text-align: center;
+  color : black;
+} 
+
+.toolbar a:hover {
+  background-color : #ccc;
+}
+
+.toolbar a.active {
+  border : 1px solid #ccc;
+  border-radius : 2px;
+}
+
+/* Markdown editor */
+.CodeMirror {
+  border : 1px solid #CCCCCC;
+  margin-bottom : 8px;
+}
+
+/* Dnd */
+#dropbox{
+  border: 3px dashed grey;
+  border-radius: 3px;
+  position: relative;
+  margin: 50px auto;
+  height: 80px;
+  width: 50%;
+  overflow: hidden;
+  display: none;
+}
+
+
+#dropbox .message{
+  font-size: 20pt;
+  text-align: center;
+  display: block;
+}
+
+#regular_form {
+  width: 50%;
+  margin:auto;
+}
+
+/* themes display */
+.grid li {
+  display : inline-table;
+  width : 250px;
+  height : 250px;
+  margin : 10px;
+  text-align : center;
+  word-wrap : break-word;
+  padding : 5px;
+}
+
+.grid li img {
+  border : 1px solid black;
+  height : 200px;
+}
+
+.grid .selected {
+  background-color : #2f2f2f;
+  color : #fffffa;
+}
+
+/* models buttons */
+button.transparent {
+    margin :0;
+    padding : 0;
+    border : none;
+    background-color : transparent;
+    color : #2AA0C4;
+}

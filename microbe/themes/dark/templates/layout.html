@@ -1,0 +1,92 @@
+{% extends theme("base.html") %}
+
+{% block head %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{ theme_static('css/style.css') }}">
+  <link rel="stylesheet" href="{{ theme_static('css/pygments.css') }}">
+{% endblock %}
+
+{% block topbar %}
+<div class="top-bar">
+  <div class="row">
+    <div class="large-9 large-centered columns">
+      <div class = "row">
+        <div class = "large-10 columns">
+          <h1><a href="{{ url_for('index') }}">{{ config.SITENAME }}</a></h1>
+            {% if config.SUBTITLE %}
+              <i> {{ config.SUBTITLE }} </i>
+            {% endif %}
+        </div>
+        <div class = "large-2 columns">
+          <form class = "custom" action="{{url_for('search')}}" method="post" name="search">
+            {{g.search_form.hidden_tag()}}
+            {{g.search_form.search(size=20)}}
+            <input type="submit" value="Search" style = "display : none">
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block main %}
+<!-- Main Page Content and Sidebar -->
+<div class="row">
+
+  <!-- Main Blog Content -->
+  <div class="large-9 columns">
+    {% block content %}{% endblock %}
+  </div>
+  <!-- End Main Content -->
+
+  <!-- Sidebar -->
+  <aside class="large-3 columns">
+    <h5 class="sidebar-title">{{ _('Website') }}</h5>
+    <ul class="side-nav">
+      {% if g.static_pages %}
+        {% for page in g.static_pages %}
+          <li><a href="{{ url_for('page', path=page.path) }}">{{ page.title }}</a></li>
+        {% endfor %}
+      {% endif %}  
+      {% if config.RSS == 'YES' %}
+        <li><a href="{{ url_for('feed') }}">{{ _('Atom feed') }}</a></li>
+      {% endif %}
+      <li><a href="{{ url_for('archives') }}">{{ _('Archive') }}</a></li>
+    </ul>
+        
+
+    {% if g.categories %}
+      <h5 class="sidebar-title">{{ _('Categories') }}</h5>
+      <ul class="side-nav">
+        {% for cat in g.categories %}
+          <li><a href="{{ url_for('category', category = cat) }}">{{ cat }}</a></li>
+        {% endfor %}
+      </ul>
+    {% endif %}   
+
+    {% if g.links %}
+      {% for category, links in g.links.iteritems() %}
+        {% if links %}
+          <h5 class="sidebar-title">{{ category | title}}</h5>
+          <ul class="side-nav">
+            {% for link in links %}
+              <li>{{ link.html | safe }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+
+  </aside> 
+  <!-- End Sidebar -->
+
+</div> 
+<!-- End Main Content and Sidebar -->
+{% endblock %}
+
+{% block footer %}
+<footer class="large-centered">
+<i>{{ config.SITENAME }} {% if config.AUTHOR %}{{ _('by') }} {{ config.AUTHOR }}{% endif %} {{ _('created using') }} Microbe - <a href="{{ url_for('admin.index') }}">{{ _('Administration') }}</a> </i>
+</footer>
+{% endblock %}

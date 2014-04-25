@@ -1,0 +1,31 @@
+{% macro render(form) -%}
+<fieldset>
+{% for field in form %}
+{% if field.type in ['CSRFTokenField', 'HiddenField'] %}
+  {{ field() }}
+{% else %}
+    {{ field.label }}
+    {% if field.type == 'TextAreaField' %}
+      {{ field(rows=10, cols=40, style="height : auto") }}
+    {% elif field.type == 'MarkdownEditField' %}
+      {{ field(rows=25, cols=40) }}          
+    {% else %}
+      {{ field() }}
+    {% endif %}
+    {% if field.errors or field.help_text %}
+      <span class="help-inline">
+      {% if field.errors %}
+        {% for error in field.errors %}
+            {{ error }}<br>
+        {% endfor %}
+      {% else %}
+        {{ field.help_text }}
+      {% endif %}
+      </span>
+    {% endif %}
+{% endif %}
+{% endfor %}
+<input class = "button radius small right" value = "{{ _('Ok') }}" type = "submit">
+</fieldset>
+{% endmacro %}
+

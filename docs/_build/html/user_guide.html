@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>User guide &mdash; Microbe 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/solar.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Microbe 0.1 documentation" href="index.html" />
+    <link rel="prev" title="Deploy Microbe" href="deploy.html" /><link href='http://fonts.googleapis.com/css?family=Source+Code+Pro|Open+Sans:300italic,400italic,700italic,400,300,700' rel='stylesheet' type='text/css'>
+<link href="_static/solarized-dark.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="deploy.html" title="Deploy Microbe"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Microbe 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">User guide</a><ul>
+<li><a class="reference internal" href="#administration">Administration</a><ul>
+<li><a class="reference internal" href="#configuration">Configuration</a></li>
+<li><a class="reference internal" href="#users">Users</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="deploy.html"
+                        title="previous chapter">Deploy Microbe</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/user_guide.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="user-guide">
+<h1>User guide<a class="headerlink" href="#user-guide" title="Permalink to this headline">¶</a></h1>
+<p>Once you have deployed Microbe you can access your website according to your configuration. For ease, your url will be named <strong>http://website/</strong> for this part.</p>
+<div class="section" id="administration">
+<h2>Administration<a class="headerlink" href="#administration" title="Permalink to this headline">¶</a></h2>
+<p>You can acces the administration page from <strong>http://website/admin/</strong></p>
+<p>A default user is registered to enable your access, delete it after creating your own user :</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">User</th>
+<th class="head">Password</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>admin</td>
+<td><em>microbe</em></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="configuration">
+<h3>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h3>
+<p>Configuration can be accessed from <strong>http://website/admin/config/</strong> or using the links in administration page top bar.</p>
+<p>Here is the list of settings for Microbe :</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="37%" />
+<col width="63%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Setting name</th>
+<th class="head">What does it do</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><em>Site name</em></td>
+<td>The site name displayed by templates</td>
+</tr>
+<tr class="row-odd"><td><em>Site subtitle</em></td>
+<td>Used to describe the site (option)</td>
+</tr>
+<tr class="row-even"><td><em>Language</em></td>
+<td>Language for administration and templates
+(English or french provided)</td>
+</tr>
+<tr class="row-odd"><td><em>Author</em></td>
+<td>Web site author (option)</td>
+</tr>
+<tr class="row-even"><td><em>Pagination</em></td>
+<td>Number of posts per page</td>
+</tr>
+<tr class="row-odd"><td><em>Comments</em></td>
+<td>Enable/disable comments for posts</td>
+</tr>
+<tr class="row-even"><td><em>Atom feed</em></td>
+<td>Generate atom feed for contents</td>
+</tr>
+<tr class="row-odd"><td><em>Recaptcha public key</em></td>
+<td>Public key for <a class="reference external" href="http://www.google.com/recaptcha">Recaptcha</a> (mandatory if
+comments are enabled)</td>
+</tr>
+<tr class="row-even"><td><em>Recaptcha private key</em></td>
+<td>Private key for <a class="reference external" href="http://www.google.com/recaptcha">Recaptcha</a> (mandatory if
+comments are enabled)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="users">
+<h3>Users<a class="headerlink" href="#users" title="Permalink to this headline">¶</a></h3>
+<p>Users management can be accessed from <strong>http://website/admin/users/</strong> or using the links in administration page top bar.</p>
+<p>From this page, you can create, update or delete users for your website.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Deletion is possible only if there are at least 2 users.</p>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="deploy.html" title="Deploy Microbe"
+             >previous</a> |</li>
+        <li><a href="index.html">Microbe 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, TROUVERIE Joachim.
+    Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.Theme by <a href="http://github.com/vkvn">vkvn</a>
+    </div>
+  </body>
+</html>

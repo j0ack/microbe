@@ -1,0 +1,9 @@
+{% extends "admin/base.html" %}
+{% import "_forms.html" as forms %}
+
+{% block content %}
+    <h3>{{ title }}</h3>
+    <form action = "{{ url }}" method = "post">
+        {{ forms.render(form) }}
+    </form>
+{% endblock %}

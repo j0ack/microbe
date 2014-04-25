@@ -1,0 +1,66 @@
+{% extends "admin/list.html" %}
+
+{% block title %}{{ _('Contents') }}{% endblock %}
+
+{% block new %}
+  <a href = "{{ url_for('admin.content') }}" class = "button radius small">{{ _('New content') }}</a>
+{% endblock %}
+
+{% block table %}
+  <tr>
+    <th>{{ _('Title') }}</th>
+    <th>{{ _('Date') }}</th>
+    <th>{{ _('Type') }}</th>
+    <th>{{ _('Status') }}</th>
+    <th>{{ _('Comments') }}</th>
+    <th>{{ _('Author') }}</th>
+    <th colspan = 3></th>
+  </tr>
+  {% for content in objects %}
+    <tr>        
+      <td>{{ content.title }}</td>
+      <td>{{ content.published | date }}</td>
+      <td>{{ content.content_type | title}}</td>
+      <td>
+        {% if content.draft %}
+          {{ _('Draft') }}
+        {% else %}
+          {{ _('Published') }}
+        {% endif %}
+      </td>
+      <td class="action">
+        {% if content.comments %}
+          <a href="{{ url_for('admin.comments', path = content.path) }}">
+            <i class="fi-comment"></i>{{ content.comments |  length }}
+          </a>
+        {% endif %}
+      </td>
+      <td>{{ content.author }}</td>
+      <td class = "action">
+        <a href="{{ url_for('admin.content', path = content.path) }}">
+            <i class="fi-page-edit" title="{{ _('Edit') }}"></i>
+        </a>
+      </td>     
+      <td class = "action">
+        <form method = "POST" action = ".">
+          <input type="hidden" name="path" value="{{ content.path}}">
+          <input type="hidden" name="delete" value="{{ content.path}}">
+          <button type = "submit" class = "transparent" title = "{{ _('Delete') }}">
+            <i class="fi-page-delete"></i>
+          </button>
+	    </form>
+      </td>
+      <td class = "action">
+        {% if content.draft %}
+          <form method = "POST" action = ".">
+            <input type="hidden" name="path" value="{{ content.path}}">
+            <button type = "submit" class = "transparent" title = "{{ _('Publish') }}">
+              <i class="fi-page-export"></i>
+            </button>
+          </form>
+        {% endif %}
+      </td>
+
+    </tr>
+  {% endfor %}
+{% endblock %}

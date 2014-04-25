@@ -1,0 +1,44 @@
+Apache setup
+############
+
+The modern Web Python servers all work the same way, following an norm for interfacing: WSGI.
+
+This is the most performante solution, and the best to use. But it will require the setup of the Apache module mod_wsgi.
+
+First enable mod_wsgi::
+
+    $ a2enmod wsgi
+
+Then create an Apache configuration file, usually in /etc/apache/sites-available/. Name it microbe::
+
+    <VirtualHost *:80>
+        ServerName www.yourwebsite.com
+
+        WSGIDaemonProcess zerobin user=www-data group=www-data processes=1 threads=5
+        WSGIScriptAlias / /path/to/microbe/app.wsgi
+
+        <Directory /path/to/microbe/microbe/>
+            WSGIProcessGroup microbe
+            WSGIApplicationGroup %{GLOBAL}
+            Order deny,allow
+            Allow from all
+        </Directory>
+    </VirtualHost>
+
+Activate the website::
+
+    $ a2ensite microbe
+
+And reload Apache configuration::
+
+    # service apache2 reload
+
+You.ll note that we refer to a file named app.wsgi. It.s a Python file creating the application Apache is going to use to start the Python process::
+
+    import os, sys
+
+    MICROBE_PARENT_DIR = '/path/to/microbe/parent/dir'
+    sys.path.insert(0, ZEROBIN_PARENT_DIR)
+
+    from microbe.views import run_server
+    run_server(port=your_port, ip=your_ip)

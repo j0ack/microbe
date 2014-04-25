@@ -1,0 +1,124 @@
+{% extends "admin/base.html" %}
+
+{% block head %}
+  {{ super() }}
+  <script src = "{{ url_for('static', filename = 'js/jquery.js') }}"></script>
+  <script src = "{{ url_for('static', filename = 'js/jquery.filedrop.js') }}"></script>
+<script>
+$(function(){
+
+    var dropbox = $( '#dropbox' ),
+    message = $( '.message', dropbox),
+    regular_form = $( '#regular_form'),
+    list = $( '.model' ).first();
+
+    // hide regular form
+    // show it only if browser does not support drag and drop
+    if (typeof FileReader != 'undefined' && !!window.FormData) {
+        dropbox.show();
+        regular_form.hide();    
+
+        dropbox.filedrop({
+            paramname: 'file',
+            maxfiles: 10,
+            maxfilesize: 5,
+            url: "{{ url_for('admin.upload') }}",
+           
+            uploadFinished: function(i, file, response) {
+                list.find('tbody')
+                .append($('<tr>')
+                    .append($('<td>')
+                        .append($('<a>')
+                            .attr('href', response.url)
+                            .text(response.label)
+                        )
+                    )
+                    .append($('<td>')
+                        .addClass('action')
+                        .append($('<form>')
+                            .attr('action', '.')
+                            .attr('method', 'POST')
+                            .append($('<input>')
+                                .attr('type', 'hidden')
+                                .attr('name', 'slug')
+                                .attr('value', response.slug)
+                            )
+                            .append($('<button>')
+                                .attr('type', 'submit')
+                                .attr('title', "{{ _('Delete') }}")
+                                .addClass('transparent')
+                                .append($('<i>')
+                                    .addClass('fi-x')
+                                )
+                            )
+                        )
+                    )
+                );
+                
+                list.show();
+
+
+            },
+
+            error: function(err, file) {
+               switch(err) {
+                  case 'BrowserNotSupported':
+                      // show regular_form
+                      alert("{{ _('Your browser seems not compatible with HTML5 drag and drop API, please use the form below') }}");
+                      dropbox.hide();
+                      regular_form.show();
+                      break;
+                  case 'TooManyFiles':
+                      alert("{{ _('Too much files : Maximum uploaded files at once : ') }}"  + this.maxfiles);
+                      break;
+                  case 'FileTooLarge':
+                      alert("{{ _('File too big : Maximum size (in Mo) : ') }}" + this.maxfilesize);
+                      break;
+                  default:
+                      break;
+                }
+            },
+        });
+    }
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<h3>{{ _('Media') }}</h3>
+
+<table class="model" style="{% if not objects %}display : none{% endif %}">
+  <tr>
+    <th>{{ _('Name') }}</th>
+    <th><!-- action --></th>
+  </tr>
+  {% for file in objects %}
+    <tr>
+      <td><a href = "{{ file.url }}">{{ file.name }}</a></td>
+      <td class = "action">
+        <form action = "." method = "POST">
+          <input type="hidden" name="slug" value="{{file.slug }}">
+          <button type = "sbumit" title = "{{ _('Delete') }}" class = "transparent">
+            <i class = "fi-x"></i>
+          </button>
+        </form>
+      </td>
+    </tr>
+  {% endfor %}
+</table>
+
+<div id = "dropbox">
+  <span class = "message">{{ _('Drop your files here') }}</span>
+</div>
+<fieldset id = "regular_form">
+  <form action = "{{ url_for('admin.upload') }}" enctype = "multipart/form-data" method = "POST">
+    <input type="hidden" name="MAX_FILE_SIZE" value="5122">
+    <input type = "file" name = "file" >
+    <input class = "button radius small right" value = "{{ _('Upload') }}" type = "submit">
+  </form>
+</fieldset>
+
+<div class = "pagination-centered">
+    {{ pagination.links | safe }}
+</div>
+{% endblock %}

@@ -1,0 +1,38 @@
+<!doctype html>
+ <head>
+  {% block head %}      
+  <meta charset="utf-8">
+  <meta name = "viewport" content = "width=device-width">
+  <title>{{ config.SITENAME }} | {{ _('Admin') }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename = 'css/foundation.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename = 'css/foundation-icons.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename = 'css/admin_style.css') }}">
+ {% endblock %}
+</head>
+<body>
+  <!-- Nav Bar -->  
+  <div class="top-bar">
+    <div class = "row">
+      <div class = "large-9 large-centered columns">
+          <h1><a href="{{ url_for('admin.index') }}">Microbe</a></h1>
+        <ul id = "nav">
+            <li><a href = "{{ url_for('admin.config') }}">{{ _('Configuration') }}</a></li>
+            <li><a href = "{{ url_for('admin.contents') }}">{{ _('Contents') }}</a></li>
+            <li><a href = "{{ url_for('admin.media') }}">{{ _('Media') }}</a></li>
+            <li><a href = "{{ url_for('admin.themes') }}">{{ _('Themes') }}</a></li>
+            <li><a href = "{{ url_for('admin.links') }}">{{ _('Links') }}</a></li>
+            <li><a href = "{{ url_for('admin.users') }}">{{ _('Users') }}</a></li>
+            <li><a href = "{{ url_for('admin.logout') }}">{{ _('Logout') }}</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+    <!-- Main Content -->
+    <div class="row">
+      <div class = "large-12 large-centered columns">
+        {% block content %}{% endblock %}
+      </div>
+    </div>
+    <!-- End Main Content -->
+</body>

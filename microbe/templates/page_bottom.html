@@ -1,0 +1,45 @@
+{% import "_forms.html" as forms %}
+
+<!-- info -->
+<p>
+  {% if page.category %}
+  {{ _('Category') }} : <a href="{{ url_for('category', category = page.category) }}">{{ page.category }}</a>
+  {% endif %}
+  {% if page.tags %}
+  {{ _('Tags') }} : 
+    {% for tag in page.tags.split(',') %}
+      <a href="{{ url_for('tag', tag = tag) }}">{{ tag }}</a>&nbsp;
+    {% endfor %}
+  {% endif %}
+</p>
+<!-- comments -->
+{% if config.COMMENTS == 'YES' and page.comments %}
+  <div id = "comment">
+  <hr>
+  {% with total = page.comments | length %}
+  <h5 style = "text-align : right">{{ ngettext('%(num)s comment', '%(num)s comments', total) }}</h5>
+    <ul>
+    {% for comment in page.comments %}
+      <li>
+          <div class = "{{ comment.author }}" style = "position : absolute; width : 60px;">
+          </div>
+          <div class = "comment_content" style = "margin-left : 70px;">
+          <p>{{ comment.content }} </p>
+          <strong>{{ comment.author }}</strong>&nbsp; 
+          <span class = "subheader">
+            {{ comment.date | date('dd MM yyyy HH:mm') }}
+          </span>
+          </div>
+      </li>
+    {% endfor %}
+  {% endwith %}
+  </div>
+{% endif %}
+
+<!-- comment form -->
+{% if config.COMMENTS == 'YES' and form %}
+<h4>{{ _('Add a comment') }}</h4>  
+  <form action = "." method = "post">
+    {{ forms.render(form) }}
+  </form>
+{% endif %}

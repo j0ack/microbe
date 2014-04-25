@@ -1,0 +1,2 @@
+include *.txt *.md
+recursive-include microbe *.html *.css *.js *.png *.pot *.cfg *.mo *.json *.svg *.po *.eot *.ttf *.woff

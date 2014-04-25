@@ -1,0 +1,3 @@
+[console_scripts]
+microbe = microbe.views:main
+
