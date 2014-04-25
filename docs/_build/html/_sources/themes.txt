@@ -3,7 +3,7 @@ Theming support
 
 Microbe comes with two themes ``dark`` and ``clear``. You can switch your website theme using the ``Theme`` tab in administration page.
 
-You can get more themes at the address http://hg.joacodepel.tk/get_microbe/microbe-themes/. Download the last archive including the subrepositories and extract it.
+You can get more themes at the address http://git.gitorious.org/get_microbe/microbe-themes/. Download the last archive including the subrepositories and extract it.
 
 To install a new theme paste the theme directory in ``$HOME/.microbe/themes/``.
 

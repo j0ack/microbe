@@ -1,4 +1,6 @@
 *.pyc
 build/
+dist/
+Microbe.egg-info/
 TODO
 *.mo

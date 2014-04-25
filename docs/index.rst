@@ -51,8 +51,8 @@ Technologies used
 Links
 -----
 
-:repository: https://hg.joacodepel.tk/get_microbe/microbe
-:themes: https://hg.joacodepel.tk/get_microbe/microbe-themes
+:repository: https://git.gitorious.org/get_microbe/microbe
+:themes: https://git.gitorious.org/get_microbe/microbe-themes
 
 Contents
 --------
