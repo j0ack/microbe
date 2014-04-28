@@ -4,7 +4,7 @@ Deploy Microbe
 Run Microbe
 ===========
 
-Microbe comes with a command to launch a `CherryPy <http://cherrypy.org/>`_ server to serve the application:: 
+Microbe comes with a command to launch a `GUnicorn <http://gunicorn.org/>`_ server to serve the application:: 
 
     $ microbe --ip 127.0.0.1 --port 80
 
