@@ -11,6 +11,7 @@ __author__ = 'TROUVERIE Joachim'
 from itertools import islice
 from flask import abort, render_template
 from flask.ext.paginate import Pagination
+import re
 
 
 def create_pagination(page, per_page, objects) :
@@ -90,35 +91,74 @@ def render_paginated(template, objects, per_page, request) :
     return render_template(template, objects = displayed, 
                            pagination = pagination)
 
-def truncate_markdown(markdown, length) :
+def truncate_html_words(s, num, end_text='...'):
     """
-        Truncate markdown conserving opened tags
+        Truncates HTML to a certain number of words.
 
-        If truncate in an opened tag will wait for closure
+        (not counting tags and comments). Closes opened tags if they were correctly
+        closed in the given html. Takes an optional argument of what should be used
+        to notify that the string has been truncated, defaulting to ellipsis (...).
 
-        :param markdown: markdown to truncate
-        :param length: length to truncate
+        Newlines in the HTML are preserved. (From the django framework).
     """
-    if not markdown :
+    length = int(num)
+    if length <= 0:
         return ''
-    if len(markdown) < length : 
-        return markdown
-    # truncate
-    i = 0
-    open_tag = False
-    while i < length or open_tag :
-        # increment counter
-        i += 1
-        # if a link is open
-        if markdown[i] == '[' :
-            open_tag = True
-        # an image
-        elif ( markdown[i] == '!' 
-             and i < len(markdown) - 1 
-             and markdown[i + 1] == '[' ) :
-            open_tag = True
-        # link closed
-        elif markdown[i] == u')' :
-            open_tag = False
-    return markdown[:i+1] + '...'
+    html4_singlets = ('br', 'col', 'link', 'base', 'img', 'param', 'area',
+                      'hr', 'input')
+
+    # Set up regular expressions
+    re_words = re.compile(r'&.*?;|<.*?>|(\w[\w-]*)', re.U)
+    re_tag = re.compile(r'<(/)?([^ ]+?)(?: (/)| .*?)?>')
+    # Count non-HTML words and keep note of open tags
+    pos = 0
+    end_text_pos = 0
+    words = 0
+    open_tags = []
+    while words <= length:
+        m = re_words.search(s, pos)
+        if not m:
+            # Checked through whole string
+            break
+        pos = m.end(0)
+        if m.group(1):
+            # It's an actual non-HTML word
+            words += 1
+            if words == length:
+                end_text_pos = pos
+            continue
+        # Check for tag
+        tag = re_tag.match(m.group(0))
+        if not tag or end_text_pos:
+            # Don't worry about non tags or tags after our truncate point
+            continue
+        closing_tag, tagname, self_closing = tag.groups()
+        tagname = tagname.lower() # Element names are always case-insensitive
+        if self_closing or tagname in html4_singlets:
+            pass
+        elif closing_tag:
+            # Check for match in open tags list
+            try:
+                i = open_tags.index(tagname)
+            except ValueError:
+                pass
+            else:
+                # SGML: An end tag closes, back to the matching start tag,
+                # all unclosed intervening start tags with omitted end tags
+                open_tags = open_tags[i + 1:]
+        else:
+            # Add it to the start of the open tags list
+            open_tags.insert(0, tagname)
+    if words <= length:
+        # Don't try to close tags if we don't need to truncate
+        return s
+    out = s[:end_text_pos]
+    if end_text:
+        out += ' ' + end_text
+    # Close any tags still open
+    for tag in open_tags:
+        out += '</%s>' % tag
+    # Return string
+    return out
+
 

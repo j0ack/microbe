@@ -20,7 +20,7 @@ from flask import current_app, url_for
 from flask.ext.flatpages import Page, pygmented_markdown
 from flask.ext.login import current_user
 
-from utils import truncate_markdown
+from utils import truncate_html_words
 
 class Users(object) :
     """
@@ -339,8 +339,8 @@ class Content(Page) :
             A truncated version of content
         """
         max_length = current_app.config[u'SUMMARY_LENGTH']
-        markdown = truncate_markdown(self.body, max_length)
-        return self.html_renderer(markdown)
+        content = self.html_renderer(self.body)
+        return truncate_html_words(content, max_length)
 
     
     @property
