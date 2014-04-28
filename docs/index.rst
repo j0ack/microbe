@@ -44,15 +44,15 @@ Technologies used
 - `Whoosh <http://pythonhosted.org//Whoosh/>`_
 - Markdown editor inspired from excellent `lepture editor <https://github.com/lepture/editor>`_
 - `jQuery <http://jquery.com/>`_
-- `CherryPy <http://cherrypy.org/>`_
+- `GUnicorn <http://gunicorn.org/>`_
 - `VizHash.js <https://github.com/sametmax/VizHash.js>`_
 - `Foundation <http://foundation.zurb.com/>`_ CSS framework
 
 Links
 -----
 
-:repository: https://git.gitorious.org/get_microbe/microbe
-:themes: https://git.gitorious.org/get_microbe/microbe-themes
+:repository: https://gitorious.org/get_microbe/microbe
+:themes: https://gitorious.org/get_microbe/microbe-themes
 
 Contents
 --------

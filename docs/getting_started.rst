@@ -15,7 +15,7 @@ Just type::
 If Pip is not installed
 -----------------------
 
-- Get the last archive `here <https://git.gitorious.org/get_microbe/microbe/archive/master.tar.gz>`_
+- Get the last archive `here <https://gitorious.org/get_microbe/microbe/archive/master.tar.gz>`_
 - Extract all of it where you whish the site to be stored
 - Go to the extracted files
 - ``python setup.py install``

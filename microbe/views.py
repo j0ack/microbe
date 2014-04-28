@@ -259,29 +259,27 @@ def feed() :
 @clize
 def run_server(port = 8000, ip = '127.0.0.1') :
     """
-    Run Microbe app on Cherrypy server
+    Run Microbe app on GUnicorn server
 
     port: Server socket port
 
     ip: Server socket host
     """
-    import cherrypy
-    from paste.translogger import TransLogger
-    # enable paste logging
-    app_logged = TransLogger(app)
-    # mount the wsgi callable object on the root dir
-    cherrypy.tree.graft(app_logged, '/')
-    # set cherrypy config
-    cherrypy.config.update({
-        'engine.autoreload_on' : True,
-        'log.screen' : True,
-        'server.socket_port' : port,
-        'server.socket_host' : ip
-    })
-    # start server
-    cherrypy.engine.start()
-    cherrypy.engine.block()
-
+    from gunicorn.app.base import Application
+    # create app
+    class FlaskApplication(Application):
+        def init(self, parser, opts, args):
+            return {
+                'bind': '{0}:{1}'.format(ip, port),
+                'workers': 4
+            }
+                
+            
+        def load(self):
+            return app
+    # run app        
+    FlaskApplication().run()
+    
 
 def main() :
     init_index()
