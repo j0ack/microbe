@@ -10,6 +10,7 @@ __author__ = 'TROUVERIE Joachim'
 
 import os
 import re
+import lockfile
 from os.path import join, splitext
 from uuid import uuid4
 from datetime import datetime
@@ -444,10 +445,11 @@ class Content(Page) :
         self.path = path
         final_path = join(root_path, self.path) + u'.md'
         # save in file
-        with open(final_path, 'w') as sa :
-            sa.write(self._meta_yaml.encode(u'utf-8'))
-            sa.write('\n')
-            sa.write(self.body.encode(u'utf-8'))
+        with lockfile.LockFile(final_path) :
+            with open(final_path, 'w') as sa :
+                sa.write(self._meta_yaml.encode(u'utf-8'))
+                sa.write('\n')
+                sa.write(self.body.encode(u'utf-8'))
 
 
     def delete(self) :

@@ -99,7 +99,8 @@ class ConfigForm(Form) :
     """
         Form to edit config
     """
-    server_name    = TextField(lazy_gettext(u'Server name'))
+    server_name    = TextField(lazy_gettext(u'Server name'),
+                        [Required(message = required_message)])
     sitename       = TextField(lazy_gettext(u'Site name'), 
                         [Required(message = required_message)])
     subtitle       = TextField(lazy_gettext(u'Site subtitle (option)'))
@@ -126,10 +127,6 @@ class ConfigForm(Form) :
         rv = Form.validate(self)
         if not rv :
             return False
-        if self.rss.data == u'YES' :
-            if not self.server_name.data :
-                error = lazy_gettext(u'Mandatory field if feeds are enabled')
-                self.server_name.errors.append(error)
         if self.comments.data == u'YES':
             if not self.recaptcha_public_key.data :
                 error = lazy_gettext(u'Mandatory field if comments are enabled')
@@ -163,6 +160,7 @@ class ConfigForm(Form) :
         meta = { key.upper() : value.data 
                 for key, value in self.__dict__.iteritems()
                 if isinstance(value, Field)
-                and key != u'crsf_token' }
+                and key != u'crsf_token' 
+                and value}
         for key, value in meta.iteritems() :
             out[key] = value

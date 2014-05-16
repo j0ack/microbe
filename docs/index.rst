@@ -62,5 +62,6 @@ Contents
 
    getting_started
    deploy
+   admin
    faq
    themes

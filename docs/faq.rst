@@ -11,10 +11,6 @@ Include a media in my content
 
 To include a file in your contact you need to upload it first on your server using the ``Media`` tab in the administration page.
 
-Upload is managed using the HTML5 file API for the Drag and drop. If your browser doesn't allow it you can use a the regular upload button.
-
-Files uploaded will have be reachable at ``http://www.yourwebsite.com/static/media/<your_file_name>``.
-
 How to include code blocks
 ++++++++++++++++++++++++++
 

@@ -22,6 +22,10 @@ body {
 
 }
 
+img {
+    border : 1px solid black;
+}
+
 div.document {
     background-color: #fcfcfc;
     text-align: left;
