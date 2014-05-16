@@ -3,7 +3,7 @@
 # vim:set shiftwidth=4 tabstop=4 expandtab textwidth=79:
 
 __author__  = 'TROUVERIE Joachim'
-__version__ = '1.0'
+__version__ = '1.1'
 __appname__ = 'Microbe'
 
 

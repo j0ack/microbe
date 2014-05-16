@@ -265,6 +265,9 @@ def run_server(port = 8000, ip = '127.0.0.1') :
 
     ip: Server socket host
     """
+    import sys
+    # remove args not understood by GUnicorn
+    sys.argv = [sys.argv[0]]
     from gunicorn.app.base import Application
     # create app
     class FlaskApplication(Application):
