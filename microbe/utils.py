@@ -11,6 +11,7 @@ __author__ = 'TROUVERIE Joachim'
 from itertools import islice
 from flask import abort, render_template
 from flask.ext.paginate import Pagination
+from flask.ext import shelve
 import re
 
 
@@ -50,23 +51,21 @@ def get_objects_for_page(page, per_page, objects) :
     return list(islice(objects, index_min, index_max))
 
 
-def merge_default_config(current_app) :
+def merge_default_config() :
     """
         Populate config with default constant values
     """
-    default = { 
-            'CODEMIRROR_LANGUAGES' : [u'markdown'],
-            'CODEMIRROR_THEME' : u'xq-light',
-            'PERMANENT_SESSION_LIFETIME' : 2678400,
-            'FLATPAGES_ROOT' : u'content',
-            'POST_DIR' : u'posts',
-            'PAGE_DIR' : u'pages',
-            'FLATPAGES_EXTENSION' : u'.md',
-            'FLATPAGES_AUTO_RELOAD' : True,
-            'DEFAULT_THEME' : u'dark'
-            }
-    current_app.config.update(default)
-
+    db = shelve.get_shelve('c')
+    db['LANGUAGE'] = u'en'
+    db['SITENAME'] = u'Microbe Default site'
+    db['USERS'] = {u'admin' : generate_password_hash(u'microbe')}
+    db['POST_DIR'] = u'posts'
+    db['PAGE_DIR'] = u'pages'
+    db['PAGINATION'] = 5
+    db['SUMMARY_LENGTH'] = 300
+    db['COMMENTS'] = u'NO'
+    db['RSS'] = u'NO'
+    db['DEFAULT_THEME'] = u'dark'
 
 
 def render_paginated(template, objects, per_page, request) :

@@ -24,10 +24,11 @@ __author__ = 'TROUVERIE Joachim'
 import os.path as op
 from os import makedirs, symlink
 
+from flatcontent import FlatContent
 from utils import merge_default_config
 
 from flask import Flask
-from flask.ext.flatpages import FlatPages
+from flask.ext import shelve
 from flask.ext.codemirror import CodeMirror
 from flask.ext.login import LoginManager
 from flask.ext.babel import Babel
@@ -38,19 +39,17 @@ app = Flask(__name__)
 
 # config
 path = op.join(op.dirname(__file__), 'settings.py')
-if op.exists(path) :
-    app.config.from_pyfile('settings.py')
-else :
-    app.config.from_pyfile('default_settings.py')
+app.config.from_pyfile('settings.py')
 
-# add constants in case of update
-merge_default_config(app)
+# config
+shelve.init_app(app)
 
 # create path if not exists
 path =  op.join(op.dirname(__file__), 'content')
 if not op.exists(path) :
     makedirs(op.join(path, 'pages'))
     makedirs(op.join(path, 'posts'))
+ 
 path = op.join(op.expanduser('~'), '.microbe')
 theme_path =  op.join(op.dirname(__file__), 'themes')
 if not op.exists(path) :
@@ -58,7 +57,7 @@ if not op.exists(path) :
     symlink(theme_path, op.join(path, 'themes'))
 
 # flatpages
-pages = FlatPages(app)
+contents = FlatContent(app)
 
 # login
 lm = LoginManager()

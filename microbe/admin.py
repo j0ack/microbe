@@ -14,14 +14,16 @@ from datetime import datetime
 from itertools import chain
 from werkzeug import secure_filename
 
-from microbe import pages
-from models import Users, Content, File, Links 
+from microbe import contents
+from flatcontent import Content
+from models import Users, File, Links 
 from search import update_document, delete_document
 from utils import render_paginated
 from forms import LoginForm, UserForm, ConfigForm, ContentForm, LinkForm
 
 from flask import (Blueprint, url_for, redirect, current_app, request,
                    render_template, jsonify)
+from flask.ext import shelve
 from flask.ext.themes2 import get_themes_list
 from flask.ext.babel import lazy_gettext, refresh
 from flask.ext.login import login_user, logout_user, login_required
@@ -40,28 +42,6 @@ def load_user(username) :
     # get config
     config = current_app.config['USERS']
     return Users.get(username)
-
-
-def save_config() :
-    """
-        Save config in file to load it if 
-        the app is relaunched
-    """
-    config = current_app.config
-    path = op.join(current_app.root_path, 'settings.py')
-    with open(path, 'w+') as config_file :
-        for key, value in config.iteritems() :
-            if isinstance(value, unicode) or isinstance(value, str):
-                content = u"{0} = u'{1}'".format(key, value)
-            elif callable(value) :
-                pass
-            else :
-                content = u"{0} = {1}".format(key, value)
-            # add new line
-            content += '\n'
-            # write
-            config_file.write(content.encode(u'utf-8'))
-
 
 
 @bp.route('/')
@@ -115,7 +95,8 @@ def config() :
         Edit app config from form
     """
     # get config
-    config = current_app.config
+    db = shelve.get_shelve('w')
+    config = db
     # populate form with config
     form = ConfigForm(
             server_name = config.get(u'SERVER_NAME'),
@@ -131,14 +112,20 @@ def config() :
             recaptcha_private_key = config.get(u'RECAPTCHA_PRIVATE_KEY')
             )
     if form.validate_on_submit() :
-        # update config
-        form.populate_obj(config)
         # refresh babel
-        if config.get(u'LANGUAGE') != current_app.config.get(u'LANGUAGE') :
+        if config.get(u'LANGUAGE') != db.get(u'LANGUAGE') :
             refresh()
-        current_app.config.update(config)
-        # save config
-        save_config()
+        db['SERVER_NAME'] = form.server_name.data
+        db['SITENAME'] = form.sitename.data
+        db['SUBTITLE'] = form.subtitle.data
+        db['AUTHOR'] = form.author.data
+        db['LANGUAGE'] = form.language.data
+        db['PAGINATION'] = form.pagination.data
+        db['SUMMARY_LENGTH'] = form.summary_length.data
+        db['COMMENTS'] = form.comments.data
+        db['RSS'] = form.rss.data
+        db['RECAPTCHA_PUBLIC_KEY'] = form.recaptcha_public_key.data
+        db['RECAPTCHA_PRIVATE_KEY'] = form.recaptcha_private_key.data
         return redirect(url_for('admin.index'))
     return render_template('admin/model.html', 
             form = form, 
@@ -156,11 +143,11 @@ def users() :
         Available actions are edit, delete or add
     """
     # delete a user
+    db = shelve.get_shelve('r')
     if request.method == 'POST' :
         user = request.form['user']
         Users.delete(user)
-        save_config()
-    users = current_app.config[u'USERS']
+    users = db['USERS']
     lst = users.keys()
     return render_paginated('admin/users.html', lst, 15, request)
 
@@ -184,7 +171,6 @@ def user(user = None) :
         username = form.username.data
         pwd = form.password.data
         Users.update(username, pwd)
-        save_config()
         return redirect(url_for('.users'))
     return render_template('admin/model.html', title = title, 
             form = form, url = url_for('.user'))
@@ -201,7 +187,6 @@ def links() :
     if request.method == 'POST' :
         link = request.form['link']
         Links.delete(link)
-        save_config()
     # get config
     lst = Links.get_all()
     links = list(chain.from_iterable(lst.values()))
@@ -222,7 +207,6 @@ def link() :
         url = form.url.data
         cat = form.category.data
         Links.add(label, url, cat)
-        save_config()
         return redirect(url_for('.links'))
     return render_template('admin/model.html', title = title, 
             form = form, url = url_for('.link'))
@@ -236,7 +220,6 @@ def contents() :
 
         Available actions are edit, add and delete
     """
-    contents = [Content.from_page(p) for p in pages]
     # delete a content
     if request.method == 'POST' :
         path = request.form['path']
@@ -271,8 +254,7 @@ def content(path = None) :
     # edit post
     if path :
         title = lazy_gettext(u'Edit content')
-        page = pages.get(path)
-        content = Content.from_page(page)
+        content = contents.get(path)
     else :
         content = Content()
         title = lazy_gettext(u'New content')
@@ -299,11 +281,10 @@ def comments(path) :
     # delete a comment
     if request.method == 'POST' :
         comment = request.form['comment']
-        page = pages.get(path)
-        content = Content.from_page(page)
+        content = contents.get(path)
         content.delete_comment(comment)
     # get comments
-    page = pages.get(path)
+    page = contents.get(path)
     content = Content.from_page(page)
     comments = content.comments
     return render_paginated('admin/comments.html', comments, 15, request)
@@ -361,10 +342,11 @@ def themes() :
     """
         List available themes
     """
+    db = shelve.get_shelve('r')
     current_app.theme_manager.refresh()
     themes = get_themes_list()
-    default_theme = current_app.config[u'DEFAULT_THEME']
-    selected = current_app.config.get(u'THEME', default_theme)
+    default_theme = db['DEFAULT_THEME']
+    selected = db.get(u'THEME', default_theme)
     return render_template('admin/themes.html', themes = themes, 
             selected = selected)
 
@@ -375,7 +357,8 @@ def set_theme(ident):
     """
         Set theme in config to be displayed to users
     """
+    db = shelve.get_shelve('w')
     if ident not in current_app.theme_manager.themes :
         abort(404)
-    current_app.config.update({u'THEME' : ident})
+    db['THEME'] = ident
     return redirect(url_for('.themes'))

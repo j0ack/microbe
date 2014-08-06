@@ -14,8 +14,7 @@ from whoosh.fields import Schema, TEXT, ID
 from whoosh.index import create_in
 from whoosh.qparser import QueryParser
 
-from microbe import pages
-from microbe.models import Content
+from microbe import contents
 
 # schema
 _schema = Schema(title = TEXT(stored = True), 
@@ -35,8 +34,8 @@ def init_index() :
     if not op.exists(path) :
         mkdir(path)
     _ix = create_in(path, _schema)
-    for page in [Content.from_page(p) for p in pages] :
-        update_document(page)
+    for content in contents :
+        update_document(content)
 
 
 def delete_document(page) :
@@ -81,7 +80,7 @@ def search_query(query_str) :
         # get results
         for result in results :
             path = result['path']            
-            page = pages.get(path)
+            page = contents.get(path)
             if page :
-                contents.append(Content.from_page(page))
+                contents.append(page)
         return contents

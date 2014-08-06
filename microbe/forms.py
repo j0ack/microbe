@@ -149,18 +149,3 @@ class ConfigForm(Form) :
                     self.recaptcha_public_key.errors.append(error)
                     return False
         return True
-
-
-    def populate_obj(self, out) :
-        """
-            Override populate obj
-
-            Populate app config from form
-        """
-        meta = { key.upper() : value.data 
-                for key, value in self.__dict__.iteritems()
-                if isinstance(value, Field)
-                and key != u'crsf_token' 
-                and value}
-        for key, value in meta.iteritems() :
-            out[key] = value
