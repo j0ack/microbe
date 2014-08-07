@@ -9,7 +9,7 @@
 __author__ = 'TROUVERIE Joachim'
 
 import os.path
-from clize import clize, run
+import shelve
 from datetime import datetime
 from werkzeug.contrib.atom import AtomFeed
 
@@ -17,10 +17,9 @@ from microbe import app, contents, babel
 from models import Links
 from forms import CommentForm, SearchForm
 from utils import get_objects_for_page, create_pagination
-from search import search_query, init_index
+from search import search_query 
 
 from flask import g, request, abort, url_for
-from flask.ext import shelve
 from flask.ext.babel import format_datetime, lazy_gettext
 from flask.ext.themes2 import render_theme_template
 
@@ -30,9 +29,8 @@ def render(template, **context):
         Render template with config theme
         instead of default theme
     """
-    db = shelve.get_shelve('r')
-    default = db.get('DEFAULT_THEME', u'dark')
-    theme = db.get('THEME', default)
+    default = app.config['DEFAULT_THEME']
+    theme = app.config.get(u'THEME', default)
     return render_theme_template(theme, template, **context)
 
 
@@ -49,8 +47,7 @@ def get_locale() :
     """
         Get locale for page translations
     """
-    db = shelve.get_shelve('r')
-    return db.get('LANGUAGE', u'en')
+    return app.config.get(u'LANGUAGE')
 
 
 @app.template_filter('date')
@@ -79,7 +76,11 @@ def before_request() :
     """
         Refresh global vars before each requests
     """
-    # posts list
+    # update config
+    path = app.config['SHELVE_FILENAME']
+    db = shelve.open(path)
+    app.config.update(db)
+    # posts list    
     g.posts  = sorted(
                 [c for c in contents if c.content_type == 'posts' 
                 and not c.draft],
@@ -96,6 +97,8 @@ def before_request() :
     # search form
     if not hasattr(g, 'search_form') : 
         g.search_form = SearchForm()
+    # close db
+    db.close()
 
 
 @app.route('/')
@@ -106,12 +109,11 @@ def index():
         List of blog posts summaries
     """
     # pagination
-    db = shelve.get_shelve('r')
     try :
         page = int(request.args.get('page', 1))
     except ValueError :
         page = 1
-    per_page = db.get('PAGINATION', 5)
+    per_page = app.config['PAGINATION']
     pagination = create_pagination(page, per_page, g.posts)
     # get content for current page
     displayed = get_objects_for_page(page, per_page, g.posts)
@@ -148,14 +150,13 @@ def category(category) :
         :param category: Category to filter contents
         :type category: str
     """
-    db = shelve.get_shelve('r')
     posts = [p for p in g.posts if p.category == category]
     # pagination
     try :
         page = int(request.args.get('page', 1))
     except ValueError :
         page = 1
-    per_page = db.get('PAGINATION', 5)
+    per_page = app.config['PAGINATION']
     pagination = create_pagination(page, per_page, posts)
     # get content for current page
     displayed = get_objects_for_page(page, per_page, posts)
@@ -171,14 +172,13 @@ def tag(tag) :
         :param tag: Category to filter contents
         :type tag: str
     """
-    db = shelve.get_shelve('r')
     posts = [p for p in g.posts if tag in p.tags.split(',')]
     # pagination
     try :
         page = int(request.args.get('page', 1))
     except ValueError :
         page = 1
-    per_page = db.get('PAGINATION',5)
+    per_page = app.config['PAGINATION']
     pagination = create_pagination(page, per_page, posts)
     # get content for current page
     displayed = get_objects_for_page(page, per_page, posts)
@@ -245,10 +245,9 @@ def feed() :
     """
         Generate 20 last content atom feed
     """
-    db = shelve.get_shelve('r')
-    if db.get('RSS', 'NO') != 'YES' :
+    if app.config.get('RSS', 'NO') != 'YES' :
         abort(404)
-    name = db.get('SITENAME', u'Microbe Default site')
+    name = app.config['SITENAME']
     feed = AtomFeed(name,feed_url=request.url, url=request.url_root)
     # sort posts by reverse date
     for post in g.posts[:20] :
@@ -259,22 +258,3 @@ def feed() :
                 url = url_for('page', path = post.path, _external = True),
                 updated = post.published)
     return feed.get_response()
-
-
-@clize
-def run_server(port = 8000, ip = '127.0.0.1') :
-    """
-    Run Microbe app on GUnicorn server
-
-    port: Server socket port
-
-    ip: Server socket host
-    """
-    from cherrypy import wsgiserver
-    server = wsgiserver.CherryPyWSGIServer((ip, port), app)
-    server.start()
-
-
-def main() :
-    init_index()
-    run(run_server)

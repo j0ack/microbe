@@ -28,7 +28,6 @@ from flatcontent import FlatContent
 from utils import merge_default_config
 
 from flask import Flask
-from flask.ext import shelve
 from flask.ext.codemirror import CodeMirror
 from flask.ext.login import LoginManager
 from flask.ext.babel import Babel
@@ -42,7 +41,7 @@ path = op.join(op.dirname(__file__), 'settings.py')
 app.config.from_pyfile('settings.py')
 
 # config
-shelve.init_app(app)
+merge_default_config(app.config)
 
 # create path if not exists
 path =  op.join(op.dirname(__file__), 'content')
@@ -78,5 +77,8 @@ from admin import bp as admin_module
 from admin import load_user
 app.register_blueprint(admin_module, url_prefix = '/admin')
 lm.user_loader(load_user)
+
+from flask_debugtoolbar import DebugToolbarExtension
+toolbar = DebugToolbarExtension(app)
 
 from microbe import views

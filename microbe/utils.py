@@ -8,12 +8,13 @@
 
 __author__ = 'TROUVERIE Joachim'
 
+import os.path
+import re
+import shelve
 from itertools import islice
 from flask import abort, render_template
 from flask.ext.paginate import Pagination
-from flask.ext import shelve
-import re
-
+from werkzeug.security import generate_password_hash
 
 def create_pagination(page, per_page, objects) :
     """
@@ -51,21 +52,24 @@ def get_objects_for_page(page, per_page, objects) :
     return list(islice(objects, index_min, index_max))
 
 
-def merge_default_config() :
+def merge_default_config(config) :
     """
         Populate config with default constant values
     """
-    db = shelve.get_shelve('c')
-    db['LANGUAGE'] = u'en'
-    db['SITENAME'] = u'Microbe Default site'
-    db['USERS'] = {u'admin' : generate_password_hash(u'microbe')}
-    db['POST_DIR'] = u'posts'
-    db['PAGE_DIR'] = u'pages'
-    db['PAGINATION'] = 5
-    db['SUMMARY_LENGTH'] = 300
-    db['COMMENTS'] = u'NO'
-    db['RSS'] = u'NO'
-    db['DEFAULT_THEME'] = u'dark'
+    path = config.get(u'SHELVE_FILENAME')
+    if not os.path.exists(path) :
+        db = shelve.open(path, 'c')
+        db['LANGUAGE'] = u'en'
+        db['SITENAME'] = u'Microbe Default site'
+        db['USERS'] = {u'admin' : generate_password_hash(u'microbe')}
+        db['POST_DIR'] = u'posts'
+        db['PAGE_DIR'] = u'pages'
+        db['PAGINATION'] = 5
+        db['SUMMARY_LENGTH'] = 300
+        db['COMMENTS'] = u'NO'
+        db['RSS'] = u'NO'
+        db['DEFAULT_THEME'] = u'dark'
+        db.close()
 
 
 def render_paginated(template, objects, per_page, request) :

@@ -10,15 +10,15 @@ __author__ = 'TROUVERIE Joachim'
 
 import os
 import re
+import shelve
 from os.path import join, splitext
 from uuid import uuid4
 from datetime import datetime
 from werkzeug.security import check_password_hash, generate_password_hash
 from yaml import safe_dump
 
-from flask import url_for
-from flask.ext import shelve
-from flask.ext.login import current_user
+from flask import url_for, current_app
+
 
 
 class Users(object) :
@@ -31,8 +31,7 @@ class Users(object) :
             Get user by username
         """
         # get password hash for username
-        db = shelve.get_shelve('r')
-        dic = db['USERS']
+        dic = current_app.config['USERS']
         pwd_hash = dic.get(username)
         if not pwd_hash :
             return None
@@ -46,12 +45,14 @@ class Users(object) :
             Delete user by username
         """
         # get config
-        db = shelve.get_shelve('w')
+        path = current_app.config['SHELVE_FILENAME']
+        db = shelve.open(path)
         dic = db['USERS']
         # delete entry
         del dic[username]
         # update config
         db['USERS'] = dic
+        db.close()
 
 
     @staticmethod 
@@ -60,7 +61,8 @@ class Users(object) :
             Add or update a user
         """
         # get config
-        db = shelve.get_shelve('w')
+        path = current_app.config['SHELVE_FILENAME']
+        db = shelve.open(path)
         dic = db['USERS']
         # create object
         user = User(username, password)
@@ -68,6 +70,7 @@ class Users(object) :
         dic[username] = user.pw_hash
         # update config
         db['USERS'] = dic
+        db.close()
 
 
 class User(object) :
@@ -126,11 +129,10 @@ class Links(object) :
             Get all links from config
         """
         # get all config keys starting with MICROBELINKS_
-        db = shelve.get_shelve('r')
         links = {
-                key.replace(u'MICROBELINKS_', '') : values
-                for key, values in db.iteritems()
-                if key.startswith(u'MICROBELINKS_')
+                key.replace('MICROBELINKS_', '') : values
+                for key, values in current_app.config.iteritems()
+                if key.startswith('MICROBELINKS_')
                 }
         objects = {}
         # create Link object from values
@@ -153,8 +155,9 @@ class Links(object) :
             :param category: link category
         """
         # create a new key from link category
-        db = shelve.get_shelve('w')
-        key = u'MICROBELINKS_' + category.upper()
+        path = current_app.config['SHELVE_FILENAME']
+        db = shelve.open(path)
+        key = 'MICROBELINKS_' + str(category.upper())
         links = db.get(key, [])
         # append a new link
         links.append((
@@ -165,6 +168,7 @@ class Links(object) :
             ))
         # update config
         db[key] = links
+        db.close()
 
 
     @staticmethod
@@ -173,11 +177,12 @@ class Links(object) :
             Delete a link from its id
         """
         # get all config keys starting with MICROBELINKS_
-        db = shelve.get_shelve('w')
+        path = current_app.config['SHELVE_FILENAME']
+        db = shelve.open(path)
         links = {
                 key : values
                 for key, values in db.iteritems()
-                if key.startswith(u'MICROBELINKS_')
+                if key.startswith('MICROBELINKS_')
                 }
         # get link with given id
         for key, values in links.iteritems() :
@@ -189,6 +194,7 @@ class Links(object) :
                     # update config
                     db[key] = objects
                     break
+        db.close()
 
             
 

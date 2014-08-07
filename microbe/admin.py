@@ -10,6 +10,7 @@ __author__ = 'TROUVERIE Joachim'
 
 import os
 import os.path as op
+import shelve
 from datetime import datetime
 from itertools import chain
 from werkzeug import secure_filename
@@ -23,7 +24,6 @@ from forms import LoginForm, UserForm, ConfigForm, ContentForm, LinkForm
 
 from flask import (Blueprint, url_for, redirect, current_app, request,
                    render_template, jsonify)
-from flask.ext import shelve
 from flask.ext.themes2 import get_themes_list
 from flask.ext.babel import lazy_gettext, refresh
 from flask.ext.login import login_user, logout_user, login_required
@@ -39,8 +39,6 @@ def load_user(username) :
         :param username: user name
         :type username: str
     """
-    # get config
-    config = current_app.config['USERS']
     return Users.get(username)
 
 
@@ -73,7 +71,7 @@ def login() :
             form.password.errors.append(lazy_gettext(u'Invalid password'))
         else :
             login_user(user, remember = form.remember.data)
-            return redirect(url_for('.index'))
+            return redirect(request.args.get('next') or url_for('.index'))
     return render_template('admin/model.html', form = form, 
             url = url_for('.login'))
 
@@ -95,25 +93,26 @@ def config() :
         Edit app config from form
     """
     # get config
-    db = shelve.get_shelve('w')
-    config = db
+    config = current_app.config
     # populate form with config
     form = ConfigForm(
-            server_name = config.get(u'SERVER_NAME'),
-            sitename = config.get(u'SITENAME'),
-            subtitle = config.get(u'SUBTITLE'),
-            author = config.get(u'AUTHOR'),
-            language = config.get(u'LANGUAGE'),
-            pagination = config.get(u'PAGINATION'),
-            summary_length = config.get(u'SUMMARY_LENGTH'),
-            comments = config.get(u'COMMENTS'),
-            rss = config.get(u'RSS'),
-            recaptcha_public_key = config.get(u'RECAPTCHA_PUBLIC_KEY'),
-            recaptcha_private_key = config.get(u'RECAPTCHA_PRIVATE_KEY')
+            server_name = config.get('SERVER_NAME'),
+            sitename = config.get('SITENAME'),
+            subtitle = config.get('SUBTITLE'),
+            author = config.get('AUTHOR'),
+            language = config.get('LANGUAGE'),
+            pagination = config.get('PAGINATION'),
+            summary_length = config.get('SUMMARY_LENGTH'),
+            comments = config.get('COMMENTS'),
+            rss = config.get('RSS'),
+            recaptcha_public_key = config.get('RECAPTCHA_PUBLIC_KEY'),
+            recaptcha_private_key = config.get('RECAPTCHA_PRIVATE_KEY')
             )
     if form.validate_on_submit() :
         # refresh babel
-        if config.get(u'LANGUAGE') != db.get(u'LANGUAGE') :
+        path = current_app.config['SHELVE_FILENAME']
+        db = shelve.open(path)
+        if config.get('LANGUAGE') != db.get('LANGUAGE') :
             refresh()
         db['SERVER_NAME'] = form.server_name.data
         db['SITENAME'] = form.sitename.data
@@ -126,11 +125,12 @@ def config() :
         db['RSS'] = form.rss.data
         db['RECAPTCHA_PUBLIC_KEY'] = form.recaptcha_public_key.data
         db['RECAPTCHA_PRIVATE_KEY'] = form.recaptcha_private_key.data
+        db.close()
         return redirect(url_for('admin.index'))
     return render_template('admin/model.html', 
             form = form, 
             title = lazy_gettext(u'Configuration of ') + 
-            config.get(u'SITENAME'),
+            config.get('SITENAME'),
             url = url_for('.config'))
 
 
@@ -143,11 +143,11 @@ def users() :
         Available actions are edit, delete or add
     """
     # delete a user
-    db = shelve.get_shelve('r')
     if request.method == 'POST' :
         user = request.form['user']
         Users.delete(user)
-    users = db['USERS']
+        return redirect(url_for('.users'))
+    users = current_app.config['USERS']
     lst = users.keys()
     return render_paginated('admin/users.html', lst, 15, request)
 
@@ -187,6 +187,8 @@ def links() :
     if request.method == 'POST' :
         link = request.form['link']
         Links.delete(link)
+        # update config
+        return redirect(url_for('.links'))
     # get config
     lst = Links.get_all()
     links = list(chain.from_iterable(lst.values()))
@@ -214,7 +216,7 @@ def link() :
 
 @bp.route('/contents/', methods = ['GET', 'POST'])
 @login_required
-def contents() :
+def list_contents() :
     """
         List contents
 
@@ -264,7 +266,7 @@ def content(path = None) :
         form.populate_obj(content)
         content.save()
         update_document(content)
-        return redirect(url_for('.contents'))
+        return redirect(url_for('.list_contents'))
     # new post
     return render_template('admin/content.html', title = title, 
             url = url_for('.content'), form = form)
@@ -342,11 +344,10 @@ def themes() :
     """
         List available themes
     """
-    db = shelve.get_shelve('r')
     current_app.theme_manager.refresh()
     themes = get_themes_list()
-    default_theme = db['DEFAULT_THEME']
-    selected = db.get(u'THEME', default_theme)
+    default_theme = current_app.config['DEFAULT_THEME']
+    selected = current_app.config.get(u'THEME', default_theme)
     return render_template('admin/themes.html', themes = themes, 
             selected = selected)
 
@@ -357,8 +358,10 @@ def set_theme(ident):
     """
         Set theme in config to be displayed to users
     """
-    db = shelve.get_shelve('w')
+    path = current_app.config['SHELVE_FILENAME']
+    db = shelve.open(path)
     if ident not in current_app.theme_manager.themes :
         abort(404)
     db['THEME'] = ident
+    db.close()
     return redirect(url_for('.themes'))
