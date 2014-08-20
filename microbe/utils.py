@@ -14,6 +14,7 @@ import shelve
 from itertools import islice
 from flask import abort, render_template
 from flask.ext.paginate import Pagination
+from flask.ext.themes2 import render_theme_template
 from werkzeug.security import generate_password_hash
 
 def create_pagination(page, per_page, objects) :
@@ -57,21 +58,44 @@ def merge_default_config(config) :
         Populate config with default constant values
     """
     path = config.get(u'SHELVE_FILENAME')
-    if not os.path.exists(path) :
-        db = shelve.open(path, 'c')
-        db['LANGUAGE'] = u'en'
-        db['SITENAME'] = u'Microbe Default site'
-        db['USERS'] = {u'admin' : generate_password_hash(u'microbe')}
-        db['POST_DIR'] = u'posts'
-        db['PAGE_DIR'] = u'pages'
-        db['PAGINATION'] = 5
-        db['SUMMARY_LENGTH'] = 300
-        db['COMMENTS'] = u'NO'
-        db['RSS'] = u'NO'
-        db['DEFAULT_THEME'] = u'dark'
-        db.close()
+    db = shelve.open(path, 'c')
+    db['LANGUAGE'] = u'en'
+    db['SITENAME'] = u'Microbe Default site'
+    db['USERS'] = {u'admin' : generate_password_hash(u'microbe')}
+    db['POST_DIR'] = u'posts'
+    db['PAGE_DIR'] = u'pages'
+    db['PAGINATION'] = 5
+    db['SUMMARY_LENGTH'] = 300
+    db['COMMENTS'] = u'NO'
+    db['RSS'] = u'NO'
+    db['DEFAULT_THEME'] = u'dark'
+    db.close()
 
 
+def render_theme_paginated(template, theme, objects, per_page, request, **context) :
+    """
+        Return a paginated template
+        
+        :param template: template to render
+        :param theme: theme to render
+        :param page: current page number
+        :param per_page: number of objects per page
+        :param objects: list of objects
+    """
+    # get page from request
+    try :
+        page = int(request.args.get('page', 1))
+    except ValueError :
+        page = 1
+    # create pagination
+    pagination = create_pagination(page, per_page, objects)
+    # calculate objects displayed
+    displayed = get_objects_for_page(page, per_page, objects)
+    # return
+    return render_theme_template(theme, template, pages = displayed, 
+                               pagination = pagination, **context)
+    
+    
 def render_paginated(template, objects, per_page, request) :
     """
         Return a paginated template

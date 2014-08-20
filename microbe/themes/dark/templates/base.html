@@ -4,6 +4,7 @@
     {% block head %}
       <meta charset=utf-8 />
       <meta name = "viewport" content = "width=device-width">
+      <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon.png') }}">
       {% if config.AUTHOR %}
         <meta name="author" content="{{ config.AUTHOR }}">
       {% endif %}

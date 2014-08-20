@@ -12,17 +12,18 @@ import os.path
 import shelve
 from datetime import datetime
 from werkzeug.contrib.atom import AtomFeed
+from urlparse import urljoin
 
 from microbe import app, contents, babel
 from models import Links
 from forms import CommentForm, SearchForm
-from utils import get_objects_for_page, create_pagination
+from utils import render_theme_paginated
 from search import search_query 
 
-from flask import g, request, abort, url_for
 from flask.ext.babel import format_datetime, lazy_gettext
-from flask.ext.themes2 import render_theme_template
-
+from flask.ext.themes2 import render_theme_template, static_file_url
+from flask import (g, request, abort, url_for, make_response, 
+                  render_template, redirect)
 
 def render(template, **context):
     """
@@ -108,17 +109,39 @@ def index():
 
         List of blog posts summaries
     """
-    # pagination
-    try :
-        page = int(request.args.get('page', 1))
-    except ValueError :
-        page = 1
+    # theme
+    default = app.config['DEFAULT_THEME']
+    theme = app.config.get(u'THEME', default)
+    # per page
     per_page = app.config['PAGINATION']
-    pagination = create_pagination(page, per_page, g.posts)
-    # get content for current page
-    displayed = get_objects_for_page(page, per_page, g.posts)
-    # override page to have summary
-    return render('index.html', pages=displayed, pagination=pagination)
+    return render_theme_paginated('index.html', theme, g.posts, per_page,
+                                    request) 
+
+
+@app.route('/sitemap.xml')
+def sitemap() :
+    """
+        Site sitemap
+    """
+    # list all contents
+    sitemap_contents = [c for c in contents if not c.draft]
+    sitemap = render_template('sitemap.xml', contents = sitemap_contents)
+    response = make_response(sitemap)
+    response.headers['Content-Type'] = 'application/xml'
+    return response
+
+
+@app.route('/favicon.ico')
+def favicon() :
+    """
+        App favicon
+    """
+    default = app.config['DEFAULT_THEME']
+    theme = app.config.get(u'THEME', default)
+    try :
+        return static_file_url(theme, 'img/favicon.png')
+    except :
+        return url_for('static', filename='img/favicon.png')
 
 
 @app.route('/<path:path>/', methods = ['GET', 'POST'])
@@ -151,17 +174,13 @@ def category(category) :
         :type category: str
     """
     posts = [p for p in g.posts if p.category == category]
-    # pagination
-    try :
-        page = int(request.args.get('page', 1))
-    except ValueError :
-        page = 1
+    # theme
+    default = app.config['DEFAULT_THEME']
+    theme = app.config.get(u'THEME', default)
+    # per page
     per_page = app.config['PAGINATION']
-    pagination = create_pagination(page, per_page, posts)
-    # get content for current page
-    displayed = get_objects_for_page(page, per_page, posts)
-    return render('index.html', title = category, pages = displayed,
-            pagination = pagination)
+    return render_theme_paginated('index.html', theme, posts, per_page,
+                                    request, title=category)
 
 
 @app.route('/tag/<tag>')
@@ -173,17 +192,13 @@ def tag(tag) :
         :type tag: str
     """
     posts = [p for p in g.posts if tag in p.tags.split(',')]
-    # pagination
-    try :
-        page = int(request.args.get('page', 1))
-    except ValueError :
-        page = 1
+    # theme
+    default = app.config['DEFAULT_THEME']
+    theme = app.config.get(u'THEME', default)
+    # per page
     per_page = app.config['PAGINATION']
-    pagination = create_pagination(page, per_page, posts)
-    # get content for current page
-    displayed = get_objects_for_page(page, per_page, posts)
-    return render('index.html', title = tag, pages = displayed,
-            pagination = pagination)
+    return render_theme_paginated('index.html', theme, posts, per_page,
+                                    request, title=tag)
 
 
 @app.route('/archives')
@@ -197,17 +212,11 @@ def archives() :
                         key = lambda x : x.published,
                         reverse = True
                     )
-    # pagination
-    try :
-        page = int(request.args.get('page', 1))
-    except ValueError :
-        page = 1
-    per_page = 10   
-    pagination = create_pagination(page, per_page, sorted_pages)
-    # get content for current page
-    displayed = get_objects_for_page(page, per_page, sorted_pages)
-    return render('archive.html',  pages = displayed, 
-            pagination = pagination)
+    # theme
+    default = app.config['DEFAULT_THEME']
+    theme = app.config.get(u'THEME', default)
+    return render_theme_paginated('archive.html', theme, sorted_pages, 10,
+                                    request)
 
 
 @app.route('/search/', methods = ['POST'])
@@ -226,20 +235,13 @@ def search() :
                             reverse = True
                        )
     # pagination
-    try :
-        page = int(request.args.get('page', 1))
-    except ValueError :
-        page = 1
-    per_page = 20    
-    pagination = create_pagination(page, per_page, sorted_contents)
-    # get content for current page
-    displayed = get_objects_for_page(page, per_page, sorted_contents)
-    return render('index.html', title = query, pages = displayed,
-            pagination = pagination)
+    # theme
+    default = app.config['DEFAULT_THEME']
+    theme = app.config.get(u'THEME', default)
+    return render_theme_paginated('index.html', theme, sorted_contents, 
+                                    10, request, title=query)
 
     
-
-
 @app.route('/feed.atom')
 def feed() :
     """
@@ -255,6 +257,6 @@ def feed() :
                 unicode(post.summary),
                 content_type = 'html',
                 author = post.meta.get('author', ''),
-                url = url_for('page', path = post.path, _external = True),
+                url = urljoin(request.url_root, post.path),
                 updated = post.published)
     return feed.get_response()

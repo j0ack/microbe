@@ -15,6 +15,7 @@ Features
 - Blog posts and static pages
 - Comments
 - Theming support
+- Sitemaps
 - Atom feeds
 - Code syntax hilighting
 - Search

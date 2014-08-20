@@ -99,8 +99,6 @@ class ConfigForm(Form) :
     """
         Form to edit config
     """
-    server_name    = TextField(lazy_gettext(u'Server name'),
-                        [Required(message = required_message)])
     sitename       = TextField(lazy_gettext(u'Site name'), 
                         [Required(message = required_message)])
     subtitle       = TextField(lazy_gettext(u'Site subtitle (option)'))

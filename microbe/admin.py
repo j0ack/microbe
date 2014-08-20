@@ -73,7 +73,7 @@ def login() :
             login_user(user, remember = form.remember.data)
             return redirect(request.args.get('next') or url_for('.index'))
     return render_template('admin/model.html', form = form, 
-            url = url_for('.login'))
+            url = '')
 
 
 @bp.route('/logout')
@@ -96,7 +96,6 @@ def config() :
     config = current_app.config
     # populate form with config
     form = ConfigForm(
-            server_name = config.get('SERVER_NAME'),
             sitename = config.get('SITENAME'),
             subtitle = config.get('SUBTITLE'),
             author = config.get('AUTHOR'),
@@ -114,7 +113,6 @@ def config() :
         db = shelve.open(path)
         if config.get('LANGUAGE') != db.get('LANGUAGE') :
             refresh()
-        db['SERVER_NAME'] = form.server_name.data
         db['SITENAME'] = form.sitename.data
         db['SUBTITLE'] = form.subtitle.data
         db['AUTHOR'] = form.author.data
@@ -235,7 +233,6 @@ def list_contents() :
         # publish
         else :
             content.draft = False
-            content.published = datetime.now()
             content.save()
             update_document(content)
     # get   
@@ -263,13 +260,15 @@ def content(path = None) :
     # populate form
     form = ContentForm(obj = content)
     if form.validate_on_submit() :
-        form.populate_obj(content)
+        # populate obj
+        form.populate_obj(content) 
+        content.draft = True
         content.save()
         update_document(content)
         return redirect(url_for('.list_contents'))
     # new post
     return render_template('admin/content.html', title = title, 
-            url = url_for('.content'), form = form)
+            url = url_for('.content', path=path), form = form)
 
 
 @bp.route('/comments/<path:path>/', methods = ['GET', 'POST'])

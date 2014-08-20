@@ -37,11 +37,11 @@ from flask.ext.themes2 import Themes
 app = Flask(__name__)
 
 # config
-path = op.join(op.dirname(__file__), 'settings.py')
 app.config.from_pyfile('settings.py')
 
 # config
-merge_default_config(app.config)
+if not op.exists(app.config['SHELVE_FILENAME']) :
+    merge_default_config(app.config)
 
 # create path if not exists
 path =  op.join(op.dirname(__file__), 'content')
@@ -77,8 +77,5 @@ from admin import bp as admin_module
 from admin import load_user
 app.register_blueprint(admin_module, url_prefix = '/admin')
 lm.user_loader(load_user)
-
-from flask_debugtoolbar import DebugToolbarExtension
-toolbar = DebugToolbarExtension(app)
 
 from microbe import views

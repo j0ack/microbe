@@ -27,6 +27,11 @@ label {
     font-weight : bold;
 }
 
+.logo {
+    float: left;
+    margin-right: 10px;
+}
+
 /* top bar */
 .top-bar {
     background: #2f2f2f; 
