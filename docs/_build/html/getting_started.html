@@ -112,9 +112,10 @@
 <h3>Virtualenv note<a class="headerlink" href="#virtualenv-note" title="Permalink to this headline">¶</a></h3>
 <p>Keep in mind that OS will otfen require you to prefix the above commands with <tt class="docutils literal"><span class="pre">sudo</span></tt> in order to install the app system-wide.</p>
 <p>It is recommended to create a virtual environment for Microbe via <a class="reference external" href="http://www.virtualenv.org/">virtualenv</a></p>
-<div class="highlight-python"><div class="highlight"><pre>$ virtualenv $HOME/site
+<div class="highlight-python"><div class="highlight"><pre>$ mkdir $HOME/site
 $ cd $HOME/site
-$ source bin/activate
+$ virtualenv venv
+$ source venv/bin/activate
 </pre></div>
 </div>
 <p>Then install the app using one of the methods described above.</p>
@@ -122,11 +123,20 @@ $ source bin/activate
 </div>
 <div class="section" id="upgrading">
 <h2>Upgrading<a class="headerlink" href="#upgrading" title="Permalink to this headline">¶</a></h2>
+<p>First you need to save your contents before upgrading the application. Copy the files contained in the <tt class="docutils literal"><span class="pre">content</span></tt> placed at your application root:</p>
+<div class="highlight-python"><div class="highlight"><pre>find microbe_root_dir -name &#39;content&#39; -exec cp -r &#39;{}&#39; `pwd` \;
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><tt class="docutils literal"><span class="pre">microbe_root``_dir</span> <span class="pre">should</span> <span class="pre">be</span> <span class="pre">equal</span> <span class="pre">``venv/lib/python2.7/site-packages/Microbe-1.1-py2.7.egg/microbe</span></tt> if you installed microbe using virtualenv. If you installed it system wide microbe root dir should be located in <tt class="docutils literal"><span class="pre">/usr/local/lib/python2.7/</span></tt></p>
+</div>
 <p>If you installed a Microbe <tt class="docutils literal"><span class="pre">pip</span></tt> release and whish to upgrade to the latest version you can do it by adding <tt class="docutils literal"><span class="pre">--upgrade</span></tt> to your command:</p>
 <div class="highlight-python"><div class="highlight"><pre>pip install --upgrade microbe
 </pre></div>
 </div>
 <p>If you installed Microbe using the <tt class="docutils literal"><span class="pre">setup.py</span></tt> method, simply perform the same steps to install the most recent version.</p>
+<p>Then copy back the contents you saved in the first part.</p>
 </div>
 </div>
 

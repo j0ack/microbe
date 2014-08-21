@@ -24,6 +24,7 @@ Features
 - Comments
 - Theming support
 - Atom feeds
+- Sitemaps
 - Code syntax hilighting
 - Search
 - Multi users
@@ -40,11 +41,12 @@ Technologies used
 - `Flask-Paginate <http://pythonhosted.org//Flask-paginate/>`_ extension
 - `Flask-Themes2 <http://flask-themes2.readthedocs.org/en/latest/>`_ extension
 - `Flask-WTF <https://flask-wtf.readthedocs.org/en/latest/>`_ extension
+- `Flask-Script <https://flask-script.readthedocs.org/en/latest/>`_ extension
 - `Pagedown Converter <https://code.google.com/p/pagedown/>`_
 - `Whoosh <http://pythonhosted.org//Whoosh/>`_
 - Markdown editor inspired from excellent `lepture editor <https://github.com/lepture/editor>`_
 - `jQuery <http://jquery.com/>`_
-- `GUnicorn <http://gunicorn.org/>`_
+- `CherryPy <http://cherrypy.org/>`_
 - `VizHash.js <https://github.com/sametmax/VizHash.js>`_
 - `Foundation <http://foundation.zurb.com/>`_ CSS framework
 
@@ -63,5 +65,10 @@ Contents
    getting_started
    deploy
    admin
-   faq
+   users
+   config
+   contents
+   media
+   links
    themes
+   faq

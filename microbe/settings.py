@@ -15,7 +15,6 @@ from os.path import join, dirname
 dirpath = dirname(__file__)
 key = uuid4().hex
 
-DEBUG=True
 CODEMIRROR_LANGUAGES = [u'markdown']
 CODEMIRROR_THEME = u'xq-light'
 SHELVE_FILENAME = join(dirpath, 'config.db')
@@ -26,3 +25,6 @@ FLATPAGES_AUTO_RELOAD = True
 SECRET_KEY = key
 WTF_CSRF_SECRET_KEY = key
 CSRF_ENABLED = True
+DEFAULT_THEME = u'dark'
+LANGUAGE = u'en'
+PAGINATION = 5

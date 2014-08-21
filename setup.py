@@ -33,7 +33,7 @@ setup(
     ],
     entry_points = {
         'console_scripts': [
-            'microbe = microbe.views:main',
+            'microbe = microbe.script:main',
         ],
     },
 )

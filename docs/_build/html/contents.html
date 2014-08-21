@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Contents management &mdash; Microbe 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/solar.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Microbe 1.0 documentation" href="index.html" />
+    <link rel="next" title="Media management" href="media.html" />
+    <link rel="prev" title="Configuration management" href="config.html" /><link href='http://fonts.googleapis.com/css?family=Source+Code+Pro|Open+Sans:300italic,400italic,700italic,400,300,700' rel='stylesheet' type='text/css'>
+<link href="_static/solarized-dark.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="media.html" title="Media management"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="config.html" title="Configuration management"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Microbe 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Contents management</a><ul>
+<li><a class="reference internal" href="#contents">Contents</a></li>
+<li><a class="reference internal" href="#comments">Comments</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="config.html"
+                        title="previous chapter">Configuration management</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="media.html"
+                        title="next chapter">Media management</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/contents.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="contents-management">
+<h1>Contents management<a class="headerlink" href="#contents-management" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You need to be logged in to the Microbe administration part to manage contents, for more information see <a class="reference external" href="./admin">Administration</a> part</p>
+</div>
+<div class="section" id="contents">
+<h2>Contents<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h2>
+<p>Contents management can be accessed using the link <tt class="docutils literal"><span class="pre">Contents</span></tt> in the administration navigation bar or following this link : <tt class="docutils literal"><span class="pre">www.yourwebsite.com/&lt;sub-url/&gt;admin/contents</span></tt>.</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/contents.png"><img alt="_images/contents.png" src="_images/contents.png" style="width: 400px;" /></a>
+</div>
+<p>This page lists all the contents saved in the application</p>
+<p>You can create/delete/edit/publish contents and from this interface using the icons placed at the right column.</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/content_edit.png"><img alt="_images/content_edit.png" src="_images/content_edit.png" style="width: 400px;" /></a>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="38%" />
+<col width="62%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head" rowspan="2">Name</th>
+<th class="head" rowspan="2">Description</th>
+</tr>
+<tr class="row-even"></tr>
+</thead>
+<tbody valign="top">
+<tr class="row-odd"><td><em>Title</em></td>
+<td>Content title</td>
+</tr>
+<tr class="row-even"><td><em>Category</em></td>
+<td>Content category (unique)</td>
+</tr>
+<tr class="row-odd"><td><em>Tags</em></td>
+<td>Content tags separated by commas</td>
+</tr>
+<tr class="row-even"><td><em>Content</em></td>
+<td>Content using Markdown format</td>
+</tr>
+</tbody>
+</table>
+<p>Once content has been created or modified, you need to publish it using the icon placed at the right column to make it available on your site.</p>
+</div>
+<div class="section" id="comments">
+<h2>Comments<a class="headerlink" href="#comments" title="Permalink to this headline">¶</a></h2>
+<p>You can enable comments on posts using the <a class="reference external" href="./config">Configuration</a> menu.</p>
+<p>To protect your post, Microbe uses Recaptcha keys to avoid spam (see <a class="reference external" href="./faq">FAQ</a> for more info).</p>
+<p>Once you have enabled it, people will be able to add comment using form from your pages.</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/add_comment.png"><img alt="_images/add_comment.png" src="_images/add_comment.png" style="width: 400px;" /></a>
+</div>
+<p>Avatar for comments are automatically generated from its author using <a class="reference external" href="https://github.com/sametmax/VizHash.js">VizHash.js</a></p>
+<p>It is possible then to moderate comments using the link present in <cite>Content management</cite>.</p>
+<div class="figure">
+<img alt="_images/content_comment.png" src="_images/content_comment.png" />
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="media.html" title="Media management"
+             >next</a></li>
+        <li class="right" >
+          <a href="config.html" title="Configuration management"
+             >previous</a> |</li>
+        <li><a href="index.html">Microbe 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, TROUVERIE Joachim.
+    Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.Theme by <a href="http://github.com/vkvn">vkvn</a>
+    </div>
+  </body>
+</html>

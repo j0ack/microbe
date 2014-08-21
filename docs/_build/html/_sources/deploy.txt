@@ -4,15 +4,21 @@ Deploy Microbe
 Run Microbe
 ===========
 
-Microbe comes with a command to launch a `GUnicorn <http://gunicorn.org/>`_ server to serve the application:: 
+Microbe comes with a command to launch a `CherryPy <http://cherrypy.org/>`_ server to serve the application:: 
 
-    $ microbe --ip 127.0.0.1 --port 80
+    $ microbe runserver --host 127.0.0.1 --port 80
 
 That's it you can now access your application at ``http://localhost/``.
 
+It is also possible to specify a sub-url if you don't want to serve your application at the web root::
+    
+    $ microbe runserver --suburl /your-sub-url --host 127.0.0.1 --port 80
+    
+You can access your application now at ``http://localhost/your-sub-url``.
+
 To access your application from internet you need to configure your router and launch the application with the following parameters::
 
-    $ microbe --ip 0.0.0.0 --port 80
+    $ microbe runserver --host 0.0.0.0 --port 80
 
 Run in background
 -----------------
@@ -23,18 +29,18 @@ Microbe does not come with something build for this. You have several solutions.
 
 Just use the above command in a shell background process::
 
-    $ nohup microbe --ip 127.0.0.1 --port 80 > microbe.log &
+    $ nohup microbe runserver --host 127.0.0.1 --port 80 > microbe.log &
 
 Or run it in a ``screen``.
 
 **Supervisor**
 
-`Supervisor <https://pypi.python.org/pypi/supervisor>`_ is a program allowing you to manage processes. 
+`Supervisor <https://pypi.python.org/pypi/supervisor>`_ is a program to manage processes. 
 
 Create a configuration file in ``/etc/supervisor/conf.d/`` named ``microbe.conf``::
 
     [program:microbe]
-    command=microbe --ip 127.0.0.1 --port 80
+    command=microbe --host 127.0.0.1 --port 80
     directory=/path/to/microbe/
     environment=HOME='/your_home/'
     autostart=true
@@ -90,8 +96,8 @@ You.ll note that we refer to a file named app.wsgi. It.s a Python file creating 
     MICROBE_PARENT_DIR = '/path/to/microbe/parent/dir'
     sys.path.insert(0, MICROBE_PARENT_DIR)
 
-    from microbe.views import run_server
-    run_server(port=your_port, ip=your_ip)
+    from microbe.script import manager
+    manager.runserver(port=your_port, host=your_ip)
 
 Nginx setup
 -----------
@@ -107,7 +113,7 @@ Therefore there are two steps:
 
 As described in Getting_started_ part, Microbe comes a command to run the server. This time we will point to another port to use Nginx proxy module::
 
-    $ microbe --ip 127.0.0.1 -- port 8000
+    $ microbe runserver --host 127.0.0.1 --port 8000
 
 **Nginx**
 
@@ -119,11 +125,11 @@ The minimal configuration file to run the app is::
             listen 80;
             server_name www.yourwebsite.com
 
-            location /static/ {
+            location </your-sub-url>/static/ {
                 root /path/to/microbe/microbe/static/;
             }
 
-            location / {
+            location </your-sub-url>/ {
                     proxy_pass http://127.0.0.1:8000;
                     proxy_set_header Host $http_host;
             }
@@ -135,7 +141,7 @@ You can make some adjustements to get a better user experience::
             listen 80;
             server_name www.yourwebsite.com
             
-            location /static/ {
+            location </your-sub-url>/static/ {
                     root /path/to/microbe/microbe/static/;
                     gzip  on;
                     gzip_http_version 1.0;
@@ -149,7 +155,7 @@ You can make some adjustements to get a better user experience::
                     expires modified +90d;
             }
 
-            location / {
+            location </your-sub-url>/ {
                     proxy_pass 127.0.0.1:8000;
                     proxy_set_header Host $http_host;
             }

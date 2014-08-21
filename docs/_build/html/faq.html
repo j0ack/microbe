@@ -23,8 +23,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="Microbe 1.0 documentation" href="index.html" />
-    <link rel="next" title="Theming support" href="themes.html" />
-    <link rel="prev" title="Administrate Microbe" href="admin.html" /><link href='http://fonts.googleapis.com/css?family=Source+Code+Pro|Open+Sans:300italic,400italic,700italic,400,300,700' rel='stylesheet' type='text/css'>
+    <link rel="prev" title="Theming support" href="themes.html" /><link href='http://fonts.googleapis.com/css?family=Source+Code+Pro|Open+Sans:300italic,400italic,700italic,400,300,700' rel='stylesheet' type='text/css'>
 <link href="_static/solarized-dark.css" rel="stylesheet">
   </head>
   <body>
@@ -33,10 +32,7 @@
       <ul>
         <li class="right" style="margin-right: 10px">
           <a href="themes.html" title="Theming support"
-             accesskey="N">next</a></li>
-        <li class="right" >
-          <a href="admin.html" title="Administrate Microbe"
-             accesskey="P">previous</a> |</li>
+             accesskey="P">previous</a></li>
         <li><a href="index.html">Microbe 1.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
@@ -48,17 +44,22 @@
 <li><a class="reference internal" href="#how-to-report-a-bug">How to report a bug</a></li>
 <li><a class="reference internal" href="#include-a-media-in-my-content">Include a media in my content</a></li>
 <li><a class="reference internal" href="#how-to-include-code-blocks">How to include code blocks</a></li>
+<li><a class="reference internal" href="#i-made-an-error-in-config">I made an error in config</a></li>
 <li><a class="reference internal" href="#recaptcha-keys">ReCaptcha keys</a></li>
+<li><a class="reference internal" href="#robots-txt">Robots.txt</a></li>
+<li><a class="reference internal" href="#sitemaps">Sitemaps</a></li>
+<li><a class="reference internal" href="#favicon">Favicon</a><ul>
+<li><a class="reference internal" href="#to-add-your-own-favicon">To add your own favicon</a></li>
+<li><a class="reference internal" href="#to-use-default-favicon">To use default favicon</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="admin.html"
-                        title="previous chapter">Administrate Microbe</a></p>
-  <h4>Next topic</h4>
   <p class="topless"><a href="themes.html"
-                        title="next chapter">Theming support</a></p>
+                        title="previous chapter">Theming support</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/faq.txt"
@@ -93,17 +94,62 @@
 </div>
 <div class="section" id="include-a-media-in-my-content">
 <h2>Include a media in my content<a class="headerlink" href="#include-a-media-in-my-content" title="Permalink to this headline">¶</a></h2>
-<p>To include a file in your contact you need to upload it first on your server using the <tt class="docutils literal"><span class="pre">Media</span></tt> tab in the administration page.</p>
+<p>To include a file in your contact you need to upload it first on your server using the <a class="reference external" href="./media">Media_management</a> tab in the administration page.</p>
 </div>
 <div class="section" id="how-to-include-code-blocks">
 <h2>How to include code blocks<a class="headerlink" href="#how-to-include-code-blocks" title="Permalink to this headline">¶</a></h2>
-<p>Microbe use the <tt class="docutils literal"><span class="pre">CodeHilite</span></tt> Markdown extension to generate code blocks.</p>
+<p>Microbe use the <cite>CodeHilite</cite> Markdown extension to generate code blocks.</p>
 <p>You can find a documentation for this extension <a class="reference external" href="https://pythonhosted.org/Markdown/extensions/code_hilite.html">here</a>.</p>
+</div>
+<div class="section" id="i-made-an-error-in-config">
+<h2>I made an error in config<a class="headerlink" href="#i-made-an-error-in-config" title="Permalink to this headline">¶</a></h2>
+<p>Microbe come with a commnd to reinit the config file in case you made a mistake:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ microbe reinit
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Your configuration file will be removed, this can not be undoned</p>
+</div>
 </div>
 <div class="section" id="recaptcha-keys">
 <h2>ReCaptcha keys<a class="headerlink" href="#recaptcha-keys" title="Permalink to this headline">¶</a></h2>
 <p>You can enable comments for your posts in the configuration tab in administration page.</p>
 <p>To avoid spam, Microbe use <a class="reference external" href="http://www.google.com/recaptcha">ReCaptcha</a> service. You can get keys from ReCaptcha website for your site.</p>
+</div>
+<div class="section" id="robots-txt">
+<h2>Robots.txt<a class="headerlink" href="#robots-txt" title="Permalink to this headline">¶</a></h2>
+<p>You can add a <tt class="docutils literal"><span class="pre">robots.txt</span></tt> file for your blog. For that you just need to upload it using the <a class="reference external" href="./media">Media_management</a>. Whereas the others files <tt class="docutils literal"><span class="pre">robots.txt</span></tt> will be recheable at <tt class="docutils literal"><span class="pre">http:/www.yourwebsite.com/&lt;sub-url/&gt;robots.txt</span></tt>.</p>
+</div>
+<div class="section" id="sitemaps">
+<h2>Sitemaps<a class="headerlink" href="#sitemaps" title="Permalink to this headline">¶</a></h2>
+<p>Sitemaps for your blog are auto generated from your contents at <tt class="docutils literal"><span class="pre">http:/www.yourwebsite.com/&lt;sub-url/&gt;sitemaps.xml</span></tt>.</p>
+</div>
+<div class="section" id="favicon">
+<h2>Favicon<a class="headerlink" href="#favicon" title="Permalink to this headline">¶</a></h2>
+<p>You can add your own favicon or use the beautiful Microbe favicon for your application.</p>
+<div class="section" id="to-add-your-own-favicon">
+<h3>To add your own favicon<a class="headerlink" href="#to-add-your-own-favicon" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first">Copy your favicon file in <tt class="docutils literal"><span class="pre">$HOME/.microbe/themes/&lt;your-theme-name&gt;/img/</span></tt></p>
+</li>
+<li><p class="first">Use the following command to include it in your theme templates:</p>
+<div class="highlight-python"><div class="highlight"><pre>&lt;link rel=&quot;icon&quot; type=&quot;image/png&quot; href=&quot;{{ theme_static(&#39;img/favicon.png&#39;) }}&quot;&gt;
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="to-use-default-favicon">
+<h3>To use default favicon<a class="headerlink" href="#to-use-default-favicon" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first">Just add to your templates the following command:</p>
+<div class="highlight-python"><div class="highlight"><pre>&lt;link rel=&quot;icon&quot; type=&quot;image/png&quot; href=&quot;{{ url_for(&#39;static&#39;, filename=&#39;img/favicon.png&#39;) }}&quot;&gt;
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
 </div>
 </div>
 
@@ -118,10 +164,7 @@
       <ul>
         <li class="right" style="margin-right: 10px">
           <a href="themes.html" title="Theming support"
-             >next</a></li>
-        <li class="right" >
-          <a href="admin.html" title="Administrate Microbe"
-             >previous</a> |</li>
+             >previous</a></li>
         <li><a href="index.html">Microbe 1.0 documentation</a> &raquo;</li> 
       </ul>
     </div>

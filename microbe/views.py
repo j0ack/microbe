@@ -21,7 +21,7 @@ from utils import render_theme_paginated
 from search import search_query 
 
 from flask.ext.babel import format_datetime, lazy_gettext
-from flask.ext.themes2 import render_theme_template, static_file_url
+from flask.ext.themes2 import render_theme_template, static_file_url, get_theme
 from flask import (g, request, abort, url_for, make_response, 
                   render_template, redirect)
 
@@ -118,7 +118,7 @@ def index():
                                     request) 
 
 
-@app.route('/sitemap.xml')
+@app.route('/sitemaps.xml')
 def sitemap() :
     """
         Site sitemap
@@ -137,11 +137,25 @@ def favicon() :
         App favicon
     """
     default = app.config['DEFAULT_THEME']
-    theme = app.config.get(u'THEME', default)
+    theme_id = app.config.get(u'THEME', default)
+    theme = get_theme(theme_id)
+    path = os.path.join(theme.static_path, 'img', 'favicon.png')
+    if os.path.exists(path) :
+        url = static_file_url(theme, 'img/favicon.png')
+    else :
+        url = url_for('static', filename='img/favicon.png')
+    return redirect(url)
+
+@app.route('/robots.txt')
+def robots() :
+    """
+        App robots.txt
+    """
     try :
-        return static_file_url(theme, 'img/favicon.png')
+        url = url_for('static', filename='media/robots.txt')
+        return redirect(url) 
     except :
-        return url_for('static', filename='img/favicon.png')
+        abort(404)
 
 
 @app.route('/<path:path>/', methods = ['GET', 'POST'])
