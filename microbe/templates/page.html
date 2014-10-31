@@ -2,29 +2,32 @@
 
 {% block head %}
   {{ super() }}
-  <script type="text/javascript" src="{{ url_for('static', filename = 'js/jquery.js') }}"></script>
   <script type="text/javascript" src="{{ url_for('static', filename = 'js/vizhash.min.js') }}"></script>
   <script>
-      var addHash = function(val) {
-        try {
+    function addHash(val) {
+      try {
           if (vizhash.supportCanvas()) {
-            var vhash = vizhash.canvasHash(val, 64, 64);
-            $("." + val).each(function(index) {
-              $(this).html( vhash.toImage() );
-            });
+              var vhash = vizhash.canvasHash(val, 64, 64);
+              var elements = document.getElementsByClassName(val);
+              for ( ii = 0; ii < elements.length; ii++ ){
+                  if ( elements[ii].getElementsByTagName('img').length == 0 ) {
+                      elements[ii].appendChild(vhash.toImage());
+                  }
+               }
            }
-         }
-         catch (err) {
-           alert(err);
-         }       
+        }
+        catch (err) {
+          alert(err);
+        }       
      }
+      
 
        {% if config.COMMENTS == 'YES' and page.comments %}
-         window.onload = function() {      
-         {% for comment in page.comments %}
-           addHash("{{ comment.author }}");
-         {% endfor %}       
-        }
+          window.onload = function() {      
+            {% for comment in page.comments %}
+              addHash("{{ comment.author }}");
+            {% endfor %}       
+          }
        {% endif %}
   </script>
 {% endblock %}

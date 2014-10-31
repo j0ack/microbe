@@ -4,7 +4,7 @@
 {% if title %}
   <h3>{{ title }}</h3>
 {% endif %}
-{% for page in pages %}
+{% for page in objects %}
   <article>
     <a href="{{ url_for('page', path = page.path) }}">
       <h3 class="article-title">{{ page.title }}</h3>

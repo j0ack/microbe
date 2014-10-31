@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-08-20 09:49+0000\n"
+"POT-Creation-Date: 2014-10-31 10:49+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,172 +17,161 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 1.3\n"
 
-#: admin.py:69
-msgid "Invalid user"
-msgstr ""
-
-#: admin.py:71
-msgid "Invalid password"
-msgstr ""
-
-#: admin.py:130
-msgid "Configuration of "
-msgstr ""
-
-#: admin.py:166 templates/admin/users.html:6
-msgid "New user"
-msgstr ""
-
-#: admin.py:203 templates/admin/links.html:6
-msgid "New link"
-msgstr ""
-
-#: admin.py:255
-msgid "Edit content"
-msgstr ""
-
-#: admin.py:259 templates/admin/contents.html:6
-msgid "New content"
-msgstr ""
-
-#: forms.py:23
+#: admin.py:19
 msgid "This field is required"
 msgstr ""
 
-#: forms.py:29 forms.py:77 templates/admin/media.html:92
-msgid "Name"
-msgstr ""
-
-#: forms.py:31 forms.py:68
-msgid "Content"
-msgstr ""
-
-#: forms.py:40
-msgid "Search"
-msgstr ""
-
-#: forms.py:48
-msgid "User id"
-msgstr ""
-
-#: forms.py:50 forms.py:80
-msgid "Password"
-msgstr ""
-
-#: forms.py:52
-msgid "Remember me"
-msgstr ""
-
-#: forms.py:59 templates/admin/contents.html:11
+#: flatcontent/forms.py:23 templates/admin/contents.html:11
 msgid "Title"
 msgstr ""
 
-#: forms.py:61 templates/admin/contents.html:13
+#: flatcontent/forms.py:25 templates/admin/contents.html:13
 msgid "Type"
 msgstr ""
 
-#: forms.py:63 forms.py:95 templates/index.html:26 templates/page_bottom.html:6
-#: templates/admin/links.html:12 themes/clear/templates/index.html:26
+#: flatcontent/forms.py:27 mods/links/forms.py:25 templates/index.html:26
+#: templates/page_bottom.html:6 templates/admin/links.html:12
+#: themes/clear/templates/index.html:26
 #: themes/clear/templates/page_bottom.html:6
 #: themes/dark/templates/index.html:26 themes/dark/templates/page_bottom.html:6
 msgid "Category"
 msgstr ""
 
-#: forms.py:64 templates/index.html:28 templates/page_bottom.html:9
+#: flatcontent/forms.py:28 templates/index.html:28 templates/page_bottom.html:9
 #: themes/clear/templates/index.html:28
 #: themes/clear/templates/page_bottom.html:9
 #: themes/dark/templates/index.html:28 themes/dark/templates/page_bottom.html:9
 msgid "Tags"
 msgstr ""
 
-#: forms.py:83
-msgid "Fields are different"
+#: flatcontent/forms.py:29 flatcontent/forms.py:39
+msgid "Content"
 msgstr ""
 
-#: forms.py:86
-msgid "Confirm"
+#: flatcontent/forms.py:37 mods/users/forms.py:23 templates/admin/media.html:86
+msgid "Name"
 msgstr ""
 
-#: forms.py:93
-msgid "Label"
+#: mods/auth/forms.py:23
+msgid "User id"
 msgstr ""
 
-#: forms.py:94
-msgid "Url"
+#: mods/auth/forms.py:25 mods/users/forms.py:26
+msgid "Password"
 msgstr ""
 
-#: forms.py:102
+#: mods/auth/forms.py:27
+msgid "Remember me"
+msgstr ""
+
+#: mods/auth/views.py:32
+msgid "Invalid user"
+msgstr ""
+
+#: mods/auth/views.py:34
+msgid "Invalid password"
+msgstr ""
+
+#: mods/config/forms.py:23
 msgid "Site name"
 msgstr ""
 
-#: forms.py:104
+#: mods/config/forms.py:25
 msgid "Site subtitle (option)"
 msgstr ""
 
-#: forms.py:105
+#: mods/config/forms.py:26
 msgid "Language"
 msgstr ""
 
-#: forms.py:107
+#: mods/config/forms.py:28
 msgid "Author (option)"
 msgstr ""
 
-#: forms.py:108
+#: mods/config/forms.py:29
 msgid "Pagination"
 msgstr ""
 
-#: forms.py:110
+#: mods/config/forms.py:31
 msgid "Summary length"
 msgstr ""
 
-#: forms.py:112 templates/admin/comments.html:3
+#: mods/config/forms.py:33 templates/admin/comments.html:3
 #: templates/admin/contents.html:15
 msgid "Comments"
 msgstr ""
 
-#: forms.py:113 forms.py:115
+#: mods/config/forms.py:34 mods/config/forms.py:36
 msgid "Yes"
 msgstr ""
 
-#: forms.py:113 forms.py:115
+#: mods/config/forms.py:34 mods/config/forms.py:36
 msgid "No"
 msgstr ""
 
-#: forms.py:114 themes/clear/templates/layout.html:48
+#: mods/config/forms.py:35 themes/clear/templates/layout.html:48
 #: themes/dark/templates/layout.html:53
 msgid "Atom feed"
 msgstr ""
 
-#: forms.py:116
+#: mods/config/forms.py:37
 msgid "Recaptcha public key"
 msgstr ""
 
-#: forms.py:117
+#: mods/config/forms.py:38
 msgid "Recaptcha private key"
 msgstr ""
 
-#: forms.py:130 forms.py:140
+#: mods/config/forms.py:51 mods/config/forms.py:61
 msgid "Mandatory field if comments are enabled"
 msgstr ""
 
-#: forms.py:136 forms.py:146
+#: mods/config/forms.py:57 mods/config/forms.py:67
 msgid "This key is not valid, check it"
 msgstr ""
 
-#: script.py:86
-msgid "Are you sure to reinit microbe config ?"
+#: mods/config/views.py:59
+msgid "Configuration of "
 msgstr ""
 
-#: script.py:100
-msgid "Enter your theme name"
+#: mods/contents/views.py:81
+msgid "Edit content"
 msgstr ""
 
-#: script.py:110
-msgid "Enter your name"
+#: mods/contents/views.py:85 templates/admin/contents.html:6
+msgid "New content"
 msgstr ""
 
-#: script.py:130
-msgid "This theme already exists delete it first"
+#: mods/links/forms.py:23
+msgid "Label"
+msgstr ""
+
+#: mods/links/forms.py:24
+msgid "Url"
+msgstr ""
+
+#: mods/links/views.py:55 templates/admin/links.html:6
+msgid "New link"
+msgstr ""
+
+#: mods/media/views.py:76
+msgid "Error uploading file"
+msgstr ""
+
+#: mods/search/forms.py:24
+msgid "Search"
+msgstr ""
+
+#: mods/users/forms.py:29
+msgid "Fields are different"
+msgstr ""
+
+#: mods/users/forms.py:32
+msgid "Confirm"
+msgstr ""
+
+#: mods/users/views.py:55 templates/admin/users.html:6
+msgid "New user"
 msgstr ""
 
 #: templates/404.html:4 themes/clear/templates/404.html:4
@@ -262,7 +251,7 @@ msgstr ""
 msgid "Contents"
 msgstr ""
 
-#: templates/admin/base.html:22 templates/admin/media.html:88
+#: templates/admin/base.html:22 templates/admin/media.html:82
 msgid "Media"
 msgstr ""
 
@@ -290,9 +279,9 @@ msgstr ""
 msgid "Date"
 msgstr ""
 
-#: templates/admin/comments.html:18 templates/admin/contents.html:48
-#: templates/admin/links.html:22 templates/admin/media.html:48
-#: templates/admin/media.html:101 templates/admin/users.html:26
+#: templates/admin/comments.html:18 templates/admin/contents.html:47
+#: templates/admin/links.html:22 templates/admin/media.html:53
+#: templates/admin/media.html:95 templates/admin/users.html:26
 msgid "Delete"
 msgstr ""
 
@@ -312,7 +301,7 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-#: templates/admin/contents.html:57
+#: templates/admin/contents.html:54
 msgid "Publish"
 msgstr ""
 
@@ -328,29 +317,19 @@ msgstr ""
 msgid "Link"
 msgstr ""
 
-#: templates/admin/media.html:67
-msgid ""
-"Your browser seems not compatible with HTML5 drag and drop API, please "
-"use the form below"
+#: templates/admin/media.html:68
+msgid "Too many files"
 msgstr ""
 
-#: templates/admin/media.html:72
-msgid "Too much files : Maximum uploaded files at once : "
-msgstr ""
-
-#: templates/admin/media.html:75
-msgid "File too big : Maximum size (in Mo) : "
-msgstr ""
-
-#: templates/admin/media.html:111
+#: templates/admin/media.html:103
 msgid "Drop your files here"
 msgstr ""
 
-#: templates/admin/media.html:117
+#: templates/admin/media.html:109
 msgid "Upload"
 msgstr ""
 
-#: templates/admin/themes.html:12
+#: templates/admin/themes.html:14
 msgid "Select this theme"
 msgstr ""
 

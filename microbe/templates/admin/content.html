@@ -2,25 +2,16 @@
 
 {% block head %}
     {{ super() }}
-    {{ codemirror.include_codemirror() }}
-    <script type=text/javascript src = "http://cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Converter.min.js"></script>
-    <script type=text/javascript src = "http://cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Sanitizer.min.js"></script>
-    <script src = "{{ url_for('static', filename = 'js/editor.js') }}"></script>
-    <script>
-        f = function() {
-            var editor = document.getElementsByClassName('CodeMirror')[0].CodeMirror;
-            drawToolbar(editor);
-            drawPreview(editor);
-        }
-
-        if (document.readyState === 'complete')
-            f();
-        else if (window.addEventListener)
-            window.addEventListener("load", f, false);
-        else if (window.attachEvent)
-            window.attachEvent("onload", f);
-        else
-            f();
-        
-      </script> 
+    <script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/markdown/markdown.js"></script>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/theme/xq-light.css">
+    <script src="{{ url_for('static', filename='js/editor.js') }}"></script>
 {% endblock %}        
+
+{% block content %}
+  {{ super() }}
+    <script>
+        var editor=new Editor( 'body', "{{ url_for('admin.upload') }}", "{{ url_for('admin.render') }}" );
+    </script>
+{% endblock %}

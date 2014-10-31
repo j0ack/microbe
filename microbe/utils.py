@@ -12,7 +12,8 @@ import os.path
 import re
 import shelve
 from itertools import islice
-from flask import abort, render_template
+
+from flask import abort, request, current_app
 from flask.ext.paginate import Pagination
 from flask.ext.themes2 import render_theme_template
 from werkzeug.security import generate_password_hash
@@ -71,52 +72,40 @@ def merge_default_config(config) :
     db['DEFAULT_THEME'] = u'dark'
     db.close()
 
-
-def render_theme_paginated(template, theme, objects, per_page, request, **context) :
+                           
+def render(template, **context):
     """
-        Return a paginated template
-        
-        :param template: template to render
-        :param theme: theme to render
-        :param page: current page number
-        :param per_page: number of objects per page
-        :param objects: list of objects
+        Render template with config theme
+        instead of default theme
+    """
+    default = current_app.config['DEFAULT_THEME']
+    theme = current_app.config.get('THEME', default)
+    return render_theme_template(theme, template, **context)
+    
+    
+def render_list(template, list, **context) :
+    """
+        Render list with pagination with config theme
+        instead of default theme
     """
     # get page from request
     try :
         page = int(request.args.get('page', 1))
     except ValueError :
         page = 1
+    # per page
+    per_page = context.get('per_page', current_app.config['PAGINATION'])
     # create pagination
-    pagination = create_pagination(page, per_page, objects)
+    pagination = create_pagination(page, per_page, list)
     # calculate objects displayed
-    displayed = get_objects_for_page(page, per_page, objects)
+    displayed = get_objects_for_page(page, per_page, list)
+    # get theme
+    default = current_app.config['DEFAULT_THEME']
+    theme = current_app.config.get('THEME', default)
     # return
-    return render_theme_template(theme, template, pages = displayed, 
+    return render_theme_template(theme, template, objects = displayed, 
                                pagination = pagination, **context)
-    
-    
-def render_paginated(template, objects, per_page, request) :
-    """
-        Return a paginated template
-        
-        :param template: template to render
-        :param page: current page number
-        :param per_page: number of objects per page
-        :param objects: list of objects
-    """
-    # get page from request
-    try :
-        page = int(request.args.get('page', 1))
-    except ValueError :
-        page = 1
-    # create pagination
-    pagination = create_pagination(page, per_page, objects)
-    # calculate objects displayed
-    displayed = get_objects_for_page(page, per_page, objects)
-    # return
-    return render_template(template, objects = displayed, 
-                           pagination = pagination)
+                           
 
 def truncate_html_words(s, num, end_text='...'):
     """

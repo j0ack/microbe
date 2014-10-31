@@ -1,16 +1,19 @@
 {% extends "admin/base.html" %}
 
 {% block content %}
-<h3>{{ _('Themes') }}</h3>
-<ul class = "grid">
-{% for theme in themes %}
-  <li class = "{% if theme.identifier == selected %}selected{% endif %}">
-    {% if theme.preview %}
-    <img src = "{{ url_for('index') }}_themes/{{ theme.identifier }}/{{ theme.preview}}" height="200" width="320" ></img>
-    {% endif %}
-    <b>{{ theme.name }}</b><br />
-    <a href="{{ url_for('admin.set_theme', ident = theme.identifier) }}">{{ _('Select this theme') }}</a>
-  </li>
-{% endfor %}
-</ul>
+  <h3>{{ _('Themes') }}</h3>
+  <ul class="grid">
+    {% for theme in themes %}
+      <li class="{% if theme.identifier == selected %}selected{% endif %}">
+        {% if theme.preview %}
+          <img src="{{ url_for('index') }}_themes/{{ theme.identifier }}/{{ theme.preview}}" height="200" width="320" ></img>
+        {% endif %}
+        <b>{{ theme.name }}</b><br />
+        <form method="POST" action="{{ url_for('admin.set_theme') }}">
+          <input type="hidden" name="theme" value="{{ theme.identifier }}">
+          <button type="submit" class="transparent">{{ _('Select this theme') }}</button>
+        </form>
+      </li>
+    {% endfor %}
+  </ul>
 {% endblock %}

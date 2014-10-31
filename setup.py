@@ -3,7 +3,7 @@
 # vim:set shiftwidth=4 tabstop=4 expandtab textwidth=79:
 
 __author__  = 'TROUVERIE Joachim'
-__version__ = '1.1'
+__version__ = '1.2'
 __appname__ = 'Microbe'
 
 
@@ -23,17 +23,19 @@ setup(
     long_description = open('README.md').read(),
     install_requires = requirements,
     include_package_data=True,
-    url='http://microbe.joacodepel.tk/',
+    url='http://projects.joacodepel.tk/microbe/',
     classifiers=[
-        "Programming Language :: Python",
         "Development Status :: 5 - Production/Stable",
-        "License :: OSI Approved :: MIT License",
+        "Environment :: Web Environment",
+        "Framework :: Flask",
+        "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
+        "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",        
         "Natural Language :: English",
         "Programming Language :: Python :: 2.7",
     ],
     entry_points = {
         'console_scripts': [
-            'microbe = microbe.script:main',
+            'microbe = microbe.commands:main',
         ],
     },
 )

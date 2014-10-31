@@ -8,31 +8,24 @@
 
 __author__ = 'TROUVERIE Joachim'
 
-import os.path
+import os.path as op
 import shelve
+import xml.etree.ElementTree as ET
 from datetime import datetime
 from werkzeug.contrib.atom import AtomFeed
 from urlparse import urljoin
 
 from microbe import app, contents, babel
-from models import Links
-from forms import CommentForm, SearchForm
-from utils import render_theme_paginated
-from search import search_query 
+from microbe.utils import render, render_list
+from microbe.mods.search import search_query
+from microbe.flatcontent.forms import CommentForm
+from microbe.mods.links.models import Links
+from microbe.mods.search.forms import SearchForm
 
 from flask.ext.babel import format_datetime, lazy_gettext
-from flask.ext.themes2 import render_theme_template, static_file_url, get_theme
+from flask.ext.themes2 import static_file_url, get_theme
 from flask import (g, request, abort, url_for, make_response, 
                   render_template, redirect)
-
-def render(template, **context):
-    """
-        Render template with config theme
-        instead of default theme
-    """
-    default = app.config['DEFAULT_THEME']
-    theme = app.config.get(u'THEME', default)
-    return render_theme_template(theme, template, **context)
 
 
 @app.errorhandler(404)
@@ -48,7 +41,7 @@ def get_locale() :
     """
         Get locale for page translations
     """
-    return app.config.get(u'LANGUAGE')
+    return app.config.get('LANGUAGE')
 
 
 @app.template_filter('date')
@@ -81,6 +74,8 @@ def before_request() :
     path = app.config['SHELVE_FILENAME']
     db = shelve.open(path)
     app.config.update(db)
+    # close db
+    db.close()
     # posts list    
     g.posts  = sorted(
                 [c for c in contents if c.content_type == 'posts' 
@@ -97,9 +92,7 @@ def before_request() :
     g.links = Links.get_all()
     # search form
     if not hasattr(g, 'search_form') : 
-        g.search_form = SearchForm()
-    # close db
-    db.close()
+        g.search_form = SearchForm()    
 
 
 @app.route('/')
@@ -109,13 +102,7 @@ def index():
 
         List of blog posts summaries
     """
-    # theme
-    default = app.config['DEFAULT_THEME']
-    theme = app.config.get(u'THEME', default)
-    # per page
-    per_page = app.config['PAGINATION']
-    return render_theme_paginated('index.html', theme, g.posts, per_page,
-                                    request) 
+    return render_list('index.html', g.posts)
 
 
 @app.route('/sitemaps.xml')
@@ -125,8 +112,17 @@ def sitemap() :
     """
     # list all contents
     sitemap_contents = [c for c in contents if not c.draft]
-    sitemap = render_template('sitemap.xml', contents = sitemap_contents)
-    response = make_response(sitemap)
+    # root
+    root = ET.Element('urlset')
+    root.set('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9')
+    for content in sitemap_contents :
+        url = ET.SubElement(root, 'url')
+        loc = ET.SubElement(url, 'loc')
+        loc.text = urljoin(request.url_root, content.path)
+        lastmod = ET.SubElement(url, 'lasmod')
+        lastmod.text = format_datetime(content.published, 'yyyy-MM-dd')
+    text = ET.tostring(root)
+    response = make_response(text, 200)
     response.headers['Content-Type'] = 'application/xml'
     return response
 
@@ -139,13 +135,14 @@ def favicon() :
     default = app.config['DEFAULT_THEME']
     theme_id = app.config.get(u'THEME', default)
     theme = get_theme(theme_id)
-    path = os.path.join(theme.static_path, 'img', 'favicon.png')
-    if os.path.exists(path) :
+    path = op.join(theme.static_path, 'img', 'favicon.png')
+    if op.exists(path) :
         url = static_file_url(theme, 'img/favicon.png')
     else :
         url = url_for('static', filename='img/favicon.png')
     return redirect(url)
 
+    
 @app.route('/robots.txt')
 def robots() :
     """
@@ -188,13 +185,7 @@ def category(category) :
         :type category: str
     """
     posts = [p for p in g.posts if p.category == category]
-    # theme
-    default = app.config['DEFAULT_THEME']
-    theme = app.config.get(u'THEME', default)
-    # per page
-    per_page = app.config['PAGINATION']
-    return render_theme_paginated('index.html', theme, posts, per_page,
-                                    request, title=category)
+    return render_list('index.html', posts, title = category)
 
 
 @app.route('/tag/<tag>')
@@ -206,13 +197,7 @@ def tag(tag) :
         :type tag: str
     """
     posts = [p for p in g.posts if tag in p.tags.split(',')]
-    # theme
-    default = app.config['DEFAULT_THEME']
-    theme = app.config.get(u'THEME', default)
-    # per page
-    per_page = app.config['PAGINATION']
-    return render_theme_paginated('index.html', theme, posts, per_page,
-                                    request, title=tag)
+    return render_list('index.html', posts, title = tag)
 
 
 @app.route('/archives')
@@ -226,11 +211,7 @@ def archives() :
                         key = lambda x : x.published,
                         reverse = True
                     )
-    # theme
-    default = app.config['DEFAULT_THEME']
-    theme = app.config.get(u'THEME', default)
-    return render_theme_paginated('archive.html', theme, sorted_pages, 10,
-                                    request)
+    return render_list('archive.html', sorted_pages, per_page=10)
 
 
 @app.route('/search/', methods = ['POST'])
@@ -248,12 +229,7 @@ def search() :
                             key = lambda x : x.published,
                             reverse = True
                        )
-    # pagination
-    # theme
-    default = app.config['DEFAULT_THEME']
-    theme = app.config.get(u'THEME', default)
-    return render_theme_paginated('index.html', theme, sorted_contents, 
-                                    10, request, title=query)
+    return render_list('index.html', sorted_contents, per_page=10)
 
     
 @app.route('/feed.atom')
@@ -267,7 +243,7 @@ def feed() :
     feed = AtomFeed(name,feed_url=request.url, url=request.url_root)
     # sort posts by reverse date
     for post in g.posts[:20] :
-        feed.add( post.meta.get(u'title'),
+        feed.add( post.title,
                 unicode(post.summary),
                 content_type = 'html',
                 author = post.meta.get('author', ''),

@@ -3,7 +3,7 @@
 {% block content %}
 <h3>{{ _('Archive') }}</h3>
 <ul class = "archive-list">
-{% for page in pages %}
+{% for page in objects %}
 <li>
   {{ page.published | date('EE dd MMMM YYYY') }}
   <a href="{{ url_for('page', path = page.path) }}">

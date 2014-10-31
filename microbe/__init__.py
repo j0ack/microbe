@@ -21,17 +21,17 @@
 
 __author__ = 'TROUVERIE Joachim'
 
+import os
 import os.path as op
-from os import makedirs, symlink
-
-from flatcontent import FlatContent
-from utils import merge_default_config
 
 from flask import Flask
-from flask.ext.codemirror import CodeMirror
 from flask.ext.login import LoginManager
 from flask.ext.babel import Babel
 from flask.ext.themes2 import Themes
+
+from microbe.flatcontent import FlatContent
+from microbe.utils import merge_default_config
+
 
 # create app
 app = Flask(__name__)
@@ -44,16 +44,20 @@ if not op.exists(app.config['SHELVE_FILENAME']) :
     merge_default_config(app.config)
 
 # create path if not exists
-path =  op.join(op.dirname(__file__), 'content')
+path = op.join(op.dirname(__file__), 'content')
 if not op.exists(path) :
-    makedirs(op.join(path, 'pages'))
-    makedirs(op.join(path, 'posts'))
+    os.makedirs(op.join(path, 'pages'))
+    os.makedirs(op.join(path, 'posts'))
  
 path = op.join(op.expanduser('~'), '.microbe')
 theme_path =  op.join(op.dirname(__file__), 'themes')
 if not op.exists(path) :
-    makedirs(path)
-    symlink(theme_path, op.join(path, 'themes'))
+    os.makedirs(path)
+
+if op.exists(op.join(path, 'themes')) :
+    os.unlink(op.join(path, 'themes'))
+
+os.symlink(theme_path, op.join(path, 'themes'))
 
 # flatpages
 contents = FlatContent(app)
@@ -69,13 +73,10 @@ babel = Babel(app)
 # themes support
 Themes(app, app_identifier = 'microbe')
 
-# codemirror
-codemirror = CodeMirror(app)
-
 # blueprint
-from admin import bp as admin_module
-from admin import load_user
-app.register_blueprint(admin_module, url_prefix = '/admin')
+from microbe.admin import admin
+from microbe.mods.users import load_user
+app.register_blueprint(admin, url_prefix = '/admin')
 lm.user_loader(load_user)
 
 from microbe import views

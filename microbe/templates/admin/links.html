@@ -3,7 +3,7 @@
 {% block title %}{{ _('Links') }}{% endblock %}
 
 {% block new %}
-  <a href = "{{ url_for('admin.link') }}" class = "button radius small">{{ _('New link') }}</a>
+  <a href="{{ url_for('admin.link') }}" class="button radius small">{{ _('New link') }}</a>
 {% endblock %}
 
 {% block table %}
@@ -16,12 +16,10 @@
     <tr>
       <td>{{ link.html | safe }}</td>     
       <td>{{ link.category }}</td>
-      <td class = "action">
-        <form method = "POST" action = ".">
+      <td class="action">
+        <form method="POST" action="{{ url_for('admin.delete_link') }}">
           <input type="hidden" name="link" value="{{ link.uid }}">
-          <button type = "submit" class = "transparent" title = "{{ _('Delete') }}">
-            <i class = "fi-x"></i>
-          </button>
+          <button type="submit" class="transparent fi-x" title="{{ _('Delete') }}"></button>
         </form>
       </td>
     </tr>

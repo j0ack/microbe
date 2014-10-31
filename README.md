@@ -26,4 +26,4 @@ Features
 Documentation
 -------------
 
-:documentation: http://microbe.joacodepel.tk/
+:documentation: http://projects.joacodepel.tk/microbe/

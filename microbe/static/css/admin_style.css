@@ -118,7 +118,7 @@ pre {
   margin-bottom : 8px;
 }
 
-.toolbar a {
+.toolbar span {
   width : 15px;
   height : 15px;
   display : inline-block;
@@ -128,13 +128,8 @@ pre {
   color : black;
 } 
 
-.toolbar a:hover {
+.toolbar span:hover {
   background-color : #ccc;
-}
-
-.toolbar a.active {
-  border : 1px solid #ccc;
-  border-radius : 2px;
 }
 
 /* Markdown editor */

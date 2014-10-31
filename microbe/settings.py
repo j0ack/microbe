@@ -8,17 +8,13 @@
 
 __author__ = 'TROUVERIE Joachim'
 
-
+import os.path as op
 from uuid import uuid4
-from os.path import join, dirname
 
-dirpath = dirname(__file__)
+dirpath = op.dirname(__file__)
 key = uuid4().hex
 
-CODEMIRROR_LANGUAGES = [u'markdown']
-CODEMIRROR_THEME = u'xq-light'
-SHELVE_FILENAME = join(dirpath, 'config.db')
-PERMANENT_SESSION_LIFETIME = 2678400
+SHELVE_FILENAME = op.join(dirpath, 'config.db')
 FLATPAGES_ROOT = u'content'
 FLATPAGES_EXTENSION = u'.md'
 FLATPAGES_AUTO_RELOAD = True

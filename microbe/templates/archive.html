@@ -2,17 +2,17 @@
 
 {% block content %}
 <h3>{{ _('Archive') }}</h3>
-<ul class = "archive-list">
-{% for page in pages %}
+<ul class="archive-list">
+{% for page in objects %}
 <li>
   {{ page.published | date }}
-  <a href="{{ url_for('page', path = page.path) }}">
+  <a href="{{ url_for('page', path=page.path) }}">
     {{ page.title }}
   </a>
 </li>
 {% endfor %}
 </ul>
-<div class = "pagination-centered">
+<div class="pagination-centered">
   {{ pagination.links | safe }}
 </div>
 {% endblock %}

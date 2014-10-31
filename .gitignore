@@ -1,6 +1,7 @@
+launcher.py
+nohup.out
+*.db
+microbe/content/*
 *.pyc
-build/
-dist/
-Microbe.egg-info/
-TODO
-*.mo
+microbe/static/media/
+microbe/mods/search/

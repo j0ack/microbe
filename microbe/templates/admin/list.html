@@ -5,12 +5,12 @@
   {% block new %}{% endblock %}
 
   {% if objects %}
-    <table class = "model">{% block table %}{% endblock %}</table>
+    <table class="model">{% block table %}{% endblock %}</table>
   {% endif %}
 
   {% block post_table %}{% endblock %}
 
-  <div class = "pagination-centered">
+  <div class="pagination-centered">
     {{ pagination.links | safe }}
   </div>
 {% endblock %}
