@@ -44,26 +44,6 @@ def runserver(args) :
         app.run(port=port)
     
 
-def reinit(args) :
-    """
-        Reinit microbe config
-    """
-    msg = 'Are you sure to reinit microbe config ? [Y/N]'
-    # get input from user
-    letter = None
-    while not letter :
-        letter = raw_input(msg)
-        if letter.lower() not in ['y','n'] :
-            print 'Invalid choice'
-            letter = None
-        elif letter.lower() == 'y' :
-            path = app.config['SHELVE_FILENAME']
-            os.remove(path)
-            print '{0} has been removed'.format(path)
-        else :
-            sys.exit(1)
-
-    
 def save(args) :
     """
         Save microbe config and contents in a ZIP file
@@ -161,9 +141,6 @@ def main() :
     run_parser.add_argument('-u', '--url', default='/', help='Url to deploy app')
     run_parser.add_argument('-d', '--debug', action='store_true', help='Debug mode')
     run_parser.set_defaults(func=runserver)
-    # reinit command
-    reinit_parser = subparsers.add_parser('reinit', help='Reinit Microbe app config')
-    reinit_parser.set_defaults(func=reinit)
     # save command
     save_parser = subparsers.add_parser('save', help='Save Microbe app config and contents')
     save_parser.add_argument('-o', '--output', default='microbe.zip', help='Output ZIP file')
