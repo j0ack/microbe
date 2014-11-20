@@ -22,8 +22,3 @@ Features
 - Multi users
 - Files upload
 - Multi language support (English and French)
-
-Documentation
--------------
-
-:documentation: http://projects.joacodepel.tk/microbe/
