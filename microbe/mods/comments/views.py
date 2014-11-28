@@ -26,7 +26,7 @@ def comments(path) :
     # get comments
     content = contents.get(path)
     comments = content.comments
-    return render_list('admin/comments.html', comments, per_page=15)
+    return render_list('admin/comments.html', comments, per_page=15, path=path)
 
 
 @admin.route('/delete_comment/<path:path>/', methods=['POST'])
@@ -42,5 +42,8 @@ def delete_comment(path) :
     content = contents.get(path)
     # delete comment
     content.delete_comment(comment)
-    return redirect(url_for('admin.comments'))
+    if len(content.comments) > 0 :
+        return redirect(url_for('admin.comments', path=path))
+    else :
+        return redirect(url_for('admin.list_contents'))
         

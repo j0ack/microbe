@@ -20,7 +20,7 @@ setup(
     author = __author__,
     author_email = 'joachim.trouverie@joacodepel.tk',
     description = 'Micro Blog Engine inspired by Pelican and powered by Flask',
-    long_description = open('README.md').read(),
+    long_description = open('README.rst').read(),
     install_requires = requirements,
     include_package_data=True,
     url='http://projects.joacodepel.tk/microbe/',

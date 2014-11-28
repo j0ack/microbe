@@ -3,5 +3,8 @@ nohup.out
 *.db
 microbe/content/*
 *.pyc
-microbe/static/media/
-microbe/mods/search/
+microbe/static/media/*
+microbe/mods/search/index/*
+dist/*
+build/*
+*.egg-info/*

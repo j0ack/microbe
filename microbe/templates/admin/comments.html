@@ -13,7 +13,7 @@
       <td>{{ comment.author }}</td>
       <td>{{ comment.date | date('dd MM yyyy HH:mm') }}</td>
       <td class="action">
-        <form action="{{ url_for('admin.delete_comment') }}" method="POST">
+        <form action="{{ url_for('admin.delete_comment', path=path) }}" method="POST">
           <input type="hidden" name="comment" value="{{ comment.uid }}">
           <button type="submit" class="transparent fi-x" title="{{ _('Delete') }}"></button>
         </form>
