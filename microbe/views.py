@@ -119,7 +119,7 @@ def sitemap() :
         url = ET.SubElement(root, 'url')
         loc = ET.SubElement(url, 'loc')
         loc.text = urljoin(request.url_root, content.path)
-        lastmod = ET.SubElement(url, 'lasmod')
+        lastmod = ET.SubElement(url, 'lastmod')
         lastmod.text = format_datetime(content.published, 'yyyy-MM-dd')
     text = ET.tostring(root)
     response = make_response(text, 200)
