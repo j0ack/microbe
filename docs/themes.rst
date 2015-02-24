@@ -90,34 +90,35 @@ You can extend your theme templates using ``theme`` function:
 
 Archive page listing all the contents.
 
-> **Parameters** :
->
-> - ``pages`` : a list of ``Page`` object
-> - ``pagination`` : pagination using foundation templates
+    **Parameters** :
+
+    - ``pages`` : a list of ``Page`` object
+    - ``pagination`` : pagination using foundation templates
 
 **page.html**
 
 Templates used to render your static pages and posts objects.
 
-> **Parameters** :
->
-> - ``page`` : a ``Page`` object
+    **Parameters** :
+
+    - ``page`` : a ``Page`` object
 
 **index.html**
 
 Templates used to render a list of objects (used by ``index``, ``tags`` and ``categories``)
 
 
-> **Parameters** :
->
-> - ``title`` : page title
-> - ``pages`` : a list of ``Page`` object
-> - ``pagination`` : pagination using foundation templates
+    **Parameters** :
+    
+    - ``title`` : page title
+    - ``pages`` : a list of ``Page`` object
+    - ``pagination`` : pagination using foundation templates
 
 Variables
 ^^^^^^^^^
 
 These are the variables you can use in the different templates :
+
 +------------------------------+--------------------------------------------------------------------------+
 | Name                         | Description                                                              |
 +==============================+==========================================================================+

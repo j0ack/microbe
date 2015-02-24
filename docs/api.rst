@@ -1,7 +1,7 @@
 API
 ===
 
-*Run a CherryPy wsgi server to serve the application*
+**Run a CherryPy wsgi server to serve the application**
 
 .. code-block:: bash
 
@@ -19,7 +19,9 @@ API
 
             determine the url to serve the application (default=/)
 
-*Create a Zip file to save Microbe contents and config file*
+-----
+
+**Create a Zip file to save Microbe contents and config file**
 
 .. code-block:: bash
 
@@ -29,13 +31,17 @@ API
 
             determine the output Zip file name (default=microbe.zip)
 
-*Restore a Zip file containing contents and config file obtained by ``save`` command*
+-----
+
+**Restore a Zip file containing contents and config file obtained by ``save`` command**
 
 .. code-block:: bash
 
    $ microbe restore <archive.zip>
 
-*Create easily a theme skeleton for Microbe*
+-----
+
+**Create easily a theme skeleton for Microbe**
 
 .. code-block:: bash
 
