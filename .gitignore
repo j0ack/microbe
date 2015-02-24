@@ -8,3 +8,4 @@ microbe/mods/search/index/*
 dist/*
 build/*
 *.egg-info/*
+docs/_build/*
