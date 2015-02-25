@@ -7,7 +7,7 @@ You can contact me at this address to report a bug or ask a question about Micro
 
 **Include a media in my content**
 
-To include a file in your contact you need to upload directly in your editor if your browser supports the HTML5 file API or using the :doc:`</media>` management tab in the administration page.
+To include a file in your contact you need to upload directly in your editor if your browser supports the HTML5 file API or using the :doc:`/media` tab in the administration page.
 
 **ReCaptcha keys**
 
@@ -17,7 +17,7 @@ To avoid spam, Microbe uses `ReCaptcha`_ service. You can get keys from ReCaptch
 
 **Robots.txt**
 
-You can add a ``robots.txt`` file for your blog. For that you just need to upload it using the :doc:`</media>` management. Unlike the others files ``robots.txt`` will be recheable at ``http:/www.yourwebsite.com/<sub-url/>robots.txt``.
+You can add a ``robots.txt`` file for your blog. For that you just need to upload it using the :doc:`/media`. Unlike the others files ``robots.txt`` will be recheable at ``http:/www.yourwebsite.com/<sub-url/>robots.txt``.
 
 **Sitemaps**
 

@@ -26,7 +26,7 @@ Microbe comes with a command to easily create your own theme skeleton
 
 .. code-block:: bash
    
-   $ microbe theme
+   $ microbe theme <your-theme-name> <your-name>
 
 Themes are based on `Jinja2`_ template engine using the `Flask-Themes2`_ extension.
 

@@ -30,8 +30,8 @@ You can edit your blog configuration using this page, it will be reloaded as soo
 +------------------------------+------------------------------------------------+
 | *Atom feeds*                 | Generate atom feeds or not                     |
 +------------------------------+------------------------------------------------+
-| *Recaptcha public key*       | Recaptcha public key to avoid spam on comments |
+| *ReCaptcha public key*       | ReCaptcha public key to avoid spam on comments |
 +------------------------------+------------------------------------------------+
-| *Recaptcha private key*      | Recaptcha private key                          |
+| *ReCaptcha private key*      | ReCaptcha private key                          |
 +------------------------------+------------------------------------------------+
                                  

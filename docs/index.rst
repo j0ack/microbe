@@ -7,6 +7,9 @@ Write your contents using the `Markdown`_ syntax with a nice editor without need
 
 Administrate your blog directly from your browser.
 
+User's guide
+------------
+
 .. toctree::
    :maxdepth: 2
               
@@ -17,14 +20,15 @@ Administrate your blog directly from your browser.
    users.rst
    config.rst
    contents.rst
+   syntax.rst
    media.rst
    links.rst
    themes.rst
    faq.rst
 
    
-API
----
+API reference
+-------------
 
 .. toctree::
    

@@ -39,7 +39,7 @@ Upgrade Microbe
 .. warning::
    Upgrading Microbe will delete all the files contained in the application folder including your contents and the config file saved.
 
-To preserve your contents, Microbe comes with two :doc:`commands /api` : ``save`` and ``restore``.
+To preserve your contents, Microbe comes with two :doc:`commands </api>` : ``save`` and ``restore``.
 
 1. Save your contents in a Zip file using the ``save`` command
 2. Upgrade Microbe with or without ``pip``
