@@ -1,7 +1,7 @@
 Markdown
 Flask
 Flask-Babel
-Flask-FlatPages
+Flask-FlatPages==0.5
 Flask-Login
 Flask-Themes2
 Flask-WTF
