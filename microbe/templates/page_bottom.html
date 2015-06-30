@@ -20,6 +20,7 @@
   <h5 style="text-align : right">{{ ngettext('%(num)s comment', '%(num)s comments', total) }}</h5>
     <ul>
     {% for comment in page.comments %}
+      <a name="{{ comment.uid }}"></a>
       <li>
           <div class="{{ comment.author }}" style="position : absolute; width : 60px;">
           </div>
@@ -32,6 +33,7 @@
           </div>
       </li>
     {% endfor %}
+    <li><a href="{{ url_for('comments_feeds', path=page.path) }}">{{ _('Comments') }}</a></li>
   {% endwith %}
   </div>
 {% endif %}

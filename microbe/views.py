@@ -166,8 +166,9 @@ def page(path):
     content = contents.get_or_404(path)
     form = None
     # enable comments for posts only
-    if content.content_type == 'posts' :
-        form = CommentForm()
+    if content.content_type == 'posts':
+        if app.config.get('COMMENTS', 'NO') == 'YES':
+            form = CommentForm()
     # form management
     if form and form.validate_on_submit() :
         author = form.name.data
@@ -249,4 +250,34 @@ def feed() :
                 author = post.meta.get('author', ''),
                 url = urljoin(request.url_root, post.path),
                 updated = post.published)
+    return feed.get_response()
+
+
+@app.route('/<path:path>/feed.atom')
+def comments_feeds(path):
+    """
+        Generate content comments feeds
+        :param path: content path
+    """
+    # check if RSS is enabled
+    if app.config.get('RSS', 'NO') != 'YES':
+        abort(404)
+    # check if comments are enabled
+    if app.config.get('COMMENTS', 'NO') != 'YES':
+        abort(404)
+    # check if content exists
+    content = contents.get_or_404(path)
+    name = u'Comments for ' + content.title
+    feed = AtomFeed(name,feed_url=request.url, url=request.url_root)
+    content_url = urljoin(request.url_root, path)
+    if content_url[:-1] != '/':
+        content_url += '/'
+    # sort posts by reverse date
+    for com in content.comments:
+        feed.add(u'Comment for ' + content.title,
+                unicode(com.content),
+                content_type = 'html',
+                author = com.author,
+                url = urljoin(content_url, '#' + com.uid),
+                updated = com.date)
     return feed.get_response()
