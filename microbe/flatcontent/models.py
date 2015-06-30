@@ -8,6 +8,7 @@
 
 __author__ = 'TROUVERIE Joachim'
 
+import os
 import os.path as op
 import re
 from uuid import uuid4

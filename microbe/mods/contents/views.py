@@ -49,7 +49,6 @@ def delete_content() :
     """
     path = request.form['path']
     content = [c for c in contents if c.path == path][0]
-    contents.remove(content)
     content.delete()
     delete_document(content)
     return redirect(url_for('admin.list_contents'))
