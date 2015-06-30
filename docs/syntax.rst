@@ -58,7 +58,7 @@ will be rendered as::
 
 The Markdown syntax does not come with a functionnality to easily align your contents.
 
-FliKISS comes with `Mou`_ syntax to center or right align your contents.
+Microbe comes with `Mou`_ syntax to center or right align your contents.
 
 .. code-block:: markdown
 
