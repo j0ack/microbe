@@ -72,10 +72,13 @@ def before_request() :
     """
     # update config
     path = app.config['SHELVE_FILENAME']
-    db = shelve.open(path)
-    app.config.update(db)
-    # close db
-    db.close()
+    if not hasattr(g, 'mtime') or g.mtime != op.getmtime(path):
+        db = shelve.open(path)
+        app.config.update(db)
+        # close db
+        db.close()
+        # update mtime
+        g.mtime = op.getmtime(path)        
     # posts list    
     g.posts  = sorted(
                 [c for c in contents if c.content_type == 'posts' 
