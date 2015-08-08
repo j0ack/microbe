@@ -32,8 +32,10 @@
           </span>
           </div>
       </li>
-    {% endfor %}
-    <li><a href="{{ url_for('comments_feeds', path=page.path) }}">{{ _('Comments') }}</a></li>
+      {% endfor %}
+      {% if config.RSS == 'YES' %}
+        <li><a href="{{ url_for('comments_feeds', path=page.path) }}">{{ _('Comments feeds') }}</a></li>
+      {% endif %}
   {% endwith %}
   </div>
 {% endif %}

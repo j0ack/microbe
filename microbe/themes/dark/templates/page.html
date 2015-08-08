@@ -27,6 +27,9 @@
         }
        {% endif %}
   </script>
+  {% if page.comments and config.RSS == 'YES' and config.COMMENTS == 'YES' %}
+    <link rel="alternate" type="application/atom+xml" title="comments" href="{{ url_for('comments_feeds', path=page.path) }}">
+  {% endif %}
 {% endblock %}
 
 {% block content %}
