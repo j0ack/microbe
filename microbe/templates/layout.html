@@ -2,11 +2,11 @@
 
 {% block topbar %}
 <div class="top-bar">
-  <h1><a href="{{ url_for('index') }}">{{ config.SITENAME }}</a></h1>
+  <h1><a href="{{ url_for('frontend.index') }}">{{ config.SITENAME }}</a></h1>
     {% if config.SUBTITLE %}
       <i> {{ config.SUBTITLE }} </i>
     {% endif %}
-    <form style="display: inline;" action="{{url_for('search')}}" method="post" name="search">
+    <form style="display: inline;" action="{{url_for('frontend.search')}}" method="post" name="search">
       {{g.search_form.hidden_tag()}}
       {{g.search_form.search(size=20)}}
       <input type="submit" value="Search" style="display : none">
@@ -30,13 +30,13 @@
     <ul>
       {% if g.static_pages %}
         {% for page in g.static_pages %}
-          <li><a href="{{ url_for('page', path=page.path) }}">{{ page.title }}</a></li>
+          <li><a href="{{ url_for('frontend.page', path=page.path) }}">{{ page.title }}</a></li>
         {% endfor %}
       {% endif %}  
       {% if config.RSS == 'YES' %}
-        <li><a href="{{ url_for('feed') }}">{{ _('RSS feed') }}</a></li>
+        <li><a href="{{ url_for('frontend.feed') }}">{{ _('RSS feed') }}</a></li>
       {% endif %}
-      <li><a href="{{ url_for('archives') }}">{{ _('Archive') }}</a></li>
+      <li><a href="{{ url_for('frontend.archives') }}">{{ _('Archive') }}</a></li>
     </ul>
         
 
@@ -44,7 +44,7 @@
       <h5>{{ _('Categories') }}</h5>
       <ul>
         {% for cat in g.categories %}
-          <li><a href="{{ url_for('category', category=cat) }}">{{ cat }}</a></li>
+          <li><a href="{{ url_for('frontend.category', category=cat) }}">{{ cat }}</a></li>
         {% endfor %}
       </ul>
     {% endif %}    

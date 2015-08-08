@@ -18,6 +18,7 @@ from microbe.flatcontent.forms import ContentForm
 from microbe.flatcontent.models import Content
 from microbe.mods.search import delete_document, update_document
 
+
 @admin.route('/contents/')
 @login_required
 def list_contents() :

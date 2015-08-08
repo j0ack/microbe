@@ -6,7 +6,7 @@
 {% for page in objects %}
 <li>
   {{ page.published | date }}
-  <a href="{{ url_for('page', path=page.path) }}">
+  <a href="{{ url_for('frontend.page', path=page.path) }}">
     {{ page.title }}
   </a>
 </li>

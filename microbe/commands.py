@@ -16,8 +16,12 @@ from zipfile import ZipFile
 from argparse import ArgumentParser
 from cherrypy import wsgiserver
 
-from microbe import app
+from microbe import create_app
 from microbe.mods.search import init_index
+
+
+app = create_app()
+
 
 def runserver(args) :
     """

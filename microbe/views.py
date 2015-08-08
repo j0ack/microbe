@@ -1,6 +1,5 @@
 #! /usr/bin/env python
 #-*- coding: utf-8 -*-
-# vim:set shiftwidth=4 tabstop=4 expandtab textwidth=79:
 
 """
     Views for Microbe app
@@ -15,7 +14,7 @@ from datetime import datetime
 from werkzeug.contrib.atom import AtomFeed
 from urlparse import urljoin
 
-from microbe import app, contents, babel
+from microbe import babel, contents
 from microbe.utils import render, render_list
 from microbe.mods.search import search_query
 from microbe.flatcontent.forms import CommentForm
@@ -24,11 +23,13 @@ from microbe.mods.search.forms import SearchForm
 
 from flask.ext.babel import format_datetime, lazy_gettext
 from flask.ext.themes2 import static_file_url, get_theme
-from flask import (g, request, abort, url_for, make_response, 
-                  render_template, redirect)
+from flask import (Blueprint, current_app, g, request, abort, url_for,
+                   make_response, redirect)
 
 
-@app.errorhandler(404)
+frontend = Blueprint('frontend',__name__)
+
+
 def page_not_found(e):
     """
         Page not found error handler
@@ -41,10 +42,10 @@ def get_locale() :
     """
         Get locale for page translations
     """
-    return app.config.get('LANGUAGE')
+    return current_app.config.get('LANGUAGE')
 
 
-@app.template_filter('date')
+@frontend.app_template_filter('date')
 def date_filter(date, format = None) :
     """
         Date filter to use in Jinja2 templates
@@ -65,16 +66,16 @@ def date_filter(date, format = None) :
         return ''
 
 
-@app.before_request
+@frontend.before_request
 def before_request() :
     """
         Refresh global vars before each requests
     """
     # update config
-    path = app.config['SHELVE_FILENAME']
+    path = current_app.config['SHELVE_FILENAME']
     if not hasattr(g, 'mtime') or g.mtime != op.getmtime(path):
         db = shelve.open(path)
-        app.config.update(db)
+        current_app.config.update(db)
         # close db
         db.close()
         # update mtime
@@ -98,7 +99,7 @@ def before_request() :
         g.search_form = SearchForm()    
 
 
-@app.route('/')
+@frontend.route('/')
 def index():
     """
         Main page of the app
@@ -108,7 +109,7 @@ def index():
     return render_list('index.html', g.posts)
 
 
-@app.route('/sitemaps.xml')
+@frontend.route('/sitemaps.xml')
 def sitemap() :
     """
         Site sitemap
@@ -130,13 +131,13 @@ def sitemap() :
     return response
 
 
-@app.route('/favicon.ico')
+@frontend.route('/favicon.ico')
 def favicon() :
     """
         App favicon
     """
-    default = app.config['DEFAULT_THEME']
-    theme_id = app.config.get(u'THEME', default)
+    default = current_app.config['DEFAULT_THEME']
+    theme_id = current_app.config.get(u'THEME', default)
     theme = get_theme(theme_id)
     path = op.join(theme.static_path, 'img', 'favicon.png')
     if op.exists(path) :
@@ -146,7 +147,7 @@ def favicon() :
     return redirect(url)
 
     
-@app.route('/robots.txt')
+@frontend.route('/robots.txt')
 def robots() :
     """
         App robots.txt
@@ -158,7 +159,7 @@ def robots() :
         abort(404)
 
 
-@app.route('/<path:path>/', methods = ['GET', 'POST'])
+@frontend.route('/<path:path>/', methods = ['GET', 'POST'])
 def page(path):
     """
         Get access for page from its path.
@@ -170,7 +171,7 @@ def page(path):
     form = None
     # enable comments for posts only
     if content.content_type == 'posts':
-        if app.config.get('COMMENTS', 'NO') == 'YES':
+        if current_app.config.get('COMMENTS', 'NO') == 'YES':
             form = CommentForm()
     # form management
     if form and form.validate_on_submit() :
@@ -180,7 +181,7 @@ def page(path):
     return render('page.html', page = content, form = form)
 
 
-@app.route('/category/<category>')
+@frontend.route('/category/<category>')
 def category(category) :
     """
         Filter posts by category
@@ -192,7 +193,7 @@ def category(category) :
     return render_list('index.html', posts, title = category)
 
 
-@app.route('/tag/<tag>')
+@frontend.route('/tag/<tag>')
 def tag(tag) :
     """
         Filter posts by tag
@@ -204,7 +205,7 @@ def tag(tag) :
     return render_list('index.html', posts, title = tag)
 
 
-@app.route('/archives')
+@frontend.route('/archives')
 def archives() :
     """
        List all contents order by reverse date
@@ -218,13 +219,13 @@ def archives() :
     return render_list('archive.html', sorted_pages, per_page=10)
 
 
-@app.route('/search/', methods = ['POST'])
+@frontend.route('/search/', methods = ['POST'])
 def search() :
     """
         Search in contents
     """
     if not g.search_form.validate_on_submit() :
-        return redirect(url_for('index'))
+        return redirect(url_for('frontend.index'))
     query = g.search_form.search.data
     contents = search_query(query)
     # sort not draft contents by reverse date
@@ -236,14 +237,14 @@ def search() :
     return render_list('index.html', sorted_contents, per_page=10)
 
     
-@app.route('/feed.atom')
+@frontend.route('/feed.atom')
 def feed() :
     """
         Generate 20 last content atom feed
     """
-    if app.config.get('RSS', 'NO') != 'YES' :
+    if current_app.config.get('RSS', 'NO') != 'YES' :
         abort(404)
-    name = app.config['SITENAME']
+    name = current_app.config['SITENAME']
     feed = AtomFeed(name,feed_url=request.url, url=request.url_root)
     # sort posts by reverse date
     for post in g.posts[:20] :
@@ -256,17 +257,17 @@ def feed() :
     return feed.get_response()
 
 
-@app.route('/<path:path>/feed.atom')
+@frontend.route('/<path:path>/feed.atom')
 def comments_feeds(path):
     """
         Generate content comments feeds
         :param path: content path
     """
     # check if RSS is enabled
-    if app.config.get('RSS', 'NO') != 'YES':
+    if current_app.config.get('RSS', 'NO') != 'YES':
         abort(404)
     # check if comments are enabled
-    if app.config.get('COMMENTS', 'NO') != 'YES':
+    if current_app.config.get('COMMENTS', 'NO') != 'YES':
         abort(404)
     # check if content exists
     content = contents.get_or_404(path)

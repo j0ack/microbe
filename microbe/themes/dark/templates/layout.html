@@ -12,13 +12,13 @@
     <div class="large-9 large-centered columns">
       <div class = "row">
         <div class = "large-10 columns">
-          <h1><a href="{{ url_for('index') }}">{{ config.SITENAME }}</a></h1>
+          <h1><a href="{{ url_for('frontend.index') }}">{{ config.SITENAME }}</a></h1>
             {% if config.SUBTITLE %}
               <i> {{ config.SUBTITLE }} </i>
             {% endif %}
         </div>
         <div class = "large-2 columns">
-          <form class = "custom" action="{{url_for('search')}}" method="post" name="search">
+          <form class = "custom" action="{{url_for('frontend.search')}}" method="post" name="search">
             {{g.search_form.hidden_tag()}}
             {{g.search_form.search(size=20)}}
             <input type="submit" value="Search" style = "display : none">
@@ -46,13 +46,13 @@
     <ul class="side-nav">
       {% if g.static_pages %}
         {% for page in g.static_pages %}
-          <li><a href="{{ url_for('page', path=page.path) }}">{{ page.title }}</a></li>
+          <li><a href="{{ url_for('frontend.page', path=page.path) }}">{{ page.title }}</a></li>
         {% endfor %}
       {% endif %}  
       {% if config.RSS == 'YES' %}
-        <li><a href="{{ url_for('feed') }}">{{ _('Atom feed') }}</a></li>
+        <li><a href="{{ url_for('frontend.feed') }}">{{ _('Atom feed') }}</a></li>
       {% endif %}
-      <li><a href="{{ url_for('archives') }}">{{ _('Archive') }}</a></li>
+      <li><a href="{{ url_for('frontend.archives') }}">{{ _('Archive') }}</a></li>
     </ul>
         
 
@@ -60,7 +60,7 @@
       <h5 class="sidebar-title">{{ _('Categories') }}</h5>
       <ul class="side-nav">
         {% for cat in g.categories %}
-          <li><a href="{{ url_for('category', category = cat) }}">{{ cat }}</a></li>
+          <li><a href="{{ url_for('frontend.category', category = cat) }}">{{ cat }}</a></li>
         {% endfor %}
       </ul>
     {% endif %}   

@@ -45,4 +45,4 @@ def logout() :
         Logout user
     """
     logout_user()
-    return redirect(url_for('index'))
+    return redirect(url_for('frontend.index'))

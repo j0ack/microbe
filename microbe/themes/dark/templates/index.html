@@ -6,7 +6,7 @@
 {% endif %}
 {% for page in objects %}
   <article>
-    <a href="{{ url_for('page', path = page.path) }}">
+    <a href="{{ url_for('frontend.page', path = page.path) }}">
       <h3 class="article-title">{{ page.title }}</h3>
     </a>
     <h6 class="subheader">
@@ -21,13 +21,13 @@
       {% endif %}
     </h6>
     {{ page.summary | safe }}
-    <a class="button radius small" href="{{ url_for('page', path = page.path) }}">{{ _('Read more') }}</a>
+    <a class="button radius small" href="{{ url_for('frontend.page', path = page.path) }}">{{ _('Read more') }}</a>
     <p class="subheader">
-      {{ _('Category') }} : <a href="{{ url_for('category', category = page.category) }}">{{ page.category }}</a>
+      {{ _('Category') }} : <a href="{{ url_for('frontend.category', category = page.category) }}">{{ page.category }}</a>
       {% if page.tags %}
         {{ _('Tags') }} : 
         {% for tag in page.tags.split(',') %}
-          <a href="{{ url_for('tag', tag = tag) }}">{{ tag }}</a>&nbsp;
+          <a href="{{ url_for('frontend.tag', tag = tag) }}">{{ tag }}</a>&nbsp;
         {% endfor %}
       {% endif %}
     </p>      

@@ -1,4 +1,9 @@
 {% extends "admin/base.html" %}
 {% block content %}
 <h3>{{ _('Welcome on') }} {{ config.SITENAME }} {{ _('administration page') }}</h3>
+{% if new_version %}
+  <p class="info">
+    {{ _('A new version of Microbe is available, see ') }}
+    <a href="http://microbe.readthedocs.org/en/latest/install.html#upgrade-microbe">{{ _('here') }}</a>
+{% endif %}
 {% endblock %}

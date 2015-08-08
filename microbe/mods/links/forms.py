@@ -14,7 +14,9 @@ from wtforms import TextField
 from flask.ext.wtf import Form
 from flask.ext.babel import lazy_gettext
 
-from microbe.admin import required_message
+
+required_message = lazy_gettext('This field is required')
+
 
 class LinkForm(Form) :
     """

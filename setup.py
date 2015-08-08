@@ -1,8 +1,7 @@
 #! /usr/bin/env python
 #-*- coding : utf-8 -*-
-# vim:set shiftwidth=4 tabstop=4 expandtab textwidth=79:
 
-__author__  = 'TROUVERIE Joachim'
+__author__ = 'TROUVERIE Joachim'
 __version__ = '1.2'
 __appname__ = 'Microbe'
 
