@@ -1,6 +1,5 @@
 #! /usr/bin/env python
 #-*- coding: utf-8 -*-
-# vim:set shiftwidth=4 tabstop=4 expandtab textwidth=79:
 
 """
     FlatContent models for Microbe app
@@ -131,8 +130,8 @@ class Content(Page) :
     @property
     def comments(self) :
         lst = []
-        comments = self.meta.get(u'comments', [])
-        for author, date, content, uid in comments :
+        com = self.meta.get(u'comments', [])
+        for author, date, content, uid in com:
             lst.append(Comment(author, date, content, uid))
         return sorted(lst, key = lambda x : x.date)
 
@@ -166,18 +165,15 @@ class Content(Page) :
         self.save()
 
 
-    def delete_comment(self, uid) :
+    def delete_comment(self, comment_uid) :
         """
             Delete a comment
         """
         meta = self.meta
-        comments = self.comments
-        for com in comments :
-            if com.uid == uid :
-                comments.remove(com)
-                break
+        comments = meta.get(u'comments', [])
+        new_comments = [(a,d,c,uid) for a,d,c,uid in comments if uid != comment_uid]
         # save
-        meta[u'comments'] = comments
+        meta[u'comments'] = new_comments
         self._meta_yaml = safe_dump(meta)
         self.save()
 
