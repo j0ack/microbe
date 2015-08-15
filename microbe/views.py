@@ -1,11 +1,9 @@
 #! /usr/bin/env python
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 """
     Views for Microbe app
 """
-
-__author__ = 'TROUVERIE Joachim'
 
 import os.path as op
 import shelve
@@ -26,51 +24,46 @@ from flask.ext.themes2 import static_file_url, get_theme
 from flask import (Blueprint, current_app, g, request, abort, url_for,
                    make_response, redirect)
 
+__author__ = 'TROUVERIE Joachim'
 
-frontend = Blueprint('frontend',__name__)
+
+frontend = Blueprint('frontend', __name__)
 
 
 def page_not_found(e):
-    """
-        Page not found error handler
-    """
+    """Page not found error handler"""
     return render('404.html'), 404
 
 
 @babel.localeselector
-def get_locale() :
-    """
-        Get locale for page translations
-    """
+def get_locale():
+    """Get locale for page translations"""
     return current_app.config.get('LANGUAGE')
 
 
 @frontend.app_template_filter('date')
-def date_filter(date, format = None) :
-    """
-        Date filter to use in Jinja2 templates
+def date_filter(date, format=None):
+    """Date filter to use in Jinja2 templates
 
-        :param date : datetime object to convert
-        :param format: format to convert date object
-        :type date: datetime
-        :type format: str
+    :param date : datetime object to convert
+    :param format: format to convert date object
+    :type date: datetime
+    :type format: str
 
-        .. warnings:: Format is in flask.ext.babel format
+    .. warnings:: Format is in flask.ext.babel format
     """
-    if date :
-        if format :
+    if date:
+        if format:
             return format_datetime(date, format)
-        else :
+        else:
             return format_datetime(date, 'dd MM yyyy')
-    else :
+    else:
         return ''
 
 
 @frontend.before_request
-def before_request() :
-    """
-        Refresh global vars before each requests
-    """
+def before_request():
+    """Refresh global vars before each requests"""
     # update config
     path = current_app.config['SHELVE_FILENAME']
     if not hasattr(g, 'mtime') or g.mtime != op.getmtime(path):
@@ -79,47 +72,41 @@ def before_request() :
         # close db
         db.close()
         # update mtime
-        g.mtime = op.getmtime(path)        
-    # posts list    
-    g.posts  = sorted(
-                [c for c in contents if c.content_type == 'posts' 
-                and not c.draft],
-                key = lambda x : x.published,
-                reverse = True
-                )
+        g.mtime = op.getmtime(path)
+    # posts list
+    g.posts = sorted([c for c in contents if c.content_type == 'posts'
+                      and not c.draft],
+                     key=lambda x: x.published,
+                     reverse=True)
     # posts categories
     g.categories = set([c.category for c in g.posts if c.category])
     # static pages
     g.static_pages = [c for c in contents if c.content_type == 'pages'
-                     and not c.draft]
+                      and not c.draft]
     # links
     g.links = Links.get_all()
     # search form
-    if not hasattr(g, 'search_form') : 
-        g.search_form = SearchForm()    
+    if not hasattr(g, 'search_form'):
+        g.search_form = SearchForm()
 
 
 @frontend.route('/')
 def index():
-    """
-        Main page of the app
-
-        List of blog posts summaries
+    """Main page of the app
+    List of blog posts summaries
     """
     return render_list('index.html', g.posts)
 
 
 @frontend.route('/sitemaps.xml')
-def sitemap() :
-    """
-        Site sitemap
-    """
+def sitemap():
+    """Site sitemap"""
     # list all contents
     sitemap_contents = [c for c in contents if not c.draft]
     # root
     root = ET.Element('urlset')
     root.set('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9')
-    for content in sitemap_contents :
+    for content in sitemap_contents:
         url = ET.SubElement(root, 'url')
         loc = ET.SubElement(url, 'loc')
         loc.text = urljoin(request.url_root, content.path)
@@ -132,41 +119,36 @@ def sitemap() :
 
 
 @frontend.route('/favicon.ico')
-def favicon() :
-    """
-        App favicon
-    """
+def favicon():
+    """App favicon"""
     default = current_app.config['DEFAULT_THEME']
     theme_id = current_app.config.get(u'THEME', default)
     theme = get_theme(theme_id)
     path = op.join(theme.static_path, 'img', 'favicon.png')
-    if op.exists(path) :
+    if op.exists(path):
         url = static_file_url(theme, 'img/favicon.png')
-    else :
+    else:
         url = url_for('static', filename='img/favicon.png')
     return redirect(url)
 
-    
+
 @frontend.route('/robots.txt')
-def robots() :
-    """
-        App robots.txt
-    """
-    try :
+def robots():
+    """App robots.txt"""
+    try:
         url = url_for('static', filename='media/robots.txt')
-        return redirect(url) 
-    except :
+        return redirect(url)
+    except:
         abort(404)
 
 
-@frontend.route('/<path:path>/', methods = ['GET', 'POST'])
+@frontend.route('/<path:path>/', methods=['GET', 'POST'])
 def page(path):
-    """
-        Get access for page from its path.
-        If path is not valid it will return a 404 error page
+    """Get access for page from its path.
+    If path is not valid it will return a 404 error page
 
-        :param path: Valid content path 
-    """    
+    :param path: Valid content path
+    """
     content = contents.get_or_404(path)
     form = None
     # enable comments for posts only
@@ -174,94 +156,81 @@ def page(path):
         if current_app.config.get('COMMENTS', 'NO') == 'YES':
             form = CommentForm()
     # form management
-    if form and form.validate_on_submit() :
+    if form and form.validate_on_submit():
         author = form.name.data
         body = form.content.data
         content.add_comment(author, body)
-    return render('page.html', page = content, form = form)
+    return render('page.html', page=content, form=form)
 
 
 @frontend.route('/category/<category>')
-def category(category) :
-    """
-        Filter posts by category
+def category(category):
+    """Filter posts by category
 
-        :param category: Category to filter contents
-        :type category: str
+    :param category: Category to filter contents
+    :type category: str
     """
     posts = [p for p in g.posts if p.category == category]
-    return render_list('index.html', posts, title = category)
+    return render_list('index.html', posts, title=category)
 
 
 @frontend.route('/tag/<tag>')
-def tag(tag) :
-    """
-        Filter posts by tag
+def tag(tag):
+    """Filter posts by tag
 
-        :param tag: Category to filter contents
-        :type tag: str
+    :param tag: Category to filter contents
+    :type tag: str
     """
     posts = [p for p in g.posts if tag in p.tags.split(',')]
-    return render_list('index.html', posts, title = tag)
+    return render_list('index.html', posts, title=tag)
 
 
 @frontend.route('/archives')
-def archives() :
-    """
-       List all contents order by reverse date
-    """
+def archives():
+    """List all contents order by reverse date"""
     # sort pages by reverse date
-    sorted_pages = sorted(
-                        contents,
-                        key = lambda x : x.published,
-                        reverse = True
-                    )
+    sorted_pages = sorted(contents,
+                          key=lambda x: x.published,
+                          reverse=True)
     return render_list('archive.html', sorted_pages, per_page=10)
 
 
-@frontend.route('/search/', methods = ['POST'])
-def search() :
-    """
-        Search in contents
-    """
-    if not g.search_form.validate_on_submit() :
+@frontend.route('/search/', methods=['POST'])
+def search():
+    """Search in contents"""
+    if not g.search_form.validate_on_submit():
         return redirect(url_for('frontend.index'))
     query = g.search_form.search.data
     contents = search_query(query)
     # sort not draft contents by reverse date
-    sorted_contents = sorted(
-                            [c for c in contents if not c.draft], 
-                            key = lambda x : x.published,
-                            reverse = True
-                       )
+    sorted_contents = sorted([c for c in contents if not c.draft],
+                             key=lambda x: x.published,
+                             reverse=True)
     return render_list('index.html', sorted_contents, per_page=10)
 
-    
+
 @frontend.route('/feed.atom')
-def feed() :
-    """
-        Generate 20 last content atom feed
-    """
-    if current_app.config.get('RSS', 'NO') != 'YES' :
+def feed():
+    """Generate 20 last content atom feed"""
+    if current_app.config.get('RSS', 'NO') != 'YES':
         abort(404)
     name = current_app.config['SITENAME']
-    feed = AtomFeed(name,feed_url=request.url, url=request.url_root)
+    feed = AtomFeed(name, feed_url=request.url, url=request.url_root)
     # sort posts by reverse date
-    for post in g.posts[:20] :
-        feed.add( post.title,
-                unicode(post.summary),
-                content_type = 'html',
-                author = post.meta.get('author', ''),
-                url = urljoin(request.url_root, post.path),
-                updated = post.published)
+    for post in g.posts[:20]:
+        feed.add(post.title,
+                 unicode(post.summary),
+                 content_type='html',
+                 author=post.meta.get('author', ''),
+                 url=urljoin(request.url_root, post.path),
+                 updated=post.published)
     return feed.get_response()
 
 
 @frontend.route('/<path:path>/feed.atom')
 def comments_feeds(path):
-    """
-        Generate content comments feeds
-        :param path: content path
+    """Generate content comments feeds
+    :param path: content path
     """
     # check if RSS is enabled
     if current_app.config.get('RSS', 'NO') != 'YES':
@@ -272,16 +241,16 @@ def comments_feeds(path):
     # check if content exists
     content = contents.get_or_404(path)
     name = u'Comments for ' + content.title
-    feed = AtomFeed(name,feed_url=request.url, url=request.url_root)
+    feed = AtomFeed(name, feed_url=request.url, url=request.url_root)
     content_url = urljoin(request.url_root, path)
     if content_url[:-1] != '/':
         content_url += '/'
     # sort posts by reverse date
     for com in content.comments:
         feed.add(u'Comment for ' + content.title,
-                unicode(com.content),
-                content_type = 'html',
-                author = com.author,
-                url = urljoin(content_url, '#' + com.uid),
-                updated = com.date)
+                 unicode(com.content),
+                 content_type='html',
+                 author=com.author,
+                 url=urljoin(content_url, '#' + com.uid),
+                 updated=com.date)
     return feed.get_response()

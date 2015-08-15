@@ -1,15 +1,13 @@
 #! /usr/bin/env python
-#-*- coding: utf-8 -*-
-# vim:set shiftwidth=4 tabstop=4 expandtab textwidth=79:
+# -*- coding: utf-8 -*-
+
 
 """
-    FlatContent module for Microbe app 
-    
-    Sub-class of FlatPages extension to add 
+    FlatContent module for Microbe app
+
+    Sub-class of FlatPages extension to add
     concurrent access management
 """
-
-__author__ = 'TROUVERIE Joachim'
 
 import itertools
 import os.path
@@ -19,10 +17,12 @@ from flask.ext.flatpages import FlatPages
 
 from microbe.flatcontent.models import Content
 
-class FlatContent(FlatPages) :
-    """
-        Override of FlatPages for Microbe
-    """
+
+__author__ = 'TROUVERIE Joachim'
+
+
+class FlatContent(FlatPages):
+    """Override of FlatPages for Microbe"""
     def _parse(self, content, path):
         """
             Return an instance of `Content` instead of `Page`
@@ -33,9 +33,7 @@ class FlatContent(FlatPages) :
         # The rest is the content. `lines` is an iterator so it continues
         # where `itertools.takewhile` left it.
         content = u'\n'.join(lines)
-
         return Content(path, meta, content)
-
 
     def _load_file(self, path, filename):
         """
@@ -46,7 +44,7 @@ class FlatContent(FlatPages) :
         if cached and cached[1] == mtime:
             page = cached[0]
         else:
-            with lock(filename) :
+            with lock(filename):
                 with open(filename) as fd:
                     content = fd.read().decode(self.config('encoding'))
             page = self._parse(content, path)

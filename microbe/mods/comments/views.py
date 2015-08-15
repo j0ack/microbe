@@ -1,12 +1,10 @@
 #! /usr/bin/env python
-#-*- coding: utf-8 -*-
-# vim:set shiftwidth=4 tabstop=4 expandtab textwidth=79:
+# -*- coding: utf-8 -*-
+
 
 """
-    Comments views for Microbe app 
+    Comments views for Microbe app
 """
-
-__author__ = 'TROUVERIE Joachim'
 
 from flask import redirect, url_for, request
 from flask.ext.login import login_required
@@ -15,13 +13,14 @@ from microbe import contents
 from microbe.admin import admin
 from microbe.utils import render_list
 
+__author__ = 'TROUVERIE Joachim'
+
+
 @admin.route('/comments/<path:path>/')
 @login_required
-def comments(path) :
-    """
-        List comments for a content
-
-        Available action is delete
+def comments(path):
+    """List comments for a content
+    Available action is delete
     """
     # get comments
     content = contents.get(path)
@@ -30,20 +29,16 @@ def comments(path) :
 
 
 @admin.route('/delete_comment/<path:path>/', methods=['POST'])
-@login_required    
-def delete_comment(path) :
-    """
-        Delete a comment
-        
-    """
+@login_required
+def delete_comment(path):
+    """Delete a comment"""
     # get comment id
     comment = request.form['comment']
-    # get content    
+    # get content
     content = contents.get(path)
     # delete comment
     content.delete_comment(comment)
-    if len(content.comments) > 0 :
+    if len(content.comments) > 0:
         return redirect(url_for('admin.comments', path=path))
-    else :
+    else:
         return redirect(url_for('admin.list_contents'))
-        

@@ -1,9 +1,9 @@
 #! /usr/bin/env python
-#-*- coding: utf-8 -*-
-# vim:set shiftwidth=4 tabstop=4 expandtab textwidth=79:
+# -*- coding: utf-8 -*-
+
 
 """
-    Config views for Microbe app 
+    Config views for Microbe app
 """
 
 import shelve
@@ -15,32 +15,30 @@ from flask.ext.babel import refresh, lazy_gettext
 from microbe.admin import admin
 from microbe.mods.config.forms import ConfigForm
 
-@admin.route('/config/', methods = ['GET', 'POST'])
+
+@admin.route('/config/', methods=['GET', 'POST'])
 @login_required
-def config() :
-    """
-        Edit app config from form
-    """
+def config():
+    """Edit app config from form"""
     # get config
     config = current_app.config
     # populate form with config
-    form = ConfigForm(
-            sitename = config.get('SITENAME'),
-            subtitle = config.get('SUBTITLE'),
-            author = config.get('AUTHOR'),
-            language = config.get('LANGUAGE'),
-            pagination = config.get('PAGINATION'),
-            summary_length = config.get('SUMMARY_LENGTH'),
-            comments = config.get('COMMENTS'),
-            rss = config.get('RSS'),
-            recaptcha_public_key = config.get('RECAPTCHA_PUBLIC_KEY'),
-            recaptcha_private_key = config.get('RECAPTCHA_PRIVATE_KEY')
-            )
-    if form.validate_on_submit() :
+    form = ConfigForm(sitename=config.get('SITENAME'),
+                      subtitle=config.get('SUBTITLE'),
+                      author=config.get('AUTHOR'),
+                      language=config.get('LANGUAGE'),
+                      pagination=config.get('PAGINATION'),
+                      summary_length=config.get('SUMMARY_LENGTH'),
+                      comments=config.get('COMMENTS'),
+                      rss=config.get('RSS'),
+                      recaptcha_public_key=config.get('RECAPTCHA_PUBLIC_KEY'),
+                      recaptcha_private_key=config.get('RECAPTCHA_PRIVATE_KEY')
+                      )
+    if form.validate_on_submit():
         # refresh babel
         path = current_app.config['SHELVE_FILENAME']
         db = shelve.open(path)
-        if config.get('LANGUAGE') != db.get('LANGUAGE') :
+        if config.get('LANGUAGE') != db.get('LANGUAGE'):
             refresh()
         db['SITENAME'] = form.sitename.data
         db['SUBTITLE'] = form.subtitle.data
@@ -54,8 +52,8 @@ def config() :
         db['RECAPTCHA_PRIVATE_KEY'] = form.recaptcha_private_key.data
         db.close()
         return redirect(url_for('admin.index'))
-    return render_template('admin/model.html', 
-            form = form, 
-            title = lazy_gettext(u'Configuration of ') + 
-            config.get('SITENAME'),
-            url = url_for('admin.config'))
+    return render_template('admin/model.html',
+                           form=form,
+                           title=lazy_gettext(u'Configuration of ') +
+                           config.get('SITENAME'),
+                           url=url_for('admin.config'))
