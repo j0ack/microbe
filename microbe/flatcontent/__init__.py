@@ -24,9 +24,7 @@ __author__ = 'TROUVERIE Joachim'
 class FlatContent(FlatPages):
     """Override of FlatPages for Microbe"""
     def _parse(self, content, path):
-        """
-            Return an instance of `Content` instead of `Page`
-        """
+        """Return an instance of `Content` instead of `Page`"""
         lines = iter(content.split(u'\n'))
         # Read lines until an empty line is encountered.
         meta = u'\n'.join(itertools.takewhile(unicode.strip, lines))
@@ -36,9 +34,7 @@ class FlatContent(FlatPages):
         return Content(path, meta, content)
 
     def _load_file(self, path, filename):
-        """
-            Implements of lockfile
-        """
+        """Implements of lockfile"""
         mtime = os.path.getmtime(filename)
         cached = self._file_cache.get(filename)
         if cached and cached[1] == mtime:

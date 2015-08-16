@@ -16,15 +16,21 @@
 
         $HOME/.microbe/themes
 
+    App errors will be logged in
+
+        $HOME/.microbe/microbe.log
+
     Admin blueprint and extensions are loaded here.
 """
 
 import os
 import os.path as op
+import logging
 
 from flask import Flask
 from flask.ext.themes2 import Themes
 from flask.ext.babel import Babel
+from logging.handlers import RotatingFileHandler
 
 from microbe.utils import merge_default_config
 from microbe.flatcontent import FlatContent
@@ -38,6 +44,14 @@ contents = FlatContent()
 babel = Babel()
 
 
+def _mkdir_if_not_exists(path):
+    """Create a new dir if not exists
+    :param path: Dir path to create
+    """
+    if not op.exists(path):
+        os.makedirs(path)
+
+
 def create_app():
     """App factory"""
     # create app
@@ -49,18 +63,27 @@ def create_app():
         merge_default_config(app.config)
     # create path if not exists
     path = op.join(op.dirname(__file__), 'content')
-    if not op.exists(path):
-        os.makedirs(op.join(path, 'pages'))
-        os.makedirs(op.join(path, 'posts'))
+    _mkdir_if_not_exists(path)
+    _mkdir_if_not_exists(op.join(path, 'pages'))
+    _mkdir_if_not_exists(op.join(path, 'posts'))
+    _mkdir_if_not_exists(op.join(path, 'comments'))
+    # config files
     path = op.join(op.expanduser('~'), '.microbe')
+    _mkdir_if_not_exists(path)
     theme_path = op.join(op.dirname(__file__), 'themes')
-    if not op.exists(path):
-        os.makedirs(path)
-    if op.exists(op.join(path, 'themes')):
+    if op.lexists(op.join(path, 'themes')):
         os.unlink(op.join(path, 'themes'))
     os.symlink(theme_path, op.join(path, 'themes'))
     # themes support
     Themes(app, app_identifier='microbe')
+    # logging
+    log_path = op.join(path, 'microbe.log')
+    logs = RotatingFileHandler(log_path, 'a', 1024 * 1024, 10)
+    frm = '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
+    logs.setFormatter(logging.Formatter(frm))
+    app.logger.setLevel(logging.ERROR)
+    logs.setLevel(logging.ERROR)
+    app.logger.addHandler(logs)
     # plugins
     contents.init_app(app)
     babel.init_app(app)
