@@ -14,8 +14,8 @@ from microbe import contents
 from microbe.markdown_content import render_markdown
 from microbe.utils import render_list
 from microbe.admin import admin
-from microbe.flatcontent.forms import ContentForm
-from microbe.flatcontent.models import Content
+from microbe.mods.flatcontent.forms import ContentForm
+from microbe.mods.flatcontent.models import Content
 from microbe.mods.search import delete_document, update_document
 
 
@@ -23,7 +23,6 @@ from microbe.mods.search import delete_document, update_document
 @login_required
 def list_contents():
     """List contents"""
-    # get
     sorted_contents = sorted(contents,
                              key=lambda x: x.published,
                              reverse=True)
@@ -86,3 +85,31 @@ def content(path=None):
     return render_template('admin/content.html', title=title,
                            url=url_for('admin.content', path=path),
                            form=form)
+
+
+@admin.route('/comments/<path:path>/')
+@login_required
+def comments(path):
+    """List comments for a content
+    Available action is delete
+    """
+    # get comments
+    content = contents.get(path)
+    comments = content.comments
+    return render_list('admin/comments.html', comments, per_page=15, path=path)
+
+
+@admin.route('/delete_comment/<path:path>/', methods=['POST'])
+@login_required
+def delete_comment(path):
+    """Delete a comment"""
+    # get comment id
+    comment = request.form['comment']
+    # get content
+    content = contents.get(path)
+    # delete comment
+    content.delete_comment(comment)
+    if len(content.comments) > 0:
+        return redirect(url_for('admin.comments', path=path))
+    else:
+        return redirect(url_for('admin.list_contents'))

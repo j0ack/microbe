@@ -30,10 +30,11 @@ import logging
 from flask import Flask
 from flask.ext.themes2 import Themes
 from flask.ext.babel import Babel
+from flask.ext.mail import Mail
 from logging.handlers import RotatingFileHandler
 
 from microbe.utils import merge_default_config
-from microbe.flatcontent import FlatContent
+from microbe.mods.flatcontent import FlatContent
 
 __author__ = 'TROUVERIE Joachim'
 __version__ = '1.2.0'
@@ -94,7 +95,9 @@ def create_app():
     # blueprint
     from microbe.admin import admin, lm
     from microbe.mods.users import load_user
+    from microbe.mods.email import mail
     app.register_blueprint(admin, url_prefix='/admin')
     lm.init_app(app)
     lm.user_loader(load_user)
+    mail.init_app(app)
     return app

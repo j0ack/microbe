@@ -9,7 +9,9 @@
 import os.path
 import re
 import shelve
+
 from itertools import islice
+from lockfile import LockFile as lock
 
 from flask import abort, request, current_app
 from flask.ext.paginate import Pagination
@@ -59,7 +61,10 @@ def merge_default_config(config):
     db = shelve.open(path, 'c')
     db['LANGUAGE'] = u'en'
     db['SITENAME'] = u'Microbe Default site'
-    db['USERS'] = {u'admin': generate_password_hash(u'microbe')}
+    db['USERS'] = {u'admin':
+                   {u'name': u'admin',
+                    u'email': None,
+                    u'pw_hash': generate_password_hash(u'microbe')}}
     db['POST_DIR'] = u'posts'
     db['PAGE_DIR'] = u'pages'
     db['PAGINATION'] = 5
@@ -170,3 +175,22 @@ def truncate_html_words(s, num, end_text='...'):
         out += '</%s>' % tag
     # Return string
     return out
+
+
+def load_file(filepath):
+    """Load file content using LockFile to prevent concurent accesss
+    :param filepath: File path
+    """
+    with lock(filepath):
+        with open(filepath, 'r') as fd:
+            return fd.read()
+
+
+def save_file(content, filepath):
+    """Save file using LockFile to prevent concurent access
+    :param content: File content
+    :param filepath: File path
+    """
+    with lock(filepath):
+        with open(filepath, 'w') as fd:
+            fd.write(content)

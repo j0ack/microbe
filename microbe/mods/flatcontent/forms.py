@@ -7,7 +7,8 @@
 """
 
 from wtforms.validators import Required
-from wtforms import TextField, TextAreaField, SelectField
+from wtforms.fields.html5 import EmailField
+from wtforms import TextField, TextAreaField, SelectField, BooleanField
 
 from flask.ext.wtf import Form, RecaptchaField
 from flask.ext.babel import lazy_gettext
@@ -34,6 +35,10 @@ class CommentForm(Form):
     """Form to add comment to posts"""
     name = TextField(lazy_gettext(u'Name'),
                      [Required(message=required_message)])
+    email = EmailField(lazy_gettext(u'Email'),
+                       [Required(message=required_message)])
+    site = TextField(lazy_gettext(u'Site'))
     content = TextAreaField(lazy_gettext(u'Content'),
                             [Required(message=required_message)])
+    notify = BooleanField(lazy_gettext(u'Notify me of follow-up comments by email'))
     captcha = RecaptchaField()

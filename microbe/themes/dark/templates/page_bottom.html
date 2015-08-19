@@ -6,7 +6,7 @@
   {{ _('Category') }} : <a href="{{ url_for('frontend.category', category=page.category) }}">{{ page.category }}</a>
   {% endif %}
   {% if page.tags %}
-  {{ _('Tags') }} : 
+  {{ _('Tags') }} :
     {% for tag in page.tags.split(',') %}
       <a href="{{ url_for('frontend.tag', tag=tag) }}">{{ tag }}</a>&nbsp;
     {% endfor %}
@@ -22,18 +22,23 @@
     {% for comment in page.comments %}
       <a name="{{ comment.uid }}"></a>
       <li>
-          <div class="{{ comment.author }}" style="position : absolute; width : 60px;">
+          <div class="avatar" style="position : absolute; width : 60px;">
+            <img src="{{ comment.avatar }}" alt="avatar">
           </div>
           <div class="comment_content" style="margin-left : 70px;">
+            {% if comment.site %}
+	      <a href="{{ comment.site }}" target="_blank"><b>{{ comment.author }}</b></a>
+	    {% else %}
+	      <b>{{ comment.author }}</b>
+            {% endif %}
           <p>{{ comment.content }} </p>
-          <strong>{{ comment.author }}</strong>&nbsp; 
           <span class="subheader">
             {{ comment.date | date('dd MM yyyy HH:mm') }}
           </span>
           </div>
       </li>
     {% endfor %}
-    {% if config.RSS == 'YES' %}  
+    {% if config.RSS == 'YES' %}
       <li><a href="{{ url_for('frontend.comments_feeds', path=page.path) }}">{{ _('Comments feeds') }}</a></li>
     {% endif %}
   {% endwith %}
@@ -42,7 +47,7 @@
 
 <!-- comment form -->
 {% if config.COMMENTS == 'YES' and form %}
-<h4>{{ _('Add a comment') }}</h4>  
+<h4>{{ _('Add a comment') }}</h4>
   <form action="." method="post">
     {{ forms.render(form) }}
   </form>

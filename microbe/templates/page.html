@@ -1,45 +1,17 @@
-{% extends "layout.html" %}
+{% extends theme("layout.html") %}
 
 {% block head %}
   {{ super() }}
-  <script type="text/javascript" src="{{ url_for('static', filename = 'js/vizhash.min.js') }}"></script>
-  <script>
-    function addHash(val) {
-      try {
-          if (vizhash.supportCanvas()) {
-              var vhash = vizhash.canvasHash(val, 64, 64);
-              var elements = document.getElementsByClassName(val);
-              for ( ii = 0; ii < elements.length; ii++ ){
-                  if ( elements[ii].getElementsByTagName('img').length == 0 ) {
-                      elements[ii].appendChild(vhash.toImage());
-                  }
-               }
-           }
-        }
-        catch (err) {
-          alert(err);
-        }       
-     }
-      
-
-       {% if config.COMMENTS == 'YES' and page.comments %}
-          window.onload = function() {      
-            {% for comment in page.comments %}
-              addHash("{{ comment.author }}");
-            {% endfor %}       
-          }
-       {% endif %}
-   </script>
-   {% if config.COMMENTS == 'YES' and config.RSS == 'YES' and page.comments %}
-     <link rel="alternate" type="application/atom+xml" title="comments" href="{{ url_for('frontend.comments_feeds', path=page.path) }}">
-   {% endif %}
+  {% if page.comments and config.RSS == 'YES' and config.COMMENTS == 'YES' %}
+    <link rel="alternate" type="application/atom+xml" title="comments" href="{{ url_for('frontend.comments_feeds', path=page.path) }}">
+  {% endif %}
 {% endblock %}
 
 {% block content %}
   <h3>{{ page.title }}</h3>
-  <h6>
+  <h6 class="subheader">
   {% if page.published %}
-    {{ page.published | date('EE dd MMMM YYYY') }} | 
+    {{ page.published | date('EE dd MMMM YYYY') }} |
   {% endif %}
   <b>{{ page.author }}</b>
   </h6>

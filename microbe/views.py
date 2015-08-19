@@ -15,7 +15,7 @@ from urlparse import urljoin
 from microbe import babel, contents
 from microbe.utils import render, render_list
 from microbe.mods.search import search_query
-from microbe.flatcontent.forms import CommentForm
+from microbe.mods.flatcontent.forms import CommentForm
 from microbe.mods.links.models import Links
 from microbe.mods.search.forms import SearchForm
 
@@ -61,7 +61,7 @@ def date_filter(date, format=None):
         return ''
 
 
-@frontend.before_request
+@frontend.before_app_request
 def before_request():
     """Refresh global vars before each requests"""
     # update config
@@ -159,7 +159,10 @@ def page(path):
     if form and form.validate_on_submit():
         author = form.name.data
         body = form.content.data
-        content.add_comment(author, body)
+        email = form.email.data
+        site = form.site.data
+        notif = form.notify.data
+        content.add_comment(author, email, site, body, notif)
     return render('page.html', page=content, form=form)
 
 

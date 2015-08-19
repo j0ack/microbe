@@ -7,6 +7,7 @@
 """
 
 from wtforms.validators import Required, EqualTo
+from wtforms.fields.html5 import EmailField
 from wtforms import TextField, PasswordField
 
 from flask.ext.wtf import Form
@@ -21,6 +22,7 @@ class UserForm(Form):
     """Form to edit and add new user"""
     username = TextField(lazy_gettext(u'Name'),
                          [Required(message=required_message)])
+    email = EmailField(lazy_gettext(u'Email'))
     password = PasswordField(lazy_gettext(u'Password'),
                              [Required(message=required_message),
                               EqualTo('confirm',

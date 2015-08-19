@@ -37,9 +37,8 @@ def index():
     return render_template('admin/index.html', new_version=new_version)
 
 from microbe.mods.auth import views
-from microbe.mods.comments import views
 from microbe.mods.config import views
-from microbe.mods.contents import views
+from microbe.mods.flatcontent import views
 from microbe.mods.links import views
 from microbe.mods.themes import views
 from microbe.mods.users import views

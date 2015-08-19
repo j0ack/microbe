@@ -43,7 +43,9 @@ def user(user=None):
     """Edit or create user"""
     # get user
     if user:
-        form = UserForm(username=user)
+        user_obj = Users.get(user)
+        form = UserForm(username=user_obj.name,
+                        email=user_obj.email)
         title = user
     else:
         form = UserForm()
@@ -52,7 +54,8 @@ def user(user=None):
         # update or add new user
         username = form.username.data
         pwd = form.password.data
-        Users.update(username, pwd)
+        email = form.email.data
+        Users.update(username, email, pwd)
         return redirect(url_for('.users'))
     return render_template('admin/model.html', title=title,
                            form=form, url=url_for('admin.user'))

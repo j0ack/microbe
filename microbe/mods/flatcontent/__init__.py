@@ -15,8 +15,8 @@ from lockfile import LockFile as lock
 
 from flask.ext.flatpages import FlatPages
 
-from microbe.flatcontent.models import Content
-
+from microbe.mods.flatcontent.models import Content
+from microbe.utils import load_file
 
 __author__ = 'TROUVERIE Joachim'
 
@@ -40,9 +40,7 @@ class FlatContent(FlatPages):
         if cached and cached[1] == mtime:
             page = cached[0]
         else:
-            with lock(filename):
-                with open(filename) as fd:
-                    content = fd.read().decode(self.config('encoding'))
+            content = load_file(filename).decode(self.config('encoding'))
             page = self._parse(content, path)
             self._file_cache[filename] = page, mtime
         return page

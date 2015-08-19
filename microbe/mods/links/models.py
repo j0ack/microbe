@@ -70,7 +70,10 @@ class Links(object):
                     # remove object
                     objects.remove(value)
                     # update config
-                    db[key] = objects
+                    if objects:
+                        db[key] = objects
+                    else:
+                        del db[key]
                     break
         db.close()
 
