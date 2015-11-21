@@ -34,6 +34,7 @@ from flask.ext.mail import Mail
 from logging.handlers import RotatingFileHandler
 
 from microbe.utils import merge_default_config
+from microbe.database import db
 from microbe.mods.flatcontent import FlatContent
 
 __author__ = 'TROUVERIE Joachim'
@@ -59,9 +60,6 @@ def create_app():
     app = Flask(__name__)
     # config
     app.config.from_pyfile('settings.py')
-    # config
-    if not op.exists(app.config['SHELVE_FILENAME']):
-        merge_default_config(app.config)
     # create path if not exists
     path = op.join(op.dirname(__file__), 'content')
     _mkdir_if_not_exists(path)
@@ -88,6 +86,7 @@ def create_app():
     # plugins
     contents.init_app(app)
     babel.init_app(app)
+    db.init_app(app)
     # frontend
     from microbe.views import frontend, page_not_found
     app.register_blueprint(frontend)

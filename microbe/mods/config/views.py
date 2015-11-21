@@ -6,14 +6,16 @@
     Config views for Microbe app
 """
 
-import shelve
-
 from flask import render_template, current_app, url_for, redirect
 from flask.ext.login import login_required
 from flask.ext.babel import refresh, lazy_gettext
 
+from microbe.database import db
 from microbe.admin import admin
 from microbe.mods.config.forms import ConfigForm
+from microbe.mods.config.models import Config
+
+__author__ = u'TROUVERIE Joachim'
 
 
 @admin.route('/config/', methods=['GET', 'POST'])
@@ -21,36 +23,17 @@ from microbe.mods.config.forms import ConfigForm
 def config():
     """Edit app config from form"""
     # get config
-    config = current_app.config
+    config = Config.query.first() or Config()
     # populate form with config
-    form = ConfigForm(sitename=config.get('SITENAME'),
-                      subtitle=config.get('SUBTITLE'),
-                      author=config.get('AUTHOR'),
-                      language=config.get('LANGUAGE'),
-                      pagination=config.get('PAGINATION'),
-                      summary_length=config.get('SUMMARY_LENGTH'),
-                      comments=config.get('COMMENTS'),
-                      rss=config.get('RSS'),
-                      recaptcha_public_key=config.get('RECAPTCHA_PUBLIC_KEY'),
-                      recaptcha_private_key=config.get('RECAPTCHA_PRIVATE_KEY')
-                      )
+    form = ConfigForm(config)
     if form.validate_on_submit():
+        form.populate_obj(config)
         # refresh babel
-        path = current_app.config['SHELVE_FILENAME']
-        db = shelve.open(path)
-        if config.get('LANGUAGE') != db.get('LANGUAGE'):
+        if current_app.config.get('LANGUAGE') != config.get('LANGUAGE'):
             refresh()
-        db['SITENAME'] = form.sitename.data
-        db['SUBTITLE'] = form.subtitle.data
-        db['AUTHOR'] = form.author.data
-        db['LANGUAGE'] = form.language.data
-        db['PAGINATION'] = form.pagination.data
-        db['SUMMARY_LENGTH'] = form.summary_length.data
-        db['COMMENTS'] = form.comments.data
-        db['RSS'] = form.rss.data
-        db['RECAPTCHA_PUBLIC_KEY'] = form.recaptcha_public_key.data
-        db['RECAPTCHA_PRIVATE_KEY'] = form.recaptcha_private_key.data
-        db.close()
+        if not Config.query.first():
+            db.session.add(config)
+        db.session.commit()
         return redirect(url_for('admin.index'))
     return render_template('admin/model.html',
                            form=form,

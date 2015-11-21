@@ -5,7 +5,7 @@
     Config model
 """
 
-from microbe import db
+from microbe.database import db
 
 
 __author__ = 'TROUVERIE Joachim'
@@ -13,6 +13,9 @@ __author__ = 'TROUVERIE Joachim'
 
 class Config(db.Model):
     """Config model"""
+    __tablename__ = 'Config'
+
+    id = db.Column(db.Integer, primary_key=True)
     sitename = db.Column(db.String(80))
     subtitle = db.Column(db.String(80))
     language = db.Column(db.String(2))
@@ -25,7 +28,7 @@ class Config(db.Model):
     recaptcha_private_key = db.Column(db.String(40))
 
     def __repr__(self):
-        return '<Config>'
+        return u'<Config>'
 
     def to_dict(self):
         return self.__dict__

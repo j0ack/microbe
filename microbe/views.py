@@ -14,6 +14,7 @@ from urlparse import urljoin
 
 from microbe import babel, contents
 from microbe.utils import render, render_list
+from microbe.mods.config.models import Config
 from microbe.mods.search import search_query
 from microbe.mods.flatcontent.forms import CommentForm
 from microbe.mods.links.models import Links
@@ -65,14 +66,9 @@ def date_filter(date, format=None):
 def before_request():
     """Refresh global vars before each requests"""
     # update config
-    path = current_app.config['SHELVE_FILENAME']
-    if not hasattr(g, 'mtime') or g.mtime != op.getmtime(path):
-        db = shelve.open(path)
-        current_app.config.update(db)
-        # close db
-        db.close()
-        # update mtime
-        g.mtime = op.getmtime(path)
+    config = Config.query.first()
+    if config:
+        current_app.config.update(config.to_dict())
     # posts list
     g.posts = sorted([c for c in contents if c.content_type == 'posts'
                       and not c.draft],

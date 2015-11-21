@@ -14,6 +14,9 @@ __author__ = 'TROUVERIE Joachim'
 dirpath = op.dirname(__file__)
 key = uuid4().hex
 
+
+SQLALCHEMY_PATH = op.join(op.expanduser('~'), '.microbe', 'microbe.db')
+SQLALCHEMY_DATABASE_URI = 'sqlite:///' + SQLALCHEMY_PATH
 SHELVE_FILENAME = op.join(dirpath, 'config.db')
 FLATPAGES_ROOT = u'content'
 FLATPAGES_EXTENSION = u'.md'
@@ -24,3 +27,16 @@ CSRF_ENABLED = True
 DEFAULT_THEME = u'dark'
 LANGUAGE = u'en'
 PAGINATION = 5
+LANGUAGE = u'en'
+SITENAME = u'Microbe Default site'
+USERS = {u'admin':
+         {u'name': u'admin',
+          u'email': None,
+         u'pw_hash': u'microbe'}}
+POST_DIR = u'posts'
+PAGE_DIR = u'pages'
+PAGINATION = 5
+SUMMARY_LENGTH = 300
+COMMENTS = u'NO'
+RSS = u'NO'
+DEFAULT_THEME = u'dark'

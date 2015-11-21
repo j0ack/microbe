@@ -38,9 +38,23 @@ class ConfigForm(Form):
     recaptcha_public_key = TextField(lazy_gettext(u'Recaptcha public key'))
     recaptcha_private_key = TextField(lazy_gettext(u'Recaptcha private key'))
 
+
+    def populate_obj(self, obj):
+        """Override populate obj"""
+        obj.sitename = self.sitename
+        obj.subtitle = self.subtitle
+        obj.language = self.language
+        obj.author = self.author
+        obj.pagination = self.pagination
+        obj.summary_length = self.summary_length
+        obj.comments = self.comments == u'YES'
+        obj.rss = self.rss == u'YES'
+        obj.recaptcha_public_key = self.recaptcha_public_key
+        obj.recaptcha_private_key = self.recaptcha_private_key
+
+
     def validate(self):
         """Override validation
-
         Check validation between fields
         """
         rv = Form.validate(self)
