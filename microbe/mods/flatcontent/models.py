@@ -23,7 +23,7 @@ from flask import current_app, url_for
 from microbe.utils import truncate_html_words, load_file, save_file
 from microbe.markdown_content import render_markdown
 from microbe.mods.email import send_email
-from microbe.mods.users.models import Users
+from microbe.mods.users.models import User
 
 __author__ = 'TROUVERIE Joachim'
 
@@ -202,7 +202,7 @@ class Content(Page):
         msg += '<a href="{0}" target="_blank">post</a>'.format(url)
         # collect all emails
         emails = [com.email for com in self._comments if com.notif and com.uid != comment.uid]
-        author = Users.get(self.meta.get(u'author'))
+        author = User.query.get(self.meta.get(u'author'))
         if author.email:
             emails.append(email)
         send_email(u'New_comment', emails, None, msg)

@@ -11,22 +11,22 @@
     <th>{{ _('User name') }}</th>
     <th colspan=2></th>
   </tr>
-  {% for user in objects %}
+  {% for user in objects.items %}
     <tr>
-      <td>{{ user }}</td>
+      <td>{{ user.name }}</td>
       <td class="action">
-        <a href="{{ url_for('admin.user', user=user) }}">
+        <a href="{{ url_for('admin.user', user=user.id) }}">
             <i class="fi-torso" title="{{ _('Edit') }}"></i>
         </a>
       </td>
       <td class="action">
-        {% if objects | length > 1 %}
+        {% if objects.items | length > 1 %}
           <form method="POST" action="{{ url_for('admin.delete_user') }}">
-            <input type="hidden" name="user" value="{{ user }}">
+            <input type="hidden" name="user" value="{{ user.id }}">
             <button type="submit" class="transparent fi-x" title="{{ _('Delete') }}"></button>
           </form>
         {% endif %}
       </td>
     </tr>
   {% endfor %}
-{% endblock %}      
+{% endblock %}

@@ -35,6 +35,7 @@ from logging.handlers import RotatingFileHandler
 
 from microbe.utils import merge_default_config
 from microbe.database import db
+from microbe.mods.users.models import User
 from microbe.mods.flatcontent import FlatContent
 
 __author__ = 'TROUVERIE Joachim'
@@ -93,10 +94,9 @@ def create_app():
     app.register_error_handler(404, page_not_found)
     # blueprint
     from microbe.admin import admin, lm
-    from microbe.mods.users import load_user
     from microbe.mods.email import mail
     app.register_blueprint(admin, url_prefix='/admin')
     lm.init_app(app)
-    lm.user_loader(load_user)
+    lm.user_loader(lambda id : User.query.get(id))
     mail.init_app(app)
     return app

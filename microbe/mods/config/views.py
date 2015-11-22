@@ -29,7 +29,7 @@ def config():
     if form.validate_on_submit():
         form.populate_obj(config)
         # refresh babel
-        if current_app.config.get('LANGUAGE') != config.get('LANGUAGE'):
+        if current_app.config.get('LANGUAGE') != config.language:
             refresh()
         if not Config.query.first():
             db.session.add(config)
@@ -38,5 +38,5 @@ def config():
     return render_template('admin/model.html',
                            form=form,
                            title=lazy_gettext(u'Configuration of ') +
-                           config.get('SITENAME'),
+                           config.sitename,
                            url=url_for('admin.config'))

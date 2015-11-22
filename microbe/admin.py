@@ -10,6 +10,7 @@ import urllib2
 import json
 
 from microbe import __version__
+from microbe.mods.users.models import User
 
 from flask import Blueprint, render_template
 from flask.ext.babel import lazy_gettext
