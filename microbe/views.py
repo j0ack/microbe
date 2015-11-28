@@ -17,7 +17,7 @@ from microbe.utils import render, render_list
 from microbe.mods.config.models import Config
 from microbe.mods.search import search_query
 from microbe.mods.flatcontent.forms import CommentForm
-from microbe.mods.links.models import Links
+from microbe.mods.links.models import Link
 from microbe.mods.search.forms import SearchForm
 
 from flask.ext.babel import format_datetime, lazy_gettext
@@ -80,7 +80,7 @@ def before_request():
     g.static_pages = [c for c in contents if c.content_type == 'pages'
                       and not c.draft]
     # links
-    g.links = Links.get_all()
+    g.links = Link.query.all()
     # search form
     if not hasattr(g, 'search_form'):
         g.search_form = SearchForm()

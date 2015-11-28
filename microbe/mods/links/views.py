@@ -6,38 +6,40 @@
     Link views for Microbe app
 """
 
-from itertools import chain
 
 from flask import url_for, redirect, render_template, request
 from flask.ext.login import login_required
 from flask.ext.babel import lazy_gettext
 
-from microbe.utils import render_list
 from microbe.admin import admin
+from microbe.database import db
 from microbe.mods.links.forms import LinkForm
-from microbe.mods.links.models import Links
+from microbe.mods.links.models import Link, LinkCategory
 
-__author__ = 'TROUVERIE Joachim'
+__author__ = u'TROUVERIE Joachim'
 
 
 @admin.route('/links/')
 @login_required
 def links():
     """List of links"""
-    # get config
-    lst = Links.get_all()
-    links = list(chain.from_iterable(lst.values()))
-    return render_list('admin/links.html', links, per_page=15)
+    page = request.args.get('page', 1)
+    links = Link.query.paginate(page, 15, False)
+    return render_template('admin/links.html', objects=links)
 
 
 @admin.route('/delete_link/', methods=['POST'])
 @login_required
 def delete_link():
     """Delete link"""
-    # delete a link
-    link = request.form['link']
-    Links.delete(link)
-    # update config
+    link_id = request.form['link']
+    link = Link.query.get_or_404(link_id)
+    category = link.category
+    # only one link in category
+    if len(category.links.all()) == 1:
+        db.session.delete(link.category)
+    db.session.delete(link)
+    db.session.commit()
     return redirect(url_for('admin.links'))
 
 
@@ -52,7 +54,13 @@ def link():
         label = form.label.data
         url = form.url.data
         cat = form.category.data
-        Links.add(label, url, cat)
+        # get category or create it
+        category = LinkCategory.query.filter_by(name=cat).first()
+        if not category:
+            category = LinkCategory(cat)
+        link = Link(label, url, category)
+        db.session.add(link)
+        db.session.commit()
         return redirect(url_for('admin.links'))
     return render_template('admin/model.html', title=title,
                            form=form, url=url_for('admin.link'))

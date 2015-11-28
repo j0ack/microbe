@@ -25,9 +25,13 @@ def config():
     # get config
     config = Config.query.first() or Config()
     # populate form with config
-    form = ConfigForm(config)
+    rss = u'YES' if config.rss else u'NO',
+    comments = u'YES' if config.comments else u'NO'
+    form = ConfigForm(obj=config, rss=rss, comments=comments)
     if form.validate_on_submit():
         form.populate_obj(config)
+        config.rss = form.rss == u'YES'
+        config.comments = form.comments == u'YES'
         # refresh babel
         if current_app.config.get('LANGUAGE') != config.language:
             refresh()
@@ -35,8 +39,8 @@ def config():
             db.session.add(config)
         db.session.commit()
         return redirect(url_for('admin.index'))
+    sitename = config.sitename or 'Microbe'
     return render_template('admin/model.html',
                            form=form,
-                           title=lazy_gettext(u'Configuration of ') +
-                           config.sitename,
+                           title=lazy_gettext(u'Configuration of ') + sitename,
                            url=url_for('admin.config'))

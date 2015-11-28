@@ -35,8 +35,6 @@ USERS = {u'admin':
          u'pw_hash': u'microbe'}}
 POST_DIR = u'posts'
 PAGE_DIR = u'pages'
-PAGINATION = 5
 SUMMARY_LENGTH = 300
 COMMENTS = u'NO'
 RSS = u'NO'
-DEFAULT_THEME = u'dark'

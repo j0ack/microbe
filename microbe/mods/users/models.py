@@ -8,7 +8,7 @@
 
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from microbe.database import db
+from microbe import db
 
 __author__ = u'TROUVERIE Joachim'
 
@@ -24,6 +24,8 @@ class User(db.Model):
     :type email: str
     :type hashed: bool
     """
+    __tablename__ = 'User'
+
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(40), unique=True)
     email = db.Column(db.String(40))

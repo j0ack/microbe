@@ -15,7 +15,7 @@ from microbe.database import db
 from microbe.mods.users.models import User
 from microbe.mods.users.forms import UserForm
 
-__author__ = 'TROUVERIE Joachim'
+__author__ = u'TROUVERIE Joachim'
 
 
 @admin.route('/users/')
@@ -24,7 +24,8 @@ def users():
     """List users"""
     page = request.args.get('page', 1)
     users = User.query.paginate(page, 15, False)
-    return render_template('admin/users.html', objects=users, url=url_for('admin.users'))
+    return render_template('admin/users.html', objects=users,
+                           url=url_for('admin.users'))
 
 
 @admin.route('/delete-user/', methods=['POST'])

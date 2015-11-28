@@ -5,7 +5,11 @@
   {% block new %}{% endblock %}
 
   {% if objects %}
-    <table class="model">{% block table %}{% endblock %}</table>
+    {% if objects.items | length > 0 %}
+      <table class="model">{% block table %}{% endblock %}</table>
+    {% else %}
+      <p class="info">No items here</p>
+    {% endif %}
   {% endif %}
 
   {% block post_table %}{% endblock %}
