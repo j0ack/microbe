@@ -1,28 +1,13 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from flask.ext.testing import TestCase
+from microbe.tests import MicrobeTestCase
 
-from microbe import create_app
-from microbe.database import db
-from microbe.mods.users.models import User
+__author__ = u'TROUVERIE Joachim'
 
 
-class AuthTests(TestCase):
+class AuthTests(MicrobeTestCase):
     """Tests for auth"""
-    def create_app(self):
-        app = create_app()
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
-        app.config['TESTING'] = True
-        app.config['WTF_CSRF_ENABLED'] = False
-        return app
-
-    def setUp(self):
-        db.create_all()
-        self.user = User('admin_test', 'microbe', '')
-        db.session.add(self.user)
-        db.session.commit()
-
     def test_login(self):
         rv = self.client.post('/admin/login', data=dict(
             username='test',
