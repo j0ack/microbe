@@ -26,6 +26,7 @@ class Config(db.Model):
     rss = db.Column(db.Boolean)
     recaptcha_public_key = db.Column(db.String(40))
     recaptcha_private_key = db.Column(db.String(40))
+    theme = db.Column(db.String(20))
 
     def __repr__(self):
         return u'<Config>'

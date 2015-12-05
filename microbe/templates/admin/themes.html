@@ -6,7 +6,7 @@
     {% for theme in themes %}
       <li class="{% if theme.identifier == selected %}selected{% endif %}">
         {% if theme.preview %}
-          <img src="{{ url_for('index') }}_themes/{{ theme.identifier }}/{{ theme.preview}}" height="200" width="320" ></img>
+          <img src="{{ url_for('frontend.index') }}_themes/{{ theme.identifier }}/{{ theme.preview}}" height="200" width="320" ></img>
         {% endif %}
         <b>{{ theme.name }}</b><br />
         <form method="POST" action="{{ url_for('admin.set_theme') }}">
