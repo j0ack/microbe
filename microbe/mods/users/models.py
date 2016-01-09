@@ -8,7 +8,7 @@
 
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from microbe import db
+from microbe.database import db
 
 __author__ = u'TROUVERIE Joachim'
 
@@ -39,6 +39,9 @@ class User(db.Model):
             self.set_password(password)
         else:
             self.password = password
+
+    def __repr__(self):
+        return '<User {0}>'.format(self.name)
 
     def set_password(self, clear_password):
         """Registered hashed password"""

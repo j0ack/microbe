@@ -48,22 +48,22 @@
         {% for page in g.static_pages %}
           <li><a href="{{ url_for('frontend.page', path=page.path) }}">{{ page.title }}</a></li>
         {% endfor %}
-      {% endif %}  
+      {% endif %}
       {% if config.RSS == 'YES' %}
         <li><a href="{{ url_for('frontend.feed') }}">{{ _('Atom feed') }}</a></li>
       {% endif %}
       <li><a href="{{ url_for('frontend.archives') }}">{{ _('Archive') }}</a></li>
     </ul>
-        
+
 
     {% if g.categories %}
       <h5 class="sidebar-title">{{ _('Categories') }}</h5>
       <ul class="side-nav">
         {% for cat in g.categories %}
-          <li><a href="{{ url_for('frontend.category', category = cat) }}">{{ cat }}</a></li>
+          <li><a href="{{ url_for('frontend.category', category_id = cat.id) }}">{{ cat.label }}</a></li>
         {% endfor %}
       </ul>
-    {% endif %}   
+    {% endif %}
 
     {% if g.links %}
       {% for category, links in g.links.iteritems() %}
@@ -78,10 +78,10 @@
       {% endfor %}
     {% endif %}
 
-  </aside> 
+  </aside>
   <!-- End Sidebar -->
 
-</div> 
+</div>
 <!-- End Main Content and Sidebar -->
 {% endblock %}
 

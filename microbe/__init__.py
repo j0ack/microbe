@@ -34,14 +34,12 @@ from logging.handlers import RotatingFileHandler
 
 from microbe.database import db
 from microbe.mods.users.models import User
-from microbe.mods.flatcontent import FlatContent
 
 __author__ = 'TROUVERIE Joachim'
 __version__ = '1.2.0'
 
 
 # plugins
-contents = FlatContent()
 babel = Babel()
 
 
@@ -83,7 +81,6 @@ def create_app():
     logs.setLevel(logging.ERROR)
     app.logger.addHandler(logs)
     # plugins
-    contents.init_app(app)
     babel.init_app(app)
     db.init_app(app)
     # frontend

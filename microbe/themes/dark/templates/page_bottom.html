@@ -3,12 +3,12 @@
 <!-- info -->
 <p>
   {% if page.category %}
-  {{ _('Category') }} : <a href="{{ url_for('frontend.category', category=page.category) }}">{{ page.category }}</a>
+  {{ _('Category') }} : <a href="{{ url_for('frontend.category', category_id=page.category.id) }}">{{ page.category.label }}</a>
   {% endif %}
   {% if page.tags %}
   {{ _('Tags') }} :
-    {% for tag in page.tags.split(',') %}
-      <a href="{{ url_for('frontend.tag', tag=tag) }}">{{ tag }}</a>&nbsp;
+    {% for tag in page.tags %}
+      <a href="{{ url_for('frontend.tag', tag=tag.id) }}">{{ tag.label }}</a>&nbsp;
     {% endfor %}
   {% endif %}
 </p>

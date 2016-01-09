@@ -3,12 +3,12 @@
 <!-- info -->
 <p>
   {% if page.category %}
-  {{ _('Category') }} : <a href="{{ url_for('frontend.category', category=page.category) }}">{{ page.category }}</a>
+  {{ _('Category') }} : <a href="{{ url_for('frontend.category', category_id=page.category.id) }}">{{ page.category.label }}</a>
   {% endif %}
   {% if page.tags %}
   {{ _('Tags') }} :
-    {% for tag in page.tags.split(',') %}
-      <a href="{{ url_for('frontend.tag', tag=tag) }}">{{ tag }}</a>&nbsp;
+    {% for tag in page.tags %}
+      <a href="{{ url_for('frontend.tag', tag_id=tag.id) }}">{{ tag.label }}</a>&nbsp;
     {% endfor %}
   {% endif %}
 </p>
@@ -16,11 +16,11 @@
 {% if config.COMMENTS == 'YES' and page.comments %}
   <div id="comment">
   <hr>
-  {% with total=page.comments | length %}
+  {% with total=page.comments.all() | length %}
   <h5 style="text-align : right">{{ ngettext('%(num)s comment', '%(num)s comments', total) }}</h5>
     <ul>
     {% for comment in page.comments %}
-      <a name="{{ comment.uid }}"></a>
+      <a name="{{ comment.id }}"></a>
       <li>
           <div class="avatar" style="position : absolute; width : 60px;">
             <img src="{{ comment.avatar }}" alt="avatar">

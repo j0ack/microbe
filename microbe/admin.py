@@ -10,10 +10,8 @@ import urllib2
 import json
 
 from microbe import __version__
-from microbe.mods.users.models import User
 
 from flask import Blueprint, render_template
-from flask.ext.babel import lazy_gettext
 from flask.ext.login import LoginManager, login_required
 
 __author__ = 'TROUVERIE Joachim'
@@ -39,7 +37,7 @@ def index():
 
 from microbe.mods.auth import views
 from microbe.mods.config import views
-from microbe.mods.flatcontent import views
+from microbe.mods.content import views
 from microbe.mods.links import views
 from microbe.mods.themes import views
 from microbe.mods.users import views
