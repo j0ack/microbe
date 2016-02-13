@@ -3,16 +3,26 @@
 {% block content %}
 <h3>{{ _('Archive') }}</h3>
 <ul class = "archive-list">
-{% for page in objects %}
+{% for page in objects.items %}
 <li>
   {{ page.published | date('EE dd MMMM YYYY') }}
-  <a href="{{ url_for('frontend.page', path = page.path) }}">
+  <a href="{{ url_for('frontend.page', content_id = page.id) }}">
     {{ page.title }}
   </a>
 </li>
 {% endfor %}
 </ul>
-<div class = "pagination-centered">
-  {{ pagination.links | safe }}
+<div class="pagination-centered">
+  {%- for obj in objects.iter_pages() -%}
+    {%- if obj -%}
+      {%- if obj != objects.page -%}
+        <a href="{{ url_for(url, page=page) }}">{{ page }}</a>
+      {%- else -%}
+        <b>{{ page }}</b>
+      {%- endif -%}
+    {%- else -%}
+      ...
+    {%- endif -%}
+  {%- endfor -%}
 </div>
 {% endblock %}

@@ -3,7 +3,7 @@
 
 
 """
-    Links module for Microbe app
+    Content module for Microbe app
 """
 
 __author__ = u'TROUVERIE Joachim'

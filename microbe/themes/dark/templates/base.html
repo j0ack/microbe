@@ -11,7 +11,7 @@
       {% if config.SUBTITLE %}
         <meta name="description" content="{{ config.SUBTITLE }}">
       {% endif %}
-      {% if config.RSS == 'YES' %}
+      {% if config.RSS %}
         <link rel="alternate" type="application/atom+xml" title = "content" href = "{{ url_for('frontend.feed') }}">
       {% endif %}       
       <title>{% block title %}{{ config.SITENAME }}{% endblock %}</title>

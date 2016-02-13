@@ -46,42 +46,42 @@
     <ul class="side-nav">
       {% if g.static_pages %}
         {% for page in g.static_pages %}
-          <li><a href="{{ url_for('frontend.page', path=page.path) }}">{{ page.title }}</a></li>
+          <li><a href="{{ url_for('frontend.page', content_id=page.id) }}">{{ page.title }}</a></li>
         {% endfor %}
-      {% endif %}  
-      {% if config.RSS == 'YES' %}
+      {% endif %}
+      {% if config %}
         <li><a href="{{ url_for('frontend.feed') }}">{{ _('Atom feed') }}</a></li>
       {% endif %}
       <li><a href="{{ url_for('frontend.archives') }}">{{ _('Archive') }}</a></li>
     </ul>
-        
+
 
     {% if g.categories %}
       <h5 class="sidebar-title">{{ _('Categories') }}</h5>
       <ul class="side-nav">
         {% for cat in g.categories %}
-          <li><a href="{{ url_for('frontend.category', category = cat) }}">{{ cat }}</a></li>
+          <li><a href="{{ url_for('frontend.category', category_id = cat.id) }}">{{ cat.label }}</a></li>
         {% endfor %}
       </ul>
-    {% endif %}   
-
-    {% if g.links %}
-      {% for category, links in g.links.iteritems() %}
-        {% if links %}
-          <h5 class="sidebar-title">{{ category | title}}</h5>
-          <ul class="side-nav">
-            {% for link in links %}
-              <li>{{ link.html | safe }}</li>
-            {% endfor %}
-          </ul>
-        {% endif %}
-      {% endfor %}
     {% endif %}
 
-  </aside> 
+    {% if g.links %}
+      {% for category in g.link_categories %}
+        {% set cat = category.id %}
+        <h5 class="sidebar-title">{{ category.name | title}}</h5>
+	<ul class="side-nav">
+          {% for link in g.links %}
+	    {% if link.category.id == cat %}
+	      <li>{{ link.html | safe }}</li>
+	    {% endif %}
+	  {% endfor %}
+ 	</ul>
+      {% endfor %}
+    {% endif %}	
+  </aside>
   <!-- End Sidebar -->
 
-</div> 
+</div>
 <!-- End Main Content and Sidebar -->
 {% endblock %}
 

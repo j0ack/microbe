@@ -5,12 +5,26 @@
   {% block new %}{% endblock %}
 
   {% if objects %}
-    <table class="model">{% block table %}{% endblock %}</table>
+    {% if objects.items | length > 0 %}
+      <table class="model">{% block table %}{% endblock %}</table>
+    {% else %}
+      <p class="info">No items here</p>
+    {% endif %}
   {% endif %}
 
   {% block post_table %}{% endblock %}
 
   <div class="pagination-centered">
-    {{ pagination.links | safe }}
+    {%- for obj in objects.iter_pages() -%}
+      {%- if obj -%}
+        {%- if obj != objects.page -%}
+          <a href="{{ url_for(url, page=page) }}">{{ page }}</a>
+	{%- else -%}
+	  <b>{{ page }}</b>
+	{%- endif -%}
+      {%- else -%}
+        ...
+      {%- endif -%}
+    {%- endfor -%}
   </div>
 {% endblock %}

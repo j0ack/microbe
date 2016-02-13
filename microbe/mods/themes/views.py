@@ -6,13 +6,15 @@
     Themes views for Microbe app
 """
 
-import shelve
+from flask import (current_app, render_template, url_for, redirect, request,
+                   abort)
 
-from flask import current_app, render_template, url_for, redirect, request, abort
 from flask.ext.themes2 import get_themes_list
 from flask.ext.login import login_required
 
 from microbe.admin import admin
+from microbe.database import db
+from microbe.mods.config.models import Config
 
 
 @admin.route('/themes/')
@@ -32,10 +34,11 @@ def themes():
 def set_theme():
     """Set theme in config to be displayed to users"""
     ident = request.form.get('theme')
-    path = current_app.config['SHELVE_FILENAME']
-    db = shelve.open(path)
+    config = Config.query.first() or Config()
     if ident not in current_app.theme_manager.themes:
         abort(404)
-    db['THEME'] = ident
-    db.close()
+    config.theme = ident
+    if not Config.query.first():
+        db.session.add(config)
+    db.session.commit()
     return redirect(url_for('admin.themes'))

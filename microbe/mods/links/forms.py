@@ -12,7 +12,7 @@ from wtforms import TextField
 from flask.ext.wtf import Form
 from flask.ext.babel import lazy_gettext
 
-__author__ = 'TROUVERIE Joachim'
+__author__ = u'TROUVERIE Joachim'
 
 required_message = lazy_gettext('This field is required')
 

@@ -12,13 +12,13 @@
     <th>{{ _('Category') }}</th>
     <th></th>
   </tr>
-  {% for link in objects %}
+  {% for link in objects.items %}
     <tr>
-      <td>{{ link.html | safe }}</td>     
-      <td>{{ link.category }}</td>
+      <td>{{ link.html | safe }}</td>
+      <td>{{ link.category.name }}</td>
       <td class="action">
         <form method="POST" action="{{ url_for('admin.delete_link') }}">
-          <input type="hidden" name="link" value="{{ link.uid }}">
+          <input type="hidden" name="link" value="{{ link.id }}">
           <button type="submit" class="transparent fi-x" title="{{ _('Delete') }}"></button>
         </form>
       </td>

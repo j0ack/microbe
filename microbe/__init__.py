@@ -26,22 +26,21 @@
 import os
 import os.path as op
 import logging
+import flask.ext.whooshalchemy as whoosh
 
 from flask import Flask
 from flask.ext.themes2 import Themes
 from flask.ext.babel import Babel
-from flask.ext.mail import Mail
 from logging.handlers import RotatingFileHandler
 
-from microbe.utils import merge_default_config
-from microbe.mods.flatcontent import FlatContent
+from microbe.database import db
+from microbe.mods.users.models import User
 
 __author__ = 'TROUVERIE Joachim'
 __version__ = '1.2.0'
 
 
 # plugins
-contents = FlatContent()
 babel = Babel()
 
 
@@ -59,15 +58,6 @@ def create_app():
     app = Flask(__name__)
     # config
     app.config.from_pyfile('settings.py')
-    # config
-    if not op.exists(app.config['SHELVE_FILENAME']):
-        merge_default_config(app.config)
-    # create path if not exists
-    path = op.join(op.dirname(__file__), 'content')
-    _mkdir_if_not_exists(path)
-    _mkdir_if_not_exists(op.join(path, 'pages'))
-    _mkdir_if_not_exists(op.join(path, 'posts'))
-    _mkdir_if_not_exists(op.join(path, 'comments'))
     # config files
     path = op.join(op.expanduser('~'), '.microbe')
     _mkdir_if_not_exists(path)
@@ -86,18 +76,19 @@ def create_app():
     logs.setLevel(logging.ERROR)
     app.logger.addHandler(logs)
     # plugins
-    contents.init_app(app)
+    from microbe.mods.content.models import Content
     babel.init_app(app)
+    db.init_app(app)
+    whoosh.whoosh_index(app, Content)
     # frontend
     from microbe.views import frontend, page_not_found
     app.register_blueprint(frontend)
     app.register_error_handler(404, page_not_found)
     # blueprint
     from microbe.admin import admin, lm
-    from microbe.mods.users import load_user
     from microbe.mods.email import mail
     app.register_blueprint(admin, url_prefix='/admin')
     lm.init_app(app)
-    lm.user_loader(load_user)
+    lm.user_loader(lambda id: User.query.get(id))
     mail.init_app(app)
     return app

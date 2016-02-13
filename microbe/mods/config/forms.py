@@ -40,7 +40,6 @@ class ConfigForm(Form):
 
     def validate(self):
         """Override validation
-
         Check validation between fields
         """
         rv = Form.validate(self)

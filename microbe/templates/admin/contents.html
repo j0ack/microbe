@@ -16,41 +16,41 @@
     <th>{{ _('Author') }}</th>
     <th colspan=3></th>
   </tr>
-  {% for content in objects %}
-    <tr>        
+  {% for content in objects.items %}
+    <tr>
       <td>{{ content.title }}</td>
-      <td>{{ content.published | date }}</td>
+      <td>{{ content.published_date | date }}</td>
       <td>{{ content.content_type | title}}</td>
       <td>
-        {% if content.draft %}
+        {% if content.draft_status %}
           {{ _('Draft') }}
         {% else %}
           {{ _('Published') }}
         {% endif %}
       </td>
       <td class="action">
-        {% if content.comments %}
-          <a href="{{ url_for('admin.comments', path=content.path) }}">
-            <i class="fi-comment"></i>{{ content.comments |  length }}
+        {% if content.comments.items %}
+          <a href="{{ url_for('admin.comments', content_id=content.id) }}">
+            <i class="fi-comment"></i>{{ content.comments.items |  length }}
           </a>
         {% endif %}
       </td>
-      <td>{{ content.author }}</td>
+      <td>{{ content.author.name }}</td>
       <td class="action">
-        <a href="{{ url_for('admin.content', path=content.path) }}">
+        <a href="{{ url_for('admin.content', content_id=content.id) }}">
             <i class="fi-page-edit" title="{{ _('Edit') }}"></i>
         </a>
-      </td>     
-      <td class="action">
-        <form method="POST" action="{{ url_for('admin.delete_content') }}">
-          <input type="hidden" name="path" value="{{ content.path}}">
-          <button type="submit" class="transparent fi-page-delete" title="{{ _('Delete') }}"></button>
-	    </form>
       </td>
       <td class="action">
-        {% if content.draft %}
+        <form method="POST" action="{{ url_for('admin.delete_content') }}">
+          <input type="hidden" name="content" value="{{ content.id }}">
+          <button type="submit" class="transparent fi-page-delete" title="{{ _('Delete') }}"></button>
+	</form>
+      </td>
+      <td class="action">
+        {% if content.draft_status %}
           <form method="POST" action="{{ url_for('admin.publish_content') }}">
-            <input type="hidden" name="path" value="{{ content.path}}">
+            <input type="hidden" name="content" value="{{ content.id }}">
             <button type="submit" class="transparent fi-page-export" title="{{ _('Publish') }}"></button>
           </form>
         {% endif %}

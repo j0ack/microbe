@@ -4,30 +4,30 @@
 {% if title %}
   <h3>{{ title }}</h3>
 {% endif %}
-{% for page in objects %}
+{% for page in objects.items %}
   <article>
-    <a href="{{ url_for('frontend.page', path = page.path) }}">
+    <a href="{{ url_for('frontend.page', content_id = page.id) }}">
       <h3 class="article-title">{{ page.title }}</h3>
     </a>
     <h6 class="subheader">
-      {{ page.published | date('EE dd MMMM YYYY') }}
+      {{ page.published_date | date('EE dd MMMM YYYY') }}
       {% if page.comments and config.COMMENTS == 'YES' %}
         {% with total = page.comments | length %}
           | {{ ngettext('%(num)s comment', '%(num)s comments', total) }}
         {% endwith %}  
       {% endif %}
       {% if page.author %}
-        | <b>{{ page.author }}</b>
+        | <b>{{ page.author.name }}</b>
       {% endif %}
     </h6>
     {{ page.summary | safe }}
-    <a class="button radius small" href="{{ url_for('frontend.page', path = page.path) }}">{{ _('Read more') }}</a>
+    <a class="button radius small" href="{{ url_for('frontend.page', content_id = page.id) }}">{{ _('Read more') }}</a>
     <p class="subheader">
-      {{ _('Category') }} : <a href="{{ url_for('frontend.category', category = page.category) }}">{{ page.category }}</a>
+      {{ _('Category') }} : <a href="{{ url_for('frontend.category', category_id = page.category.id) }}">{{ page.category.label }}</a>
       {% if page.tags %}
         {{ _('Tags') }} : 
-        {% for tag in page.tags.split(',') %}
-          <a href="{{ url_for('frontend.tag', tag = tag) }}">{{ tag }}</a>&nbsp;
+        {% for tag in page.tags %}
+          <a href="{{ url_for('frontend.tag', tag_id = tag.id) }}">{{ tag.label }}</a>&nbsp;
         {% endfor %}
       {% endif %}
     </p>      
@@ -35,7 +35,17 @@
   <hr class = "gradient">
 {% endfor %}
 <br />
-<div class = "pagination-centered">
-  {{ pagination.links | safe }}
+<div class="pagination-centered">
+  {%- for obj in objects.iter_pages() -%}
+    {%- if obj -%}
+      {%- if obj != objects.page -%}
+        <a href="{{ url_for(url, page=page) }}">{{ page }}</a>
+      {%- else -%}
+        <b>{{ page }}</b>
+      {%- endif -%}
+    {%- else -%}
+      ...
+    {%- endif -%}
+  {%- endfor -%}
 </div>
 {% endblock %}

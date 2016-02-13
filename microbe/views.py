@@ -6,17 +6,18 @@
 """
 
 import os.path as op
-import shelve
 import xml.etree.ElementTree as ET
 from datetime import datetime
 from werkzeug.contrib.atom import AtomFeed
 from urlparse import urljoin
 
-from microbe import babel, contents
-from microbe.utils import render, render_list
-from microbe.mods.search import search_query
-from microbe.mods.flatcontent.forms import CommentForm
-from microbe.mods.links.models import Links
+from microbe import babel
+from microbe.database import db
+from microbe.utils import render
+from microbe.mods.config.models import Config
+from microbe.mods.content.models import Content, Tag, Category, Comment
+from microbe.mods.content.forms import CommentForm
+from microbe.mods.links.models import Link, LinkCategory
 from microbe.mods.search.forms import SearchForm
 
 from flask.ext.babel import format_datetime, lazy_gettext
@@ -65,26 +66,17 @@ def date_filter(date, format=None):
 def before_request():
     """Refresh global vars before each requests"""
     # update config
-    path = current_app.config['SHELVE_FILENAME']
-    if not hasattr(g, 'mtime') or g.mtime != op.getmtime(path):
-        db = shelve.open(path)
-        current_app.config.update(db)
-        # close db
-        db.close()
-        # update mtime
-        g.mtime = op.getmtime(path)
-    # posts list
-    g.posts = sorted([c for c in contents if c.content_type == 'posts'
-                      and not c.draft],
-                     key=lambda x: x.published,
-                     reverse=True)
+    config = Config.query.first()
+    if config:
+        current_app.config.update(config.to_dict())
     # posts categories
-    g.categories = set([c.category for c in g.posts if c.category])
+    g.categories = Category.query.all()
     # static pages
-    g.static_pages = [c for c in contents if c.content_type == 'pages'
-                      and not c.draft]
+    g.static_pages = Content.query.filter_by(draft_status=False).filter_by(
+        content_type='pages').all()
     # links
-    g.links = Links.get_all()
+    g.links = Link.query.all()
+    g.link_categories = LinkCategory.query.all()
     # search form
     if not hasattr(g, 'search_form'):
         g.search_form = SearchForm()
@@ -95,14 +87,20 @@ def index():
     """Main page of the app
     List of blog posts summaries
     """
-    return render_list('index.html', g.posts)
+    page = request.args.get('page', 1)
+    per_page = current_app.config['PAGINATION']
+    posts = Content.query.filter_by(draft_status=False).filter_by(
+        content_type=u'posts')
+    ordered_posts = posts.order_by(Content.published_date.desc()).paginate(
+        page, per_page, False)
+    return render('index.html', objects=ordered_posts)
 
 
 @frontend.route('/sitemaps.xml')
 def sitemap():
     """Site sitemap"""
     # list all contents
-    sitemap_contents = [c for c in contents if not c.draft]
+    sitemap_contents = Content.query.filter_by(draft_status=False).all()
     # root
     root = ET.Element('urlset')
     root.set('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9')
@@ -142,110 +140,120 @@ def robots():
         abort(404)
 
 
-@frontend.route('/<path:path>/', methods=['GET', 'POST'])
-def page(path):
-    """Get access for page from its path.
+@frontend.route('/<content_id>/', methods=['GET', 'POST'])
+def page(content_id):
+    """Get access for page from its id.
     If path is not valid it will return a 404 error page
 
     :param path: Valid content path
     """
-    content = contents.get_or_404(path)
+    content = Content.query.get_or_404(content_id)
     form = None
     # enable comments for posts only
     if content.content_type == 'posts':
-        if current_app.config.get('COMMENTS', 'NO') == 'YES':
+        if current_app.config.get('COMMENTS', False):
             form = CommentForm()
     # form management
     if form and form.validate_on_submit():
-        author = form.name.data
-        body = form.content.data
-        email = form.email.data
-        site = form.site.data
-        notif = form.notify.data
-        content.add_comment(author, email, site, body, notif)
+        comment = Comment()
+        comment.user = form.name.data
+        comment.email = form.email.data
+        comment.site = form.site.data
+        comment.notif = form.notify.data
+        comment.body = form.content.data
+        comment.published_date = datetime.now()
+        comment.content_id = content_id
+        db.session.add(comment)
+        db.session.commit()
     return render('page.html', page=content, form=form)
 
 
-@frontend.route('/category/<category>')
-def category(category):
+@frontend.route('/category/<category_id>')
+def category(category_id):
     """Filter posts by category
 
     :param category: Category to filter contents
-    :type category: str
     """
-    posts = [p for p in g.posts if p.category == category]
-    return render_list('index.html', posts, title=category)
+    page = request.args.get('page', 1)
+    per_page = current_app.config['PAGINATION']
+    category = Category.query.get_or_404(category_id)
+    contents = category.contents.paginate(page, per_page, False)
+    return render('index.html', objects=contents, title=category.label)
 
 
-@frontend.route('/tag/<tag>')
-def tag(tag):
+@frontend.route('/tag/<tag_id>')
+def tag(tag_id):
     """Filter posts by tag
 
     :param tag: Category to filter contents
-    :type tag: str
     """
-    posts = [p for p in g.posts if tag in p.tags.split(',')]
-    return render_list('index.html', posts, title=tag)
+    page = request.args.get('page', 1)
+    per_page = current_app.config['PAGINATION']
+    tag = Tag.query.get_or_404(tag_id)
+    contents = tag.contents.paginate(page, per_page, False)
+    return render('index.html', objects=contents, title=tag.label)
 
 
 @frontend.route('/archives')
 def archives():
     """List all contents order by reverse date"""
     # sort pages by reverse date
-    sorted_pages = sorted(contents,
-                          key=lambda x: x.published,
-                          reverse=True)
-    return render_list('archive.html', sorted_pages, per_page=10)
+    page = request.args.get('page', 1)
+    pages = Content.query.filter_by(draft_status=False).order_by(
+        Content.published_date.desc())
+    paginate = pages.paginate(page, 10, False)
+    return render('archive.html', objects=paginate)
 
 
 @frontend.route('/search/', methods=['POST'])
 def search():
     """Search in contents"""
+    page = request.args.get('page', 1)
     if not g.search_form.validate_on_submit():
         return redirect(url_for('frontend.index'))
     query = g.search_form.search.data
-    contents = search_query(query)
-    # sort not draft contents by reverse date
-    sorted_contents = sorted([c for c in contents if not c.draft],
-                             key=lambda x: x.published,
-                             reverse=True)
-    return render_list('index.html', sorted_contents, per_page=10)
+    contents = Content.query.whoosh_search(query).filter_by(
+        draft_status=False).paginate(page, 10, False)
+    title = lazy_gettext('Results for "{}"'.format(query))
+    return render('index.html', objects=contents, title=title)
 
 
 @frontend.route('/feed.atom')
 def feed():
     """Generate 20 last content atom feed"""
-    if current_app.config.get('RSS', 'NO') != 'YES':
+    if not current_app.config.get('RSS', False):
         abort(404)
     name = current_app.config['SITENAME']
     feed = AtomFeed(name, feed_url=request.url, url=request.url_root)
+    posts = Content.query.filter_by(draft_status=False).filter_by(
+        content_type=u'posts').order_by(Content.published_date.desc())
     # sort posts by reverse date
-    for post in g.posts[:20]:
+    for post in posts[:20]:
         feed.add(post.title,
                  unicode(post.summary),
                  content_type='html',
-                 author=post.meta.get('author', ''),
-                 url=urljoin(request.url_root, post.path),
-                 updated=post.published)
+                 author=post.author.name,
+                 url=urljoin(request.url_root, str(post.id)),
+                 updated=post.published_date)
     return feed.get_response()
 
 
-@frontend.route('/<path:path>/feed.atom')
-def comments_feeds(path):
+@frontend.route('/<content_id>/feed.atom')
+def comments_feeds(content_id):
     """Generate content comments feeds
-    :param path: content path
+    :param content_id: content id
     """
     # check if RSS is enabled
-    if current_app.config.get('RSS', 'NO') != 'YES':
+    if not current_app.config.get('RSS', False):
         abort(404)
     # check if comments are enabled
-    if current_app.config.get('COMMENTS', 'NO') != 'YES':
+    if not current_app.config.get('COMMENTS', False):
         abort(404)
     # check if content exists
-    content = contents.get_or_404(path)
+    content = Content.query.get_or_404(content_id)
     name = u'Comments for ' + content.title
     feed = AtomFeed(name, feed_url=request.url, url=request.url_root)
-    content_url = urljoin(request.url_root, path)
+    content_url = urljoin(request.url_root, str(content.id))
     if content_url[:-1] != '/':
         content_url += '/'
     # sort posts by reverse date
@@ -253,7 +261,7 @@ def comments_feeds(path):
         feed.add(u'Comment for ' + content.title,
                  unicode(com.content),
                  content_type='html',
-                 author=com.author,
-                 url=urljoin(content_url, '#' + com.uid),
-                 updated=com.date)
+                 author=com.user,
+                 url=urljoin(content_url, '#' + str(com.id)),
+                 updated=com.published_date)
     return feed.get_response()

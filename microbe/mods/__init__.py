@@ -6,4 +6,4 @@
     Modules for Microbe app
 """
 
-__author__ = 'TROUVERIE Joachim'
+__author__ = u'TROUVERIE Joachim'
