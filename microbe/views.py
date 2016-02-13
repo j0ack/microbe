@@ -13,14 +13,14 @@ from urlparse import urljoin
 
 from microbe import babel
 from microbe.database import db
-from microbe.utils import render, render_list
+from microbe.utils import render
 from microbe.mods.config.models import Config
 from microbe.mods.content.models import Content, Tag, Category, Comment
 from microbe.mods.content.forms import CommentForm
-from microbe.mods.links.models import Link
+from microbe.mods.links.models import Link, LinkCategory
 from microbe.mods.search.forms import SearchForm
 
-from flask.ext.babel import format_datetime
+from flask.ext.babel import format_datetime, lazy_gettext
 from flask.ext.themes2 import static_file_url, get_theme
 from flask import (Blueprint, current_app, g, request, abort, url_for,
                    make_response, redirect)
@@ -69,9 +69,6 @@ def before_request():
     config = Config.query.first()
     if config:
         current_app.config.update(config.to_dict())
-    # posts list
-    g.posts = Content.query.filter_by(draft_status=False).filter_by(
-        content_type='posts').order_by(Content.published_date.desc()).all()
     # posts categories
     g.categories = Category.query.all()
     # static pages
@@ -79,6 +76,7 @@ def before_request():
         content_type='pages').all()
     # links
     g.links = Link.query.all()
+    g.link_categories = LinkCategory.query.all()
     # search form
     if not hasattr(g, 'search_form'):
         g.search_form = SearchForm()
@@ -89,7 +87,13 @@ def index():
     """Main page of the app
     List of blog posts summaries
     """
-    return render_list('index.html', g.posts)
+    page = request.args.get('page', 1)
+    per_page = current_app.config['PAGINATION']
+    posts = Content.query.filter_by(draft_status=False).filter_by(
+        content_type=u'posts')
+    ordered_posts = posts.order_by(Content.published_date.desc()).paginate(
+        page, per_page, False)
+    return render('index.html', objects=ordered_posts)
 
 
 @frontend.route('/sitemaps.xml')
@@ -147,7 +151,7 @@ def page(content_id):
     form = None
     # enable comments for posts only
     if content.content_type == 'posts':
-        if current_app.config.get('COMMENTS', 'NO') == 'YES':
+        if current_app.config.get('COMMENTS', False):
             form = CommentForm()
     # form management
     if form and form.validate_on_submit():
@@ -156,6 +160,7 @@ def page(content_id):
         comment.email = form.email.data
         comment.site = form.site.data
         comment.notif = form.notify.data
+        comment.body = form.content.data
         comment.published_date = datetime.now()
         comment.content_id = content_id
         db.session.add(comment)
@@ -169,11 +174,11 @@ def category(category_id):
 
     :param category: Category to filter contents
     """
-    page = request.args('page', 1)
+    page = request.args.get('page', 1)
     per_page = current_app.config['PAGINATION']
     category = Category.query.get_or_404(category_id)
     contents = category.contents.paginate(page, per_page, False)
-    return render('index.html', contents, title=category.label)
+    return render('index.html', objects=contents, title=category.label)
 
 
 @frontend.route('/tag/<tag_id>')
@@ -182,11 +187,11 @@ def tag(tag_id):
 
     :param tag: Category to filter contents
     """
-    page = request.args('page', 1)
+    page = request.args.get('page', 1)
     per_page = current_app.config['PAGINATION']
-    tag = Tag.get_or_404(tag_id)
+    tag = Tag.query.get_or_404(tag_id)
     contents = tag.contents.paginate(page, per_page, False)
-    return render('index.html', contents, title=tag.label)
+    return render('index.html', objects=contents, title=tag.label)
 
 
 @frontend.route('/archives')
@@ -194,9 +199,10 @@ def archives():
     """List all contents order by reverse date"""
     # sort pages by reverse date
     page = request.args.get('page', 1)
-    sorted_pages = Content.filter_by(draft_status=False).order_by(
-        Content.published_date.desc()).paginate(page, 10, False)
-    return render('archive.html', sorted_pages)
+    pages = Content.query.filter_by(draft_status=False).order_by(
+        Content.published_date.desc())
+    paginate = pages.paginate(page, 10, False)
+    return render('archive.html', objects=paginate)
 
 
 @frontend.route('/search/', methods=['POST'])
@@ -206,26 +212,29 @@ def search():
     if not g.search_form.validate_on_submit():
         return redirect(url_for('frontend.index'))
     query = g.search_form.search.data
-    contents = Content.query.filter_by(draft_status=False).whoosh_search(
-        query).paginate(page, 10, False)
-    return render('index.html', contents)
+    contents = Content.query.whoosh_search(query).filter_by(
+        draft_status=False).paginate(page, 10, False)
+    title = lazy_gettext('Results for "{}"'.format(query))
+    return render('index.html', objects=contents, title=title)
 
 
 @frontend.route('/feed.atom')
 def feed():
     """Generate 20 last content atom feed"""
-    if current_app.config.get('RSS', 'NO') != 'YES':
+    if not current_app.config.get('RSS', False):
         abort(404)
     name = current_app.config['SITENAME']
     feed = AtomFeed(name, feed_url=request.url, url=request.url_root)
+    posts = Content.query.filter_by(draft_status=False).filter_by(
+        content_type=u'posts').order_by(Content.published_date.desc())
     # sort posts by reverse date
-    for post in g.posts[:20]:
+    for post in posts[:20]:
         feed.add(post.title,
                  unicode(post.summary),
                  content_type='html',
-                 author=post.meta.get('author', ''),
-                 url=urljoin(request.url_root, post.path),
-                 updated=post.published)
+                 author=post.author.name,
+                 url=urljoin(request.url_root, str(post.id)),
+                 updated=post.published_date)
     return feed.get_response()
 
 
@@ -235,16 +244,16 @@ def comments_feeds(content_id):
     :param content_id: content id
     """
     # check if RSS is enabled
-    if current_app.config.get('RSS', 'NO') != 'YES':
+    if not current_app.config.get('RSS', False):
         abort(404)
     # check if comments are enabled
-    if current_app.config.get('COMMENTS', 'NO') != 'YES':
+    if not current_app.config.get('COMMENTS', False):
         abort(404)
     # check if content exists
-    content = Content.get_or_404(content_id)
+    content = Content.query.get_or_404(content_id)
     name = u'Comments for ' + content.title
     feed = AtomFeed(name, feed_url=request.url, url=request.url_root)
-    content_url = urljoin(request.url_root, content.id)
+    content_url = urljoin(request.url_root, str(content.id))
     if content_url[:-1] != '/':
         content_url += '/'
     # sort posts by reverse date
@@ -252,7 +261,7 @@ def comments_feeds(content_id):
         feed.add(u'Comment for ' + content.title,
                  unicode(com.content),
                  content_type='html',
-                 author=com.author,
-                 url=urljoin(content_url, '#' + com.id),
-                 updated=com.date)
+                 author=com.user,
+                 url=urljoin(content_url, '#' + str(com.id)),
+                 updated=com.published_date)
     return feed.get_response()

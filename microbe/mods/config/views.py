@@ -30,8 +30,8 @@ def config():
     form = ConfigForm(obj=config, rss=rss, comments=comments)
     if form.validate_on_submit():
         form.populate_obj(config)
-        config.rss = form.rss == u'YES'
-        config.comments = form.comments == u'YES'
+        config.rss = form.rss.data == u'YES'
+        config.comments = form.comments.data == u'YES'
         # refresh babel
         if current_app.config.get('LANGUAGE') != config.language:
             refresh()

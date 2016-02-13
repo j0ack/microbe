@@ -10,12 +10,12 @@ import os.path as op
 import os
 from werkzeug import secure_filename
 
-from flask import current_app, redirect, url_for, request, jsonify
+from flask import (current_app, redirect, url_for, request, jsonify,
+                   render_template)
 from flask.ext.login import login_required
 from flask.ext.babel import lazy_gettext
 
 from microbe.admin import admin
-from microbe.utils import render_list
 from microbe.mods.media.models import File
 
 __author__ = 'TROUVERIE Joachim'
@@ -30,7 +30,7 @@ def media():
         os.makedirs(path)
     files = [File(f) for f in os.listdir(path)]
     # delete a file
-    return render_list('admin/media.html', files, per_page=15)
+    return render_template('admin/media.html', objects=files)
 
 
 @admin.route('/delete-file/', methods=['POST'])

@@ -9,7 +9,7 @@
 from datetime import datetime
 
 from flask import render_template, redirect, request, url_for, jsonify
-from flask.ext.login import login_required
+from flask.ext.login import login_required, current_user
 from flask.ext.babel import lazy_gettext
 
 from microbe.admin import admin
@@ -56,7 +56,7 @@ def publish_content():
     """Publish content"""
     uid = request.form['content']
     content = Content.query.get_or_404(uid)
-    content.draft = False
+    content.draft_status = False
     db.session.commit()
     return redirect(url_for('admin.list_contents'))
 
@@ -74,6 +74,7 @@ def content(content_id=None):
         form = ContentForm(obj=content)
         form.category.data = content.category.label
         form.tags.data = ','.join([tag.label for tag in content.tags])
+        form.body.data = content.body
     else:
         title = lazy_gettext(u'New content')
         content = Content()
@@ -95,13 +96,13 @@ def content(content_id=None):
             category = Category.query.get(content.category_id)
             category.contents.remove(content)
             if len(category.contents.all()) == 0:
-                db.session.remove(category)
+                db.session.delete(category)
         # deleted tags
         for tag in content.tags:
             if tag.label not in form.tags.data:
                 tag.contents.remove(content)
                 if len(tag.contents) == 0:
-                    db.session.remove(content)
+                    db.session.delete(tag)
         # added tags
         for name in form.tags.data.split(','):
             tag_name = name.strip()
@@ -112,6 +113,7 @@ def content(content_id=None):
             if tag not in content.tags:
                 content.tags.append(tag)
         content.draft_status = True
+        content.author_id = current_user.id
         if not content_id:
             db.session.add(content)
         db.session.commit()

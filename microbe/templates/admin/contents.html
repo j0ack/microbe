@@ -35,7 +35,7 @@
           </a>
         {% endif %}
       </td>
-      <td>{{ content.author }}</td>
+      <td>{{ content.author.name }}</td>
       <td class="action">
         <a href="{{ url_for('admin.content', content_id=content.id) }}">
             <i class="fi-page-edit" title="{{ _('Edit') }}"></i>
@@ -48,7 +48,7 @@
 	</form>
       </td>
       <td class="action">
-        {% if content.draft %}
+        {% if content.draft_status %}
           <form method="POST" action="{{ url_for('admin.publish_content') }}">
             <input type="hidden" name="content" value="{{ content.id }}">
             <button type="submit" class="transparent fi-page-export" title="{{ _('Publish') }}"></button>

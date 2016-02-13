@@ -14,17 +14,17 @@
 
   {% block post_table %}{% endblock %}
 
-    <div class="pagination-centered">
-      {%- for obj in objects.iter_pages() -%}
-        {%- if obj -%}
-	  {%- if obj != objects.page -%}
-            <a href="{{ url_for(url, page=page) }}">{{ page }}</a>
-	  {%- else -%}
-	    <b>{{ page }}</b>
-	  {%- endif -%}
+  <div class="pagination-centered">
+    {%- for obj in objects.iter_pages() -%}
+      {%- if obj -%}
+        {%- if obj != objects.page -%}
+          <a href="{{ url_for(url, page=page) }}">{{ page }}</a>
 	{%- else -%}
-	  ...
+	  <b>{{ page }}</b>
 	{%- endif -%}
-      {%- endfor -%}
-    </div>
+      {%- else -%}
+        ...
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
 {% endblock %}

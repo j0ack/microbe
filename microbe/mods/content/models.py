@@ -10,7 +10,11 @@ from datetime import datetime
 from hashlib import md5
 from urlparse import urljoin
 
+from flask import current_app
+
 from microbe.database import db
+from microbe.markdown_content import render_markdown
+from microbe.utils import truncate_html_words
 
 __author__ = u'TROUVERIE Joachim'
 
@@ -39,6 +43,17 @@ class Content(db.Model):
     def __repr__(self):
         date = datetime.strftime(self.published_date, u'%d-%m-%Y')
         return '<{0} {1}>'.format(self.content_type, date)
+
+    @property
+    def html(self):
+        """HTML repr"""
+        return render_markdown(self.body)
+
+    @property
+    def summary(self):
+        """HTML content summary"""
+        length = current_app.config['SUMMARY_LENGTH']
+        return truncate_html_words(self.html, length)
 
 
 class Tag(db.Model):
@@ -71,6 +86,7 @@ class Comment(db.Model):
     site = db.Column(db.String(50))
     notif = db.Column(db.Boolean)
     published_date = db.Column(db.DateTime)
+    body = db.Column(db.Text())
     content_id = db.Column(db.Integer, db.ForeignKey('Content.id'))
 
     def __repr__(self):

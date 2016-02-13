@@ -32,4 +32,5 @@ class Config(db.Model):
         return u'<Config>'
 
     def to_dict(self):
-        return self.__dict__
+        dict = {key.upper(): value for key, value in self.__dict__.iteritems()}
+        return dict

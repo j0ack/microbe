@@ -33,7 +33,7 @@ def users():
 def delete_user():
     """Delete a user"""
     user = User.query.get_or_404(request.form['user'])
-    db.session.remove(user)
+    db.session.delete(user)
     db.session.commit()
     return redirect(url_for('admin.users'))
 
@@ -41,23 +41,24 @@ def delete_user():
 @admin.route('/user/<user>', methods=['GET', 'POST'])
 @admin.route('/user/', methods=['GET', 'POST'])
 @login_required
-def user(user_id=None):
+def user(user=None):
     """Edit or create user"""
     # get user
-    if user_id:
-        user_obj = User.query.get_or_404(user_id)
+    if user:
+        user_obj = User.query.get_or_404(user)
         form = UserForm(username=user_obj.name,
                         email=user_obj.email)
         title = user_obj.name
     else:
         form = UserForm()
+        user_obj = None
         title = lazy_gettext(u'New user')
     if form.validate_on_submit():
         # update or add new user
         username = form.username.data
         pwd = form.password.data
         email = form.email.data
-        if user.obj:
+        if user_obj:
             user_obj.name = username
             user_obj.set_password(pwd)
             user_obj.email = email
@@ -67,4 +68,4 @@ def user(user_id=None):
         db.session.commit()
         return redirect(url_for('.users'))
     return render_template('admin/model.html', title=title,
-                           form=form, url=url_for('admin.user'))
+                           form=form, url=url_for('admin.user', user=user))

@@ -30,6 +30,7 @@ class User(db.Model):
     name = db.Column(db.String(40), unique=True)
     email = db.Column(db.String(40))
     password = db.Column(db.String(80))
+    contents = db.relationship('Content', backref='author', lazy='dynamic')
 
     def __init__(self, name, password, email, hashed=False):
         self.name = name

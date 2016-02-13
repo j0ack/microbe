@@ -12,13 +12,13 @@
     <div class="large-9 large-centered columns">
       <div class = "row">
         <div class = "large-10 columns">
-          <h1><a href="{{ url_for('index') }}">{{ config.SITENAME }}</a></h1>
+          <h1><a href="{{ url_for('frontend.index') }}">{{ config.SITENAME }}</a></h1>
             {% if config.SUBTITLE %}
               <i> {{ config.SUBTITLE }} </i>
             {% endif %}
         </div>
         <div class = "large-2 columns">
-          <form class = "custom" action="{{url_for('search')}}" method="post" name="search">
+          <form class = "custom" action="{{url_for('frontend.search')}}" method="post" name="search">
             {{g.search_form.hidden_tag()}}
             {{g.search_form.search(size=20)}}
             <input type="submit" value="Search" style = "display : none">
@@ -35,19 +35,24 @@
 <div class="row">
 
   <!-- Main Blog Content -->
-   <!-- Sidebar -->
+  <div class="large-9 columns">
+    {% block content %}{% endblock %}
+  </div>
+  <!-- End Main Content -->
+
+  <!-- Sidebar -->
   <aside class="large-3 columns">
     <h5 class="sidebar-title">{{ _('Website') }}</h5>
     <ul class="side-nav">
       {% if g.static_pages %}
         {% for page in g.static_pages %}
-          <li><a href="{{ url_for('page', path=page.path) }}">{{ page.title }}</a></li>
+          <li><a href="{{ url_for('frontend.page', content_id=page.id) }}">{{ page.title }}</a></li>
         {% endfor %}
       {% endif %}
-      {% if config.RSS == 'YES' %}
-        <li><a href="{{ url_for('feed') }}">{{ _('Atom feed') }}</a></li>
+      {% if config %}
+        <li><a href="{{ url_for('frontend.feed') }}">{{ _('Atom feed') }}</a></li>
       {% endif %}
-      <li><a href="{{ url_for('archives') }}">{{ _('Archive') }}</a></li>
+      <li><a href="{{ url_for('frontend.archives') }}">{{ _('Archive') }}</a></li>
     </ul>
 
 
@@ -61,26 +66,19 @@
     {% endif %}
 
     {% if g.links %}
-      {% for category, links in g.links.iteritems() %}
-        {% if links %}
-          <h5 class="sidebar-title">{{ category | title}}</h5>
-          <ul class="side-nav">
-            {% for link in links %}
-              <li>{{ link.html | safe }}</li>
-            {% endfor %}
-          </ul>
-        {% endif %}
+      {% for category in g.link_categories %}
+        {% set cat = category.id %}
+        <h5 class="sidebar-title">{{ category.name | title}}</h5>
+	<ul class="side-nav">
+          {% for link in g.links %}
+	    {% if link.category.id == cat %}
+	      <li>{{ link.html | safe }}</li>
+	    {% endif %}
+	  {% endfor %}
+ 	</ul>
       {% endfor %}
-    {% endif %}
-
+    {% endif %}	
   </aside>
-
-  <div class="large-9 columns">
-    {% block content %}{% endblock %}
-  </div>
-  <!-- End Main Content -->
-
-
   <!-- End Sidebar -->
 
 </div>
@@ -89,6 +87,6 @@
 
 {% block footer %}
 <footer class="large-centered">
-  <i>{{ config.SITENAME }} {% if config.AUTHOR %}{{ _('by') }} {{ config.AUTHOR }}{% endif %} {{ _('created using') }} Microbe - <a href="{{ url_for('admin.index') }}">{{ _('Administration') }}</a></i>
+<i>{{ config.SITENAME }} {% if config.AUTHOR %}{{ _('by') }} {{ config.AUTHOR }}{% endif %} {{ _('created using') }} Microbe - <a href="{{ url_for('admin.index') }}">{{ _('Administration') }}</a> </i>
 </footer>
 {% endblock %}

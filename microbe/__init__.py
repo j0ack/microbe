@@ -26,6 +26,7 @@
 import os
 import os.path as op
 import logging
+import flask.ext.whooshalchemy as whoosh
 
 from flask import Flask
 from flask.ext.themes2 import Themes
@@ -57,12 +58,6 @@ def create_app():
     app = Flask(__name__)
     # config
     app.config.from_pyfile('settings.py')
-    # create path if not exists
-    path = op.join(op.dirname(__file__), 'content')
-    _mkdir_if_not_exists(path)
-    _mkdir_if_not_exists(op.join(path, 'pages'))
-    _mkdir_if_not_exists(op.join(path, 'posts'))
-    _mkdir_if_not_exists(op.join(path, 'comments'))
     # config files
     path = op.join(op.expanduser('~'), '.microbe')
     _mkdir_if_not_exists(path)
@@ -81,8 +76,10 @@ def create_app():
     logs.setLevel(logging.ERROR)
     app.logger.addHandler(logs)
     # plugins
+    from microbe.mods.content.models import Content
     babel.init_app(app)
     db.init_app(app)
+    whoosh.whoosh_index(app, Content)
     # frontend
     from microbe.views import frontend, page_not_found
     app.register_blueprint(frontend)

@@ -17,10 +17,7 @@ key = uuid4().hex
 
 SQLALCHEMY_PATH = op.join(op.expanduser('~'), '.microbe', 'microbe.db')
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + SQLALCHEMY_PATH
-SHELVE_FILENAME = op.join(dirpath, 'config.db')
-FLATPAGES_ROOT = u'content'
-FLATPAGES_EXTENSION = u'.md'
-FLATPAGES_AUTO_RELOAD = True
+WHOOSH_BASE = SQLALCHEMY_PATH.replace('microbe.db', 'whoosh')
 SECRET_KEY = key
 WTF_CSRF_SECRET_KEY = key
 CSRF_ENABLED = True
@@ -29,12 +26,6 @@ LANGUAGE = u'en'
 PAGINATION = 5
 LANGUAGE = u'en'
 SITENAME = u'Microbe Default site'
-USERS = {u'admin':
-         {u'name': u'admin',
-          u'email': None,
-         u'pw_hash': u'microbe'}}
-POST_DIR = u'posts'
-PAGE_DIR = u'pages'
-SUMMARY_LENGTH = 300
+SUMMARY_LENGTH = 30
 COMMENTS = u'NO'
 RSS = u'NO'
