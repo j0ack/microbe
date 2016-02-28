@@ -27,8 +27,13 @@ class ContentForm(Form):
                                         (u'pages', u'Page')])
     category = TextField(lazy_gettext(u'Category'))
     tags = TextField(lazy_gettext(u'Tags'))
-    body = TextAreaField(lazy_gettext(u'Content'),
-                         validators=[Required(message=required_message)])
+    body = TextAreaField(lazy_gettext(u'Content'))
+
+    def __init__(self, obj=None):
+        super(ContentForm, self).__init__(obj=obj)
+        if obj:
+            self.category.data = obj.category.label
+            self.tags.data = ','.join([tag.label for tag in obj.tags])
 
 
 class CommentForm(Form):

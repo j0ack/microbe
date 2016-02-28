@@ -9,12 +9,13 @@
 from datetime import datetime
 
 from flask import render_template, redirect, request, url_for, jsonify
-from flask.ext.login import login_required, current_user
+from flask.ext.login import current_user
 from flask.ext.babel import lazy_gettext
 
 from microbe.admin import admin
 from microbe.database import db
 from microbe.markdown_content import render_markdown
+from microbe.mods.auth.decorator import auth_required
 from microbe.mods.content.models import Content, Comment, Category, Tag
 from microbe.mods.content.forms import ContentForm
 
@@ -22,7 +23,7 @@ __author__ = u'TROUVERIE Joachim'
 
 
 @admin.route('/contents/')
-@login_required
+@auth_required
 def list_contents():
     """List contents"""
     page = request.args.get('page', 1)
@@ -32,7 +33,7 @@ def list_contents():
 
 
 @admin.route('/render/', methods=['POST'])
-@login_required
+@auth_required
 def render():
     """Render markdown"""
     content = request.form.get('content', '')
@@ -40,7 +41,7 @@ def render():
 
 
 @admin.route('/delete_content/', methods=['POST'])
-@login_required
+@auth_required
 def delete_content():
     """Delete content"""
     uid = request.form['content']
@@ -51,7 +52,7 @@ def delete_content():
 
 
 @admin.route('/publish_content/', methods=['POST'])
-@login_required
+@auth_required
 def publish_content():
     """Publish content"""
     uid = request.form['content']
@@ -63,22 +64,19 @@ def publish_content():
 
 @admin.route('/content/<content_id>/', methods=['GET', 'POST'])
 @admin.route('/content/', methods=['GET', 'POST'])
-@login_required
+@auth_required
 def content(content_id=None):
     """Edit or create post"""
-    form = ContentForm()
     # edit post
     if content_id:
         title = lazy_gettext(u'Edit content')
         content = Content.query.get_or_404(content_id)
         form = ContentForm(obj=content)
-        form.category.data = content.category.label
-        form.tags.data = ','.join([tag.label for tag in content.tags])
-        form.body.data = content.body
     else:
         title = lazy_gettext(u'New content')
         content = Content()
         content.published_date = datetime.now()
+        form = ContentForm()
     # populate form
     if form.validate_on_submit():
         # populate obj
@@ -101,7 +99,7 @@ def content(content_id=None):
         for tag in content.tags:
             if tag.label not in form.tags.data:
                 tag.contents.remove(content)
-                if len(tag.contents) == 0:
+                if len(tag.contents.all()) == 0:
                     db.session.delete(tag)
         # added tags
         for name in form.tags.data.split(','):
@@ -125,7 +123,7 @@ def content(content_id=None):
 
 
 @admin.route('/comments/<content_id>/')
-@login_required
+@auth_required
 def comments(content_id):
     """List comments for a content
     Available action is delete
@@ -140,7 +138,7 @@ def comments(content_id):
 
 
 @admin.route('/delete_comment/', methods=['POST'])
-@login_required
+@auth_required
 def delete_comment():
     """Delete a comment"""
     # get comment id

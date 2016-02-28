@@ -7,11 +7,11 @@
 """
 
 from flask import render_template, current_app, url_for, redirect
-from flask.ext.login import login_required
 from flask.ext.babel import refresh, lazy_gettext
 
 from microbe.database import db
 from microbe.admin import admin
+from microbe.mods.auth.decorator import auth_required
 from microbe.mods.config.forms import ConfigForm
 from microbe.mods.config.models import Config
 
@@ -19,7 +19,7 @@ __author__ = u'TROUVERIE Joachim'
 
 
 @admin.route('/config/', methods=['GET', 'POST'])
-@login_required
+@auth_required
 def config():
     """Edit app config from form"""
     # get config

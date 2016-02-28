@@ -7,11 +7,11 @@
 """
 
 from flask import redirect, url_for, request, render_template
-from flask.ext.login import login_required
 from flask.ext.babel import lazy_gettext
 
 from microbe.admin import admin
 from microbe.database import db
+from microbe.mods.auth.decorator import auth_required
 from microbe.mods.users.models import User
 from microbe.mods.users.forms import UserForm
 
@@ -19,7 +19,7 @@ __author__ = u'TROUVERIE Joachim'
 
 
 @admin.route('/users/')
-@login_required
+@auth_required
 def users():
     """List users"""
     page = request.args.get('page', 1)
@@ -29,7 +29,7 @@ def users():
 
 
 @admin.route('/delete-user/', methods=['POST'])
-@login_required
+@auth_required
 def delete_user():
     """Delete a user"""
     user = User.query.get_or_404(request.form['user'])
@@ -40,7 +40,7 @@ def delete_user():
 
 @admin.route('/user/<user>', methods=['GET', 'POST'])
 @admin.route('/user/', methods=['GET', 'POST'])
-@login_required
+@auth_required
 def user(user=None):
     """Edit or create user"""
     # get user

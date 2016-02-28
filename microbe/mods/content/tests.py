@@ -36,7 +36,7 @@ class ContentTests(MicrobeTestCase):
             body='***Test***'
         ), follow_redirects=True)
         content = Content.query.first()
-        self.client.post('/admin/content/' + str(content.id) + '/', data=dict(
+        rv = self.client.post('/admin/content/' + str(content.id) + '/', data=dict(
             title='Test',
             content_type='posts',
             category='Test',
