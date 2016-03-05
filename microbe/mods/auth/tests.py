@@ -42,7 +42,7 @@ class AuthTests(MicrobeTestCase):
         cre = base64.b64encode(b'admin_test:test')
         head = {'Authorization': b'Basic ' + cre}
         rv = self.client.get('/admin/', headers=head)
-        self.assert401(rv)
+        self.assertIn('login', rv.data)
 
     def test_lost_password(self):
         rv = self.client.post('/admin/lost_password', data=dict(
