@@ -10,15 +10,15 @@ from flask import (current_app, render_template, url_for, redirect, request,
                    abort)
 
 from flask.ext.themes2 import get_themes_list
-from flask.ext.login import login_required
 
 from microbe.admin import admin
 from microbe.database import db
+from microbe.mods.auth.decorator import auth_required
 from microbe.mods.config.models import Config
 
 
 @admin.route('/themes/')
-@login_required
+@auth_required
 def themes():
     """List available themes"""
     current_app.theme_manager.refresh()
@@ -30,7 +30,7 @@ def themes():
 
 
 @admin.route('/set-theme/', methods=['POST'])
-@login_required
+@auth_required
 def set_theme():
     """Set theme in config to be displayed to users"""
     ident = request.form.get('theme')

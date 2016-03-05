@@ -12,17 +12,17 @@ from werkzeug import secure_filename
 
 from flask import (current_app, redirect, url_for, request, jsonify,
                    render_template)
-from flask.ext.login import login_required
 from flask.ext.babel import lazy_gettext
 
 from microbe.admin import admin
+from microbe.mods.auth.decorator import auth_required
 from microbe.mods.media.models import File
 
 __author__ = 'TROUVERIE Joachim'
 
 
 @admin.route('/media/', methods=['GET', 'POST'])
-@login_required
+@auth_required
 def media():
     """List media available to contents"""
     path = op.join(current_app.root_path, 'static', 'media')
@@ -34,7 +34,7 @@ def media():
 
 
 @admin.route('/delete-file/', methods=['POST'])
-@login_required
+@auth_required
 def delete_file():
     """Delete a file"""
     path = op.join(current_app.root_path, 'static', 'media')
@@ -49,7 +49,7 @@ def delete_file():
 
 
 @admin.route('/upload/', methods=['POST'])
-@login_required
+@auth_required
 def upload():
     """Upload new file"""
     path = op.join(current_app.root_path, 'static', 'media')

@@ -10,9 +10,10 @@ import urllib2
 import json
 
 from microbe import __version__
+from microbe.mods.auth.decorator import auth_required
 
 from flask import Blueprint, render_template
-from flask.ext.login import LoginManager, login_required
+from flask.ext.login import LoginManager
 
 __author__ = 'TROUVERIE Joachim'
 
@@ -23,7 +24,7 @@ lm.login_view = 'admin.login'
 
 
 @admin.route('/')
-@login_required
+@auth_required
 def index():
     """Admin index view"""
     html = urllib2.urlopen('https://pypi.python.org/pypi/microbe/json/')

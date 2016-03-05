@@ -2,16 +2,19 @@
 
 {% block head %}
     {{ super() }}
-    <script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/markdown/markdown.js"></script>
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.css">
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/theme/xq-light.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/4.12.0/codemirror.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/4.12.0/mode/markdown/markdown.js"></script>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/4.12.0/codemirror.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/4.12.0/theme/xq-light.css">
     <script src="{{ url_for('static', filename='js/editor.js') }}"></script>
 {% endblock %}        
 
 {% block content %}
-  {{ super() }}
-    <script>
-        var editor=new Editor( 'body', "{{ url_for('admin.upload') }}", "{{ url_for('admin.render') }}" );
-    </script>
+    <h3>{{ title }}</h3>
+    <form action="{{ url }}" method="POST">
+        {{ forms.render(form) }}
+	<script>
+            var editor=new Editor( 'body', "{{ url_for('admin.upload') }}", "{{ url_for('admin.render') }}" );
+	</script>
+    </form>
 {% endblock %}

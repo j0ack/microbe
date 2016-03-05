@@ -17,7 +17,7 @@ function Editor(textarea_id, upload_url, convert_url) {
         document.getElementById(textarea_id), {
             "theme": "xq-light",
             "mode": "markdown",
-            "lineWrapping": "true"
+	    "lineWrapping": "true",
         });
     
     // manage drag and drop

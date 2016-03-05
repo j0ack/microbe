@@ -8,11 +8,11 @@
 
 
 from flask import url_for, redirect, render_template, request
-from flask.ext.login import login_required
 from flask.ext.babel import lazy_gettext
 
 from microbe.admin import admin
 from microbe.database import db
+from microbe.mods.auth.decorator import auth_required
 from microbe.mods.links.forms import LinkForm
 from microbe.mods.links.models import Link, LinkCategory
 
@@ -20,7 +20,7 @@ __author__ = u'TROUVERIE Joachim'
 
 
 @admin.route('/links/')
-@login_required
+@auth_required
 def links():
     """List of links"""
     page = request.args.get('page', 1)
@@ -29,7 +29,7 @@ def links():
 
 
 @admin.route('/delete_link/', methods=['POST'])
-@login_required
+@auth_required
 def delete_link():
     """Delete link"""
     link_id = request.form['link']
@@ -44,7 +44,7 @@ def delete_link():
 
 
 @admin.route('/link/', methods=['GET', 'POST'])
-@login_required
+@auth_required
 def link():
     """Create a new link"""
     form = LinkForm()
