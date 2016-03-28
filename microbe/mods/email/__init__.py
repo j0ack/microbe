@@ -14,7 +14,7 @@ from threading import Thread
 mail = Mail()
 
 
-def send_email(subject, recipients, text_body, html_body):
+def send_email(subject, recipients, text_body=u'', html_body=u''):
     """Send email asynchronously
     :param app: Flask app
     :param subject: email subject
