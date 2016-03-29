@@ -19,6 +19,7 @@ from microbe.mods.content.models import Content, Tag, Category, Comment
 from microbe.mods.content.forms import CommentForm
 from microbe.mods.links.models import Link, LinkCategory
 from microbe.mods.search.forms import SearchForm
+from microbe.mods.email import send_email
 
 from flask.ext.babel import format_datetime, lazy_gettext
 from flask.ext.themes2 import static_file_url, get_theme
@@ -165,6 +166,28 @@ def page(content_id):
         comment.content_id = content_id
         db.session.add(comment)
         db.session.commit()
+        # contruct comment url
+        content_url = urljoin(request.url_root, str(content.id))
+        if content_url[:-1] != '/':
+            content_url += '/'
+        comment_url = content_url + '#' + str(comment.id)
+        # contruct mail content
+        sub = lazy_gettext(u'A new comment has been submitted')
+        body = lazy_gettext(u'A new comment has been submitted to ')
+        body += content.title
+        body += '<br />'
+        txt = lazy_gettext(u'See it online')
+        body += '<a href="{}" title="comment">{}</a>'.format(comment_url, txt)
+        recipients = []
+        # notify author
+        if content.author.email:
+            recipients.append(content.author.email)
+        # notify other commenters
+        for com in content.comments:
+            if com.notif and com.email:
+                recipients.append(com.email)
+        if recipients:
+            send_email(sub, recipients, html_body=body)
     return render('page.html', page=content, form=form)
 
 
@@ -258,7 +281,7 @@ def comments_feeds(content_id):
         content_url += '/'
     # sort posts by reverse date
     for com in content.comments:
-        feed.add(u'Comment for ' + content.title,
+        feed.add(lazy_gettext(u'Comment for ') + content.title,
                  unicode(com.content),
                  content_type='html',
                  author=com.user,
