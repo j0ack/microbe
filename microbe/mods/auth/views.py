@@ -7,6 +7,7 @@
 """
 
 from uuid import uuid4
+from sqlalchemy.sql.expression import or_
 
 from flask import redirect, url_for, render_template, request, flash
 from flask.ext.babel import lazy_gettext
@@ -34,7 +35,8 @@ def login():
     # form submit
     if form.validate_on_submit():
         # check username and password
-        user = User.query.filter_by(name=form.username.data).first()
+        user = User.query.filter(or_(User.name == form.username.data,
+                                     User.email == form.username.data)).first()
         if not user:
             form.username.errors.append(lazy_gettext(u'Invalid user'))
         elif not user.check_password(form.password.data):
@@ -63,17 +65,19 @@ def lost_password():
         if not user:
             form.username.errors.append(lazy_gettext(u'Invalid user'))
         elif not user.email:
-            text = u'No email registered for this user'
-            form.username.errors.append(lazy_gettext(text))
+            text = lazy_gettext(u'No email registered for this user')
+            form.username.errors.append(text)
         elif user.email != email:
             form.email.errors.append(lazy_gettext(u'Invalid email'))
         elif email:
             password = uuid4().hex
-            text = u'Your password has been reset, your new password is '
+            text = lazy_gettext(u'Your password has been reset, '
+                                'your new password is ')
             send_email(lazy_gettext(u'New password'), [email],
                        lazy_gettext(text + unicode(password)))
             user.set_password(password)
             db.session.commit()
-            text = u'A new password has been sent to your email address'
-            flash(lazy_gettext(text))
+            text = lazy_gettext(u'A new password has been sent '
+                                'to your email address')
+            flash(text)
     return render_template('admin/model.html', form=form, url='')

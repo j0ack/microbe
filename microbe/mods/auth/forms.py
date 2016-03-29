@@ -13,7 +13,7 @@ from wtforms import TextField, PasswordField, BooleanField
 from flask.ext.wtf import Form
 from flask.ext.babel import lazy_gettext
 
-__author__ = 'TROUVERIE Joachim'
+__author__ = u'TROUVERIE Joachim'
 
 required_message = lazy_gettext('This field is required')
 
@@ -22,7 +22,7 @@ class LoginForm(Form):
     """
         Login form for the admin part
     """
-    username = TextField(lazy_gettext(u'User id'),
+    username = TextField(lazy_gettext(u'User name or email'),
                          [Required(message=required_message)])
     password = PasswordField(lazy_gettext(u'Password'),
                              [Required(message=required_message)])
