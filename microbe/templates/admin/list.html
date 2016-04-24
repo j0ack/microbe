@@ -2,11 +2,10 @@
 
 {% block content %}
   <h3>{% block title %}{% endblock %}</h3>
-  {% block new %}{% endblock %}
 
   {% if objects %}
     {% if objects.items | length > 0 %}
-      <table class="model">{% block table %}{% endblock %}</table>
+      <table class="model u-full-width">{% block table %}{% endblock %}</table>
     {% else %}
       <p class="info">No items here</p>
     {% endif %}
@@ -27,4 +26,6 @@
       {%- endif -%}
     {%- endfor -%}
   </div>
+
+  <div class="u-pull-right">{% block new %}{% endblock %}</div>
 {% endblock %}

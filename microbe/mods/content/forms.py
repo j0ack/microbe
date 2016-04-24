@@ -8,7 +8,7 @@
 
 from wtforms.validators import Required
 from wtforms.fields.html5 import EmailField
-from wtforms import TextField, TextAreaField, SelectField, BooleanField
+from wtforms import TextField, TextAreaField, SelectField, BooleanField, SelectMultipleField
 
 from flask.ext.wtf import Form, RecaptchaField
 from flask.ext.babel import lazy_gettext
@@ -25,8 +25,8 @@ class ContentForm(Form):
     content_type = SelectField(lazy_gettext(u'Type'),
                                choices=[(u'posts', u'Post'),
                                         (u'pages', u'Page')])
-    category = TextField(lazy_gettext(u'Category'))
-    tags = TextField(lazy_gettext(u'Tags'))
+    category = SelectField(lazy_gettext(u'Category'))
+    tags = SelectMultipleField(lazy_gettext(u'Tags'))
     body = TextAreaField(lazy_gettext(u'Content'))
 
     def __init__(self, obj=None):

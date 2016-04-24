@@ -2,26 +2,31 @@
 
 {% block title %}{{ _('Links') }}{% endblock %}
 
-{% block new %}
-  <a href="{{ url_for('admin.link') }}" class="button radius small">{{ _('New link') }}</a>
+{% block table %}
+  <thead>
+    <tr>
+      <th>{{ _('Link') }}</th>
+      <th>{{ _('Category') }}</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for link in objects.items %}
+      <tr>
+       <td>{{ link.html | safe }}</td>
+       <td>{{ link.category.name }}</td>
+        <td class="action">
+          <form method="POST" action="{{ url_for('admin.delete_link') }}">
+            <input type="hidden" name="link" value="{{ link.id }}">
+            <button type="submit" class="transparent fa fa-trash" title="{{ _('Delete') }}"></button>
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
 {% endblock %}
 
-{% block table %}
-  <tr>
-    <th>{{ _('Link') }}</th>
-    <th>{{ _('Category') }}</th>
-    <th></th>
-  </tr>
-  {% for link in objects.items %}
-    <tr>
-      <td>{{ link.html | safe }}</td>
-      <td>{{ link.category.name }}</td>
-      <td class="action">
-        <form method="POST" action="{{ url_for('admin.delete_link') }}">
-          <input type="hidden" name="link" value="{{ link.id }}">
-          <button type="submit" class="transparent fi-x" title="{{ _('Delete') }}"></button>
-        </form>
-      </td>
-    </tr>
-  {% endfor %}
+{% block new %}
+  <a href="{{ url_for('admin.link') }}" class="button button-primary">{{ _('New link') }}</a>
 {% endblock %}
+    

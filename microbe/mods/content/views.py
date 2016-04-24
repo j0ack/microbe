@@ -77,7 +77,11 @@ def content(content_id=None):
         content = Content()
         content.published_date = datetime.now()
         form = ContentForm()
+    # dropdown choices
+    form.category.choices = [(cat.id, cat.label) for cat in Category.query.all()]
+    form.tags.choices = [(tag.id, tag.label) for tag in Tag.query.all()]
     # populate form
+    import pdb;pdb.set_trace()
     if form.validate_on_submit():
         # populate obj
         content.title = form.title.data

@@ -6,11 +6,13 @@
 {% else %}
     {{ field.label }}
     {% if field.type == 'TextAreaField' %}
-      {{ field(rows=10, cols=40, style="height : auto") }}
+      {{ field(rows=10, cols=40, style="height : auto", class="u-full_width") }}
     {% elif field.type == 'MarkdownEditField' %}
-      {{ field(rows=25, cols=40) }}          
+	{{ field(rows=25, cols=40, class="u-full-width") }}
+    {% elif field.type == 'BooleanField' %}
+	{{ field() }}
     {% else %}
-      {{ field() }}
+      {{ field(class="u-full-width") }}
     {% endif %}
     {% if field.errors or field.help_text %}
       <span class="help-inline">
@@ -25,7 +27,7 @@
     {% endif %}
 {% endif %}
 {% endfor %}
-<input class="button radius small right" value="{{ _('Ok') }}" type="submit">
+<input class="button-primary u-pull-right" value="{{ _('Ok') }}" type="submit">
 </fieldset>
 {% endmacro %}
 

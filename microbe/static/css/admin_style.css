@@ -6,72 +6,30 @@ ol li ul, ol li ol {
     margin-bottom: 1.25em;
 }
 
-select {
-    -moz-box-sizing: border-box;
-    background-color: #FFFFFF;
-    border: 1px solid #CCCCCC;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset;
-    color: rgba(0, 0, 0, 0.75);
-    display: block;
-    font-family: inherit;
-    font-size: 0.875em;
-    height: 2.3125em;
-    margin: 0 0 1em;
-    padding: 0.5em;
-    transition: box-shadow 0.45s ease 0s, border-color 0.45s ease-in-out 0s;
-    width: 100%;
-}   
-
 label {
     color : #2284A1;
     font-weight : bold;
 }
 
-.logo {
-    float: left;
-    margin-right: 10px;
-}
-
 /* top bar */
-.top-bar {
+nav {
     background: #2f2f2f; 
-    height: 100%; 
+    padding: .5em;
+    border-radius: .5em;
     margin-bottom: 1em; 
 }
 
-.top-bar a,
-.top-bar i{ 
-    color: #FFFFFA 
+nav a {
+    color: #FFFFFA;
+    text-decoration: none;
+    font-weight: bold;
+    padding: .3em;	
 }
 
-.top-bar h1,
-.top-bar ul { 
-	margin-bottom : 0px 
-}
-
-/* admin nav bar */
-#nav {
-  width: 100%;
-  float: left;
-  padding: 0;
-  list-style: none;
-  background-color: transparent;
-}
-
-#nav li {
-  float: left; 
-}
-
-#nav li a {
-  display: block;
-  padding: 8px 15px;
-  text-decoration: none;
-  font-weight: bold;
-}
-
-#nav li a:hover {
-  color: #2284a1;
-}
+#logo {
+    padding-bottom: .5em;
+    padding-left: .2em;
+}	
 
 /* errors */
 .help-inline {
@@ -85,14 +43,6 @@ label {
 }
 
 /* admin model table */
-.model {
-  width : 100%;
-}
-
-.model th {
-  background-color : #CED6DE;
-}
-
 .model form {
   margin : 0px;
 }
@@ -191,3 +141,13 @@ button.transparent {
     background-color : transparent;
     color : #2AA0C4;
 }
+
+/* select2 adaptation */
+.select2 li {
+    margin:0;
+}
+
+.select2 input {
+    height: auto;
+    margin-bottom: 0;	
+}	

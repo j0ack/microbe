@@ -2,31 +2,37 @@
 
 {% block title %}{{ _('Users') }}{% endblock %}
 
-{% block new %}
-  <a href="{{ url_for('admin.user') }}" class="button radius small">{{ _('New user') }}</a>
+{% block table %}
+  <thead>
+    <tr>
+      <th>{{ _('User name') }}</th>
+      <th>{{ _('Email') }}</th>	    
+      <th colspan=2></th>
+     </tr>
+  </thead>
+  <tbody>
+    {% for user in objects.items %}
+      <tr>
+        <td>{{ user.name }}</td>
+	<td>{{ user.email }}</td>      
+        <td class="action">
+          <a href="{{ url_for('admin.user', user=user.id) }}">
+              <i class="fa fa-user" title="{{ _('Edit') }}"></i>
+          </a>
+        </td>
+        <td class="action">
+          {% if objects.items | length > 1 %}
+            <form method="POST" action="{{ url_for('admin.delete_user') }}">
+              <input type="hidden" name="user" value="{{ user.id }}">
+              <button type="submit" class="transparent fa fa-trash" title="{{ _('Delete') }}"></button>
+            </form>
+          {% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>  
 {% endblock %}
 
-{% block table %}
-  <tr>
-    <th>{{ _('User name') }}</th>
-    <th colspan=2></th>
-  </tr>
-  {% for user in objects.items %}
-    <tr>
-      <td>{{ user.name }}</td>
-      <td class="action">
-        <a href="{{ url_for('admin.user', user=user.id) }}">
-            <i class="fi-torso" title="{{ _('Edit') }}"></i>
-        </a>
-      </td>
-      <td class="action">
-        {% if objects.items | length > 1 %}
-          <form method="POST" action="{{ url_for('admin.delete_user') }}">
-            <input type="hidden" name="user" value="{{ user.id }}">
-            <button type="submit" class="transparent fi-x" title="{{ _('Delete') }}"></button>
-          </form>
-        {% endif %}
-      </td>
-    </tr>
-  {% endfor %}
+{% block new %}
+  <a href="{{ url_for('admin.user') }}" class="button button-primary">{{ _('New user') }}</a>
 {% endblock %}

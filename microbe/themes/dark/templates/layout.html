@@ -6,30 +6,6 @@
   <link rel="stylesheet" href="{{ theme_static('css/pygments.css') }}">
 {% endblock %}
 
-{% block topbar %}
-<div class="top-bar">
-  <div class="row">
-    <div class="large-9 large-centered columns">
-      <div class = "row">
-        <div class = "large-10 columns">
-          <h1><a href="{{ url_for('frontend.index') }}">{{ config.SITENAME }}</a></h1>
-            {% if config.SUBTITLE %}
-              <i> {{ config.SUBTITLE }} </i>
-            {% endif %}
-        </div>
-        <div class = "large-2 columns">
-          <form class = "custom" action="{{url_for('frontend.search')}}" method="post" name="search">
-            {{g.search_form.hidden_tag()}}
-            {{g.search_form.search(size=20)}}
-            <input type="submit" value="Search" style = "display : none">
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-{% endblock %}
-
 {% block main %}
 <!-- Main Page Content and Sidebar -->
 <div class="row">
